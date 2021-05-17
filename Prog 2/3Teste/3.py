@@ -23,10 +23,13 @@ senhaentrada = input('corfirme a senha: ')
 
 if (loginentrada == login[0]) and (senhaentrada == senha[0] )  :
     print('!!Acess garanted!!')
-else: 
-    while (loginentrada != login) and (senhaentrada != senha ) :       
+else : 
+    while (loginentrada != login[0]) and (senhaentrada != senha[0]) :       
         print ("="*69)   
         print ("\t \t \t Usuario ou senha incorreta tente novamente ")
         print ("="*69)
         loginentrada = input('confirme o usuario: ')
         senhaentrada = input('corfirme a senha: ')             
+    while (loginentrada == login[0]) and (senhaentrada == senha[0]) :       
+        print('!!Acess garanted!!')
+        break
