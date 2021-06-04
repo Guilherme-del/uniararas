@@ -6,17 +6,15 @@ print('='*69)
 print('\t\t \t CONTADOR DE VOGAIS')
 print('='*69)
 
+i = 0
+j = 0
+string = str.lower (input("Digite algo: "))
+for i in string:
+    if ( i == 'a'
+        or i == 'e'
+        or i == 'i'
+        or i == 'o'
+        or i == 'u'):
+        j+=1
+print("Temos", j, "vogais na sua palavra")
 
-def cacavogais():
-    i = 0
-    j = 0
-    string = str (input("Digite algo: "))
-    for i in string:
-        if (i == 'A' or i == 'a'
-        or i == 'E' or i == 'e'
-        or i == 'I' or i == 'i'
-        or i == 'O' or i == 'o'
-        or i == 'U' or i == 'u'):
-             j+=1
-    print("Temos", j, "vogais na sua palavra")
-cacavogais()
