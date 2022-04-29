@@ -1,4 +1,13 @@
 '''
+Roberto Antunes de Souza Junior 
+RA: 102489
+Guilherme Cavenaghi
+RA: 109317
+João Pedro Ramos silva
+RA : 110748
+Luis Rodrigo da Silva 
+RA: 109506
+------------------------------------------------
 C)
 Faça um algoritmo em Python que pegue o sistema triangular superior, resolva e imprima a
 solução.
