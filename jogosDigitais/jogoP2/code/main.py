@@ -15,7 +15,7 @@ class Game:
         self.windowSurface.fill((255, 153, 0))
         
         self.imag_bg = pygame.image.load('../graphics/menumain.png')
-        self.windowSurface.blit(self.imag_bg, (0, 0))
+        self.windowSurface.blit(self.imag_bg, (50, 0))
         pygame.display.update()
         
         self.imag_game_over = pygame.image.load('../graphics/gameover.png')
@@ -82,10 +82,10 @@ class Game:
                 self.clock.tick(FPS)
                 
             if self.resultado == 2: #player morreu    
-                self.windowSurface.blit(self.imag_game_over, (-250, 0))
+                self.windowSurface.blit(self.imag_game_over, (-200, 0))
                 self.show_text('Pressione uma tecla para reiniciar', 900, 550)
             elif self.resultado == 1: #win
-                self.windowSurface.blit(self.imag_player_win, (0, 0))
+                self.windowSurface.blit(self.imag_player_win, (30, 0))
                 self.show_text('Pressione uma tecla para jogar novamente', 980, 600)
                 
             self.waitForPlayerToPressKey()
