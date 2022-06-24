@@ -6,3 +6,7 @@ go to the dist folder && execute the program
 
 ## GDD folder
 go to doc folder && gddFinal
+
+<p align = "center">
+<img width=300 height=200 src=../../Img/fho.png >
+<p>
