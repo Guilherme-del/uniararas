@@ -1,5 +1,5 @@
 # Arena Game
-Neste repositório estão presentes  o jogo criado no curso de Engenharia Da Computação FHO.
+In this repo you will find out a game created at FHO.
 
 ## Quick-start
 go to the exec folder && execute the program
