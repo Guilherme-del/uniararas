@@ -2,10 +2,10 @@
 Neste repositório estão presentes  o jogo criado no curso de Engenharia Da Computação FHO.
 
 ## Quick-start
-go to the dist folder && execute the program
+go to the exec folder && execute the program
 
 ## GDD folder
-go to doc folder && gddFinal
+gdd files at doc folder && gddFinal
 
 <p align = "center">
 <img width=300 height=200 src=../../Img/fho.png >
