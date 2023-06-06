@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<head>
+	<title>Validador de senhar forte</title>
+	<meta charset="UTF-8"/>
+	<link rel="stylesheet" type="text/css" href="strength.css">
+</head>
+<body>
+	<form action="" method="get" accept-charset="UTF-8">
+		<input id="mySenha" type="password" name="" value="">
+	</form>
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="strength.js"></script>
+	<script>
+		$(document).ready(function($){
+			$('#mySenha').strength({
+				strengthClass: 'strength',
+				strengthMeterClass: 'strength_meter',
+				strengthButtonClass: 'button_strength',
+				strengthButtonText: 'Mostrar Password',
+				strengthButtonTextToggle: 'Desaparecer Password'
+				});
+		});
+	</script>
+</body>
+</html>

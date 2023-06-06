@@ -1,0 +1,1 @@
+//pegar os valores de uma pilha com um objeto pré definido e ir adicionando a uma nova lista

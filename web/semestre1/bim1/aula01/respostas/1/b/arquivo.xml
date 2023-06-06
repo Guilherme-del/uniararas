@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+  <section name="Café da Manhã">
+    <item>
+      <name>Pão de queijo</name>
+      <description>Pão de queijo assado na hora</description>
+      <price>5.00</price>
+    </item>
+    <item>
+      <name>Misto quente</name>
+      <description>Pão de forma com queijo e presunto</description>
+      <price>7.50</price>
+    </item>
+    <item>
+      <name>Tapioca de frango</name>
+      <description>Tapioca recheada com frango desfiado e queijo</description>
+      <price>9.00</price>
+    </item>
+    <item>
+      <name>Omelete</name>
+      <description>Omelete de queijo com presunto e tomate</description>
+      <price>12.00</price>
+    </item>
+    <item>
+      <name>Crepe de nutella</name>
+      <description>Crepe com nutella e banana</description>
+      <price>10.00</price>
+    </item>
+    <item>
+      <name>Vitamina de frutas</name>
+      <description>Vitamina de frutas com leite e açúcar</description>
+      <price>8.00</price>
+    </item>
+    <item>
+      <name>Café expresso</name>
+      <description>Café expresso feito na hora</description>
+      <price>3.50</price>
+    </item>
+    <item>
+      <name>Café com leite</name>
+      <description>Café com leite quente</description>
+      <price>4.50</price>
+    </item>
+    <item>
+      <name>Suco natural de laranja</name>
+      <description>Suco natural de laranja sem açúcar</description>
+      <price>6.00</price>
+    </item>
+    <item>
+      <name>Chá de camomila</name>
+      <description>Chá de camomila quente</description>
+      <price>4.00</price>
+    </item>
+  </section>
+</menu>

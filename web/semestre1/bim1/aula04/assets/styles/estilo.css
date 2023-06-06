@@ -1,0 +1,48 @@
+body{
+	background-color:#ff99ff;
+}
+h1{
+	font-family: verdana;
+	text-align: center;
+	color: white;
+}
+p{
+	font-family: times;
+	color:#1a001a;
+}
+header#principal{
+	border-bottom: 30px #b3ff99 solid;
+	height: 150px;
+	background-position: left top;
+}
+div#logo{
+		border-bottom: 150px;
+		width: 200px;
+		background-image: url("../img/logo.png");
+		height:70%;
+		width:50% no-repeat;
+}
+nav#menu a{
+	color: #9999ff;
+	text-decoration: none;
+}
+nav#menu a:hover{
+	color: #ffe699;
+}
+nav#menu ul{
+	list-style: none;
+	text-transform: uppercase;
+	position: absolute;
+	top:40px;
+	left: 100px;
+}
+nav#menu li{
+	display: inline-block;
+	background-color: #ccc8c2;
+	padding: 10px;
+	margin: 2px;
+}
+nav#menu li:hover{ background-color: #669999;
+	transition: background-color 1s;
+}
+

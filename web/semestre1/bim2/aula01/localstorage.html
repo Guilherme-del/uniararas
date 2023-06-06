@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<head>
+	<title>Página para manipulação de Cookies</title>
+	<meta charset="UTF-8"/>
+	<script type="text/javascript">
+		function verificar(){
+			if(typeof(Storage)!="undefined")
+				alert("o browser suporta HTML 5 Web Storage")
+			else
+				alert("o browser não suporta HTML 5 Web Storage")
+		}
+		function adicionar(){
+			localStorage.setItem(txtChave.value, txtValor.value);
+			alert("Item adicionado como Cookie com sucesso");
+			txtChave.value = txtValor.value = "";
+		}		
+		function ler(){
+			var ler = localStorage.getItem(txtChave.value);
+			if (ler != null )
+				alert(ler)
+			else 
+				alert("O item não existe")
+		}
+		function remover(){
+			localStorage.removeItem(txtChave.value);
+			alert("Item removido");
+		}
+		function limpar(){
+			localStorage.clear();
+			alert("Limpeza Total");
+		}
+	</script>
+</head>
+<body>
+	<h1 align="center">Lidando com Cookies</h1>
+	<p>Chave:</p>
+	<input type="text" id="txtChave"/>
+	<p>Valor:</p>
+	<input type="text" id="txtValor"/>
+	<hr></hr>
+	<button id="btnVerificar" onclick="verificar()">Verificar compatível</button>
+	<button id="btnAdicionar" onclick="adicionar()">Adicionar Cookie</button>
+	<button id="btnLer" onclick="ler()">Ler Valor do Cookie</button>
+	<button id="btnRemover" onclick="remover()">Remover Item</button>
+	<button id="btnLimpar" onclick="limpar()">Remover Todos</button>
+</body>
+</html>

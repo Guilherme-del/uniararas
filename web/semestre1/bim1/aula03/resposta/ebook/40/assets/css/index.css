@@ -1,0 +1,138 @@
+/* Import the custom font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tilt+Prism:wght@400;700&display=swap');
+/* Set default styles for the page */
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  background-image: url('../img/bkg.jpg');
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the heading */
+h1 {
+  font-family: 'Tilt Prism', sans-serif;
+  font-size: 30px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+/* Style the form */
+form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 10px 50px;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #ccc;
+}
+
+/* Style the form labels */
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+/* Style the form inputs */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+input[type="text"][readonly] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+input[type="button"] {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+input[type="button"]:hover {
+  background-color: #0069d9;
+}
+
+/* Style the form error messages */
+input:invalid {
+  border-color: #dc3545;
+}
+
+input:invalid:focus {
+  box-shadow: none;
+}
+
+/* Style the form success message */
+#total {
+  background-color: #28a745;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 3px;
+}
+
+/* Style the form promo code input */
+#cod-promocao {
+  text-transform: uppercase;
+}
+
+/* Add media queries for different screen sizes */
+@media screen and (max-width: 768px) {
+  /* Adjust the form padding */
+  form {
+    padding: 10px;
+  }
+  
+  /* Adjust the font sizes */
+  body {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+  
+  label {
+    font-size: 14px;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="date"],
+  input[type="text"][readonly] {
+    font-size: 14px;
+  }
+  
+  input[type="button"] {
+    font-size: 14px;
+  }
+  
+  #total {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* Adjust the form width */
+  form {
+    max-width: 100%;
+  }
+}

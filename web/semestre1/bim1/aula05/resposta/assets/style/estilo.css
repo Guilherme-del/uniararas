@@ -1,0 +1,106 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex-grow: 1;
+}
+
+/* Style for the header */
+header {
+  text-align: center;
+  background-color: #ddd;
+  padding: 10px;
+  margin: 0;
+}
+
+/* Style for the footer */
+footer {
+  margin-top: auto; /* negative margin equal to the footer height */
+  height: 100%;
+  background-color: #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Style for the main headings */
+h1,
+h2 {
+  margin-top: 30px;
+}
+
+.info{
+  padding: 0px;
+  margin: auto 0;
+}
+
+#info-pessoal{
+  width: 40%;
+  float: left;
+}
+
+#foto {
+  margin: 50px  90px  ;
+  width: 40%;
+  float: right;
+}
+
+/* Add clear style to prevent content from floating next to #formacao */
+#formacao {
+  clear: both;
+}
+/* Style for the photo circle */
+circle {
+  fill: white;
+  stroke: black;
+}
+
+/* Style for the photo */
+image {
+  border-radius: 50%;
+}
+
+/* Style for the list items */
+li {
+  margin-bottom: 5px;
+}
+
+/* Style for the links */
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+/* Styles for desktop devices */
+@media screen and (min-width: 768px) {
+  /* Adjust the width of the main container */
+  .container {
+    width: 750px;
+  }
+  
+  /* Adjust the font size of the heading */
+  h1 {
+    font-size: 2.5rem;
+  }
+}
+
+/* Styles for tablets and mobile devices */
+@media screen and (max-width: 767px) {
+  /* Adjust the width of the main container */
+  .container {
+    width: 100%;
+    padding: 0 20px;
+  }
+  
+  /* Adjust the font size of the heading */
+  h1 {
+    font-size: 1.5rem;
+  }
+}

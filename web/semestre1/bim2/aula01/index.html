@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+	<head>
+		<title>Parser de CDs</title>
+		<meta charset="UTF-8"/>
+		<style>
+			tr,th,td {border:1px solid black;}
+			#container {height:100%; width:100%; border: 1px solid purple;position:absolute;}
+			#header {min-height:20%; width:100%; border: 1px solid red; text-decoration-color: white;} 
+			#article {min-height:80%; width:70%; float:left; border: 1px solid blue;}
+			#menu {min-height:80%; width:30%; float:right; border:1px solid green;}
+			.grad{
+				background: linear-gradient(blue, white 99%);
+			}
+		</style>
+		<script type="text/javascript" src="script.js"></script>
+	</head>
+	<body onload="conexao()">
+		<div id="container">
+			<div id="header" class="grad"><h3 align="center">Catálogo de CDs</h3></div>
+			<div id="article">
+				<button type="button" id="btnxml" onclick="conectaAjax()">Parser XML</button>
+				<br></br>
+				<table id="tabArticle"></table>
+			</div>
+			<div id="menu">
+				<table id="tabMenu"></table>
+			</div>
+		</div>
+	</body>
+	</html>

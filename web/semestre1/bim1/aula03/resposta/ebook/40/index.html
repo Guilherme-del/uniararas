@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Reserva de Quartos do Hotel PW">
+    <meta name="keywords" content="hotel,reservar hotel,hotel Pw,hoteis baratos">
+    <meta name="author" content="Guilherme Cavenaghi">
+    <link rel="stylesheet" type="text/css" href="assets/css/index.css" /> 
+    <title>Reserva de Quartos do Hotel PW</title>
+</head>
+
+<body>
+    <h1>Reserva de Quartos do Hotel PW</h1>
+    <form>              
+        <label for="nome">Nome completo:</label>
+        <input placeholder="Nome e sobrenome" type="text" id="nome" required> 
+        <label for="email">Endereço de e-mail:</label>
+        <input type="email" id="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\.xpto" required>    
+        <label for="data-chegada">Data de chegada:</label>
+        <input type="date" id="data-chegada" required>     
+        <label for="num-noites">Número de noites:</label>
+        <input type="number" id="num-noites" min="1" max="30" value="1" onchange="calcularValor()" required>     
+        <label for="num-convidados">Número de convidados:</label>
+        <input type="number" id="num-convidados" min="0" value="0" onchange="calcularValor()" required>            
+        <label for="total">Orçamento estimado (R$):</label>
+        <input type="text" id="total" readonly>
+
+        <label for="cod-promocao">Código de promoção:</label>
+        <input type="text" id="cod-promocao" pattern="[A-Za-z0-9]{6}">   
+        <input type="button" value="Fazer Reserva" onclick="calcularValor()">
+    </form>
+    <script src="assets/js/index.js"></script> 
+</body>
+</html>
