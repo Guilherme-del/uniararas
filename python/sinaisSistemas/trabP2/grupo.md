@@ -13,7 +13,7 @@ In this repo you will find out a game created at FHO,with 4 integrants:
  in UBUNTU:
 `/bin/python3 local/para/o/arquivo/sinaisSistemasP2.py`
 
-in Windoes: 
+in Windows: 
 `python local/para/o/arquivo/sinaisSistemasP2.py`
 
 ## Dependencies
