@@ -1,5 +1,5 @@
-# Arena Game
-In this repo you will find out a game created at FHO,with 5 integrants:
+# FFT 
+In this repo you will find out a game created at FHO,with 4 integrants:
 <ul>
   <li>Bruno Silva Tomicha - 109618</li>
   <li>Guilherme Cavenaghi - 109317</li>
