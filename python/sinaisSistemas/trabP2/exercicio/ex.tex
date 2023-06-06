@@ -1,0 +1,58 @@
+- Criar um programa que aplique um ruído aleatório no sinal a baixo, e através de FFT identifique o ruído aplicado.
+- Em seguida pesquise sobre filtros que possam ser aplicados para corrigir o ruído, e desenvolva a solução.
+a nota de MA02 será a entrega da pesquisa sobre os filtros, e o plot dos gráficos do sinal que deverão ser gerados pelo programa criado. Ou, seja seu programa deverá plotar o gráfico do sinal ruidoso, posteriormente FFT com a identificação do sinal e do ruído, e finalmente a resposta do sinal após a aplicação do filtro.
+
+-P02 será a entrega dos códigos fonte do programa criado.
+
+Data da Entrega. 
+13/06/2023 até as 22h
+
+
+***SINAL***
+
+% Amostragem
+fs = 200; % Freq de amostragem em Hz
+Ts = 1/fs; % Período de amostragem em s
+f = 10; % Freq. do sinal em Hz
+T=1/f; % Período do sinal em s
+t = -3*T:Ts:3*T; % vetor de tempo com 3 períodos antes e depois de t=0
+
+% Sinal senoidal perfeito (sem ruído)
+sinal = 10*sin(2*pi*f*t);
+
+
+******************************************************************
+EXEMPLO EM OCTAVE PARA GERAR O SINAL RUIDOSO E PLOT.
+
+clc
+clear all
+close all
+
+pkg load signal
+
+% Amostragem
+fs = 200; % Freq de amostragem em Hz
+Ts = 1/fs; % Período de amostragem em s
+f = 10; % Freq. do sinal em Hz
+T=1/f; % Período do sinal em s
+t = -3*T:Ts:3*T; % vetor de tempo com 3 períodos antes e depois de t=0
+
+% Sinal senoidal perfeito (sem ruído)
+sinal = 10*sin(2*pi*f*t);
+
+
+%fruido = 50;
+%ruido = 2*cos(2*pi*fruido*t);
+% Ruído aleatório - simulando erros de quantização
+% de conversores analógico-digital (A/D)
+% OBS: Altere a constante que multiplica o ruído para alterar a sua
+% amplitude
+ruido = randn(1,length(sinal))*2;
+SinalRuidoso = sinal+ruido;
+
+subplot(211)
+plot(t,SinalRuidoso,'r','Linewidth',2)
+xlabel('Tempo (s)')
+ylabel('Amplitude')
+title('Sinal ruidoso')
+set(gca,'Fontsize',16)
