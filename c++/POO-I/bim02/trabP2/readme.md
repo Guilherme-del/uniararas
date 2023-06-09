@@ -7,7 +7,11 @@ In this repo you will find out a game created at FHO,with 3 integrants:
 </ul>
   
 ## Quick-start
-[Make sure python and dependencies is installed correctly to your computer](https://www.freecodecamp.org/news/how-to-install-c-and-cpp-compiler-on-windows/), then run the following command:
+[Make sure python and dependencies is installed correctly to your computer](https://code.visualstudio.com/docs/cpp/config-wsl), and then to run follow the instructions:
+
+[windows](https://www.alura.com.br/artigos/compilando-executando-programas-c-c-windows)
+ 
+[ubuntu](https://www.inf.pucrs.br/~pinho/LaproI/Unix/CompilandoProgramas.htm)
 
 ## Dependencies
 <ul>
