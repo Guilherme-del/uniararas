@@ -1,5 +1,5 @@
-# FFT 
-In this repo you will find out a game created at FHO,with 4 integrants:
+# GRAFO 
+In this repo you will find out a game created at FHO,with 3 integrants:
 <ul>
   <li>Guilherme Cavenaghi - 109317</li>
   <li>Vinicius Rossi - 110273</li> 
