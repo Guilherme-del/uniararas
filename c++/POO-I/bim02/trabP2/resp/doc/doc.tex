@@ -1,0 +1,368 @@
+`#include <iostream>'
+Essa biblioteca é utilizada para lidar com a entrada e saída padrão, 
+permitindo a interação do usuário com o programa por meio do console.
+
+`#include <vector>'
+Essa biblioteca fornece uma implementação de vetor dinâmico, 
+permitindo o armazenamento e manipulação de elementos em uma sequência dinamicamente
+redimensionável.
+
+`#include <queue>'
+Essa biblioteca fornece uma implementação de fila (FIFO - First In, First Out), 
+que é usada para implementar a busca em largura (BFS) no sistema metroviário.
+
+`#include <stack>'
+Essa biblioteca fornece uma implementação de pilha (LIFO - Last In, First Out), 
+que é usada para implementar a busca em profundidade (DFS) no sistema metroviário.
+
+`#include <climits>'
+Essa biblioteca fornece constantes com os limites das variáveis numéricas, como INT_MAX e INT_MIN, 
+que são usadas para inicializar os pesos das conexões do sistema metroviário.
+
+`#include <algorithm>'
+Essa biblioteca fornece funções genéricas para operações em intervalos de elementos, 
+como find_if, que é usada para encontrar uma estação específica a ser removida.
+
+`#include <limits>'
+Essa biblioteca fornece constantes com os limites das variáveis numéricas, 
+como numeric_limits<streamsize>::max(), 
+que é usado para limpar o buffer de entrada quando uma entrada inválida é detectada.
+
+
+
+`Função createGraph()'
+
+1. Declaração e inicialização de variáveis:
+A função começa declarando uma variável numStations para armazenar o número de estações do sistema.
+Em seguida, exibe uma mensagem solicitando que o usuário digite o número de estações.
+O loop while é usado para verificar se a entrada do usuário é um número inteiro. 
+Caso contrário, uma mensagem de "entrada inválida" é exibida e a entrada é descartada até que um número inteiro válido seja fornecido pelo usuário.
+Quando um número inteiro válido é inserido, ele é armazenado na variável numStations.
+
+2. Redimensionamento das estruturas de dados:
+Com base no número de estações fornecido pelo usuário, os vetores stations, adjacencyList e adjacencyMatrix são redimensionados para ter o tamanho correto.
+O vetor stations armazenará as informações de cada estação, enquanto adjacencyList e adjacencyMatrix serão usados para representar as conexões entre as estações.
+
+3. Captura dos nomes das estações:
+Em um loop for, o programa solicita ao usuário o nome de cada estação e o armazena na estrutura de dados correspondente no vetor stations.
+
+4. Captura das conexões entre as estações:
+Em outro loop for, o programa solicita ao usuário o tempo necessário para ir de cada estação para todas as outras estações, exceto para si mesma.
+O tempo necessário é armazenado na matriz de adjacência adjacencyMatrix e nas listas de adjacência adjacencyList para as estações correspondentes.
+Cada conexão é representada por um par contendo o índice da estação de destino e o tempo necessário.
+
+5. Mensagem de confirmação:
+Após a conclusão dos loops e a captura de todas as informações, uma mensagem de "Grafo criado com sucesso!" é exibida.
+
+Conclusao createGraph():
+Essa função é responsável por configurar a estrutura de dados que representa o sistema metroviário com base nas informações fornecidas pelo usuário.
+Ela cria um grafo direcionado onde cada estação é um nó e as conexões entre as estações são as arestas com os respectivos tempos de percurso.
+
+`Função addStation()'
+
+1. Captura do nome da nova estação:
+A função começa solicitando ao usuário o nome da nova estação e armazena-o na variável name.
+
+2.Criação da nova estação:
+Uma variável newStation do tipo Station (que parece ser uma estrutura de dados definida anteriormente) 
+é criada para representar a nova estação.
+O nome da estação fornecido pelo usuário é atribuído à propriedade name da nova estação.
+
+3. Captura das conexões da nova estação:
+O programa solicita ao usuário o tempo necessário para ir da nova estação para cada uma das estações existentes.
+Em um loop for, iterando sobre as estações existentes, exceto a estação recém-adicionada, o programa solicita ao usuário o tempo necessário para ir da nova estação para cada estação existente.
+O tempo necessário é armazenado em um par, onde o primeiro elemento é o índice da estação existente e o segundo elemento é o tempo de percurso.
+Esse par é adicionado à lista de conexões da nova estação (newStation.connections).
+Além disso, o par também é adicionado à lista de adjacência (adjacencyList) e à matriz de adjacência (adjacencyMatrix).
+
+4.Atualização das estruturas de dados:
+A nova estação (newStation) é adicionada ao vetor stations.
+A lista de conexões da nova estação é adicionada à lista de adjacência (adjacencyList).
+Uma nova linha é adicionada à matriz de adjacência (adjacencyMatrix) para a nova estação, preenchida com valores padrão de -1 para indicar a falta de conexões.
+
+5.Mensagem de confirmação:
+Após a conclusão dos loops e a adição da nova estação e suas conexões às estruturas de dados, uma mensagem de "Estação adicionada com sucesso!" é exibida.
+
+Conclusao addStation(): 
+Essa função permite a expansão do sistema metroviário existente,
+permitindo ao usuário adicionar novas estações e especificar suas conexões 
+com as estações existentes.
+
+`Função removeStation()'
+
+1.Captura do nome da estação a ser removida:
+A função solicita ao usuário o nome da estação que deseja remover e armazena-o na variável name.
+
+2.Busca da estação na lista de estações existentes:
+A função utiliza a função find_if para localizar a estação na lista stations com base no seu nome. A expressão lambda passada para find_if verifica se o nome da estação atual é igual ao nome fornecido pelo usuário.
+Se a estação for encontrada, um iterador it apontando para a estação é retornado. Caso contrário, it será igual a stations.end().
+
+3.Remoção da estação e suas conexões:
+Se a estação for encontrada (it != stations.end()), o programa executa as seguintes etapas:
+O índice da estação a ser removida é obtido usando a função distance, que calcula a distância entre stations.begin() e it.
+A estação é removida do vetor stations usando a função erase.
+A lista de adjacência (adjacencyList) e a matriz de adjacência (adjacencyMatrix) são atualizadas removendo as entradas correspondentes ao índice da estação removida.
+Os loops for subsequentes percorrem a lista de adjacência (adjacencyList) e a matriz de adjacência (adjacencyMatrix) e removem as conexões que apontam para a estação removida.
+Na lista de adjacência, a função remove_if é utilizada para remover os pares que têm o índice da estação removida como primeiro elemento.
+Na matriz de adjacência, a coluna correspondente ao índice da estação removida é removida.
+Por fim, uma mensagem de "Estação removida com sucesso!" é exibida.
+
+4.Mensagem de estação não encontrada:
+Se a estação não for encontrada (ou seja, it == stations.end()), é exibida a mensagem "Estação não encontrada!".
+
+Conclusao removeStation():
+Essa função permite ao usuário remover uma estação específica do sistema metroviário, 
+atualizando as estruturas de dados (stations, adjacencyList e adjacencyMatrix) para refletir a remoção da estação e suas conexões. 
+
+`Função breadthFirstSearch(const string &startStation)'
+
+1.Busca da estação de partida na lista de estações existentes:
+A função utiliza a função find_if para localizar a estação de partida na lista stations com base no seu nome. A expressão lambda passada para find_if verifica se o nome da estação atual é igual ao nome fornecido como argumento startStation.
+Se a estação for encontrada, um iterador it apontando para a estação é retornado. Caso contrário, it será igual a stations.end().
+
+2.Execução da busca em largura:
+Se a estação de partida for encontrada (it != stations.end()), o programa executa as seguintes etapas:
+O índice da estação de partida é obtido usando a função distance, que calcula a distância entre stations.begin() e it.
+É criado um vetor visited de tamanho igual ao número de estações, inicializado com false. Esse vetor será usado para marcar as estações visitadas durante a busca.
+É criada uma fila (queue) para armazenar os índices das estações a serem processadas.
+Uma mensagem indicando a estação de partida é exibida.
+A estação de partida é marcada como visitada (visited[startIndex] = true) e adicionada à fila (queue.push(startIndex)).
+
+3.Realização da busca em largura:
+Enquanto a fila não estiver vazia, o programa executa o seguinte loop:
+O índice da estação atual é obtido a partir do elemento da frente da fila (int current = queue.front()).
+O elemento da frente da fila é removido (queue.pop()).
+O nome da estação atual é exibido (cout << stations[current].name << " ").
+Para cada conexão da estação atual, representada por um par (connection) na lista de adjacência (adjacencyList[current]):
+O índice da estação vizinha é obtido (int neighbor = connection.first).
+Se a estação vizinha não tiver sido visitada (!visited[neighbor]), o programa executa as seguintes etapas:
+A estação vizinha é marcada como visitada (visited[neighbor] = true).
+O índice da estação vizinha é adicionado à fila (queue.push(neighbor)).
+
+4.Exibição dos resultados:
+Após concluir a busca em largura, uma nova linha é exibida (cout << endl).
+
+5.Mensagem de estação não encontrada:
+Se a estação de partida não for encontrada (ou seja, it == stations.end()), é exibida a mensagem "Estação não encontrada!".
+
+Conclusao breadthFirstSearch(const string &startStation):
+Essa função permite ao usuário realizar uma busca em largura a partir de uma estação específica no sistema metroviário.
+Ela percorre as conexões das estações de forma ampla, explorando todas as estações alcançáveis a partir da estação de partida antes de avançar para as estações subsequentes.
+
+`Função depthFirstSearch(const string &startStation)'
+
+1.Busca da estação de partida na lista de estações existentes:
+A função utiliza a função find_if para localizar a estação de partida na lista stations com base no seu nome. A expressão lambda passada para find_if verifica se o nome da estação atual é igual ao nome fornecido como argumento startStation.
+Se a estação for encontrada, um iterador it apontando para a estação é retornado. Caso contrário, it será igual a stations.end().
+
+2.Execução da busca em profundidade:
+Se a estação de partida for encontrada (it != stations.end()), o programa executa as seguintes etapas:
+O índice da estação de partida é obtido usando a função distance, que calcula a distância entre stations.begin() e it.
+É criado um vetor visited de tamanho igual ao número de estações, inicializado com false. Esse vetor será usado para marcar as estações visitadas durante a busca.
+É criada uma pilha (stack) para armazenar os índices das estações a serem processadas.
+Uma mensagem indicando a estação de partida é exibida.
+A estação de partida é marcada como visitada (visited[startIndex] = true) e adicionada à pilha (stack.push(startIndex)).
+
+3.Realização da busca em profundidade:
+Enquanto a pilha não estiver vazia, o programa executa o seguinte loop:
+O índice da estação atual é obtido do topo da pilha (int current = stack.top()).
+O elemento do topo da pilha é removido (stack.pop()).
+O nome da estação atual é exibido (cout << stations[current].name << " ").
+Para cada conexão da estação atual, representada por um par (connection) na lista de adjacência (adjacencyList[current]):
+O índice da estação vizinha é obtido (int neighbor = connection.first).
+Se a estação vizinha não tiver sido visitada (!visited[neighbor]), o programa executa as seguintes etapas:
+A estação vizinha é marcada como visitada (visited[neighbor] = true).
+O índice da estação vizinha é adicionado à pilha (stack.push(neighbor)).
+
+4.Exibição dos resultados:
+Após concluir a busca em profundidade, uma nova linha é exibida (cout << endl).
+
+5.Mensagem de estação não encontrada:
+Se a estação de partida não for encontrada (ou seja, it == stations.end()), é exibida a mensagem "Estação não encontrada!".
+
+Conclusao depthFirstSearch(const string &startStation):
+Essa função permite ao usuário realizar uma busca em profundidade a partir de uma estação específica no sistema metroviário. 
+Ela explora o máximo possível em um ramo antes de retroceder e explorar os ramos subsequentes.
+
+`Função findPath(const string &startStation, const string &endStation)'
+
+1.Busca das estações de partida e destino na lista de estações existentes:
+A função utiliza a função find_if para localizar a estação de partida e a estação de destino na lista stations com base em seus nomes. Duas expressões lambda são usadas para verificar se o nome da estação atual é igual aos nomes fornecidos como argumentos startStation e endStation.
+Se as estações de partida e destino forem encontradas (startIt != stations.end() e endIt != stations.end()), os iteradores startIt e endIt apontando para as estações são retornados. Caso contrário, os iteradores serão iguais a stations.end().
+
+2.Execução da busca em largura com rastreamento do caminho:
+Se as estações de partida e destino forem encontradas, o programa executa as seguintes etapas:
+Os índices das estações de partida e destino são obtidos usando a função distance, que calcula a distância entre stations.begin() e os iteradores startIt e endIt.
+É criado um vetor path para armazenar o caminho percorrido. Esse vetor inicialmente contém apenas o índice da estação de partida (startIndex).
+É criado um vetor visited de tamanho igual ao número de estações, inicializado com false. Esse vetor será usado para marcar as estações visitadas durante a busca.
+É criada uma fila (queue) para armazenar pares de índices de estações e os caminhos percorridos até o momento.
+A estação de partida é marcada como visitada (visited[startIndex] = true) e adicionada à fila com seu respectivo caminho (queue.push(make_pair(startIndex, vector<int>{startIndex}))).
+
+3.Realização da busca em largura com rastreamento do caminho:
+Enquanto a fila não estiver vazia, o programa executa o seguinte loop:
+O índice da estação atual é obtido da frente da fila (int current = queue.front().first).
+O caminho percorrido até o momento é atualizado com o caminho armazenado na frente da fila (path = queue.front().second).
+O elemento da frente da fila é removido (queue.pop()).
+Se a estação atual for igual à estação de destino (current == endIndex), isso significa que foi encontrado um caminho entre as duas estações:
+Uma mensagem indicando as estações de partida e destino é exibida (cout << "Caminho encontrado entre as estações " << startStation << " e " << endStation << ":" << endl).
+Para cada índice de estação no caminho, o nome da estação correspondente é exibido (cout << stations[stationIndex].name << " ").
+Uma nova linha é exibida (cout << endl).
+A função retorna, encerrando sua execução.
+Caso contrário, se a estação atual não for a estação de destino, o programa executa o seguinte:
+Para cada conexão da estação atual, representada por um par (connection) na lista de adjacência (adjacencyList[current]):
+O índice da estação vizinha é obtido (int neighbor = connection.first).
+Se a estação vizinha não tiver sido visitada (!visited[neighbor]), o programa executa as seguintes etapas:
+A estação vizinha é marcada como visitada (visited[neighbor] = true).
+É criado um novo vetor newPath com base no caminho atual (vector<int> newPath = path).
+O índice da estação vizinha é adicionado ao novo caminho (newPath.push_back(neighbor)).
+O par contendo o índice da estação vizinha e o novo caminho é adicionado à fila (queue.push(make_pair(neighbor, newPath))).
+
+4.Exibição dos resultados:
+Se não for possível encontrar um caminho entre as estações de partida e destino, uma mensagem é exibida informando isso (cout << "Não foi possível encontrar um caminho entre as estações " << startStation << " e " << endStation << endl).
+
+5.Mensagem de estação não encontrada:
+Se a estação de partida ou a estação de destino não forem encontradas (ou seja, startIt == stations.end() ou endIt == stations.end()), é exibida a mensagem "Estação não encontrada!".
+
+Conclusao findPath(const string &startStation, const string &endStation):
+Essa função permite ao usuário encontrar um caminho entre duas estações no sistema metroviário usando uma busca em largura com rastreamento do caminho percorrido. 
+Ela exibe o caminho encontrado, caso exista, ou uma mensagem informando que não foi possível encontrar um caminho entre as duas estações.
+
+`Função findShortestPath(const string &startStation, const string &endStation)'
+
+1.Busca das estações de partida e destino na lista de estações existentes:
+A função utiliza a função find_if para localizar a estação de partida e a estação de destino na lista stations com base em seus nomes. Duas expressões lambda são usadas para verificar se o nome da estação atual é igual aos nomes fornecidos como argumentos startStation e endStation.
+Se as estações de partida e destino forem encontradas (startIt != stations.end() e endIt != stations.end()), os iteradores startIt e endIt apontando para as estações são retornados. Caso contrário, os iteradores serão iguais a stations.end().
+
+2.Execução do algoritmo de Dijkstra para encontrar o caminho mais curto:
+Se as estações de partida e destino forem encontradas, o programa executa as seguintes etapas:
+Os índices das estações de partida e destino são obtidos usando a função distance, que calcula a distância entre stations.begin() e os iteradores startIt e endIt.
+É criado um vetor distances para armazenar as distâncias mais curtas a partir da estação de partida até cada estação do sistema. Todas as distâncias são inicializadas como INT_MAX para indicar que ainda não foram calculadas.
+É criado um vetor previous para armazenar os predecessores de cada estação no caminho mais curto. Inicialmente, todos os predecessores são definidos como -1.
+É criado um vetor visited para marcar as estações visitadas durante o algoritmo. Inicialmente, todas as estações são marcadas como não visitadas (false).
+É criada uma fila de prioridade (pq) para armazenar pares de distâncias e índices de estações. A fila é ordenada de forma crescente com base nas distâncias.
+A distância da estação de partida para ela mesma é definida como 0 (distances[startIndex] = 0).
+O par contendo a distância 0 e o índice da estação de partida é inserido na fila de prioridade (pq.push(make_pair(0, startIndex))).
+
+3.Execução do loop principal do algoritmo de Dijkstra:
+Enquanto a fila de prioridade não estiver vazia, o programa executa o seguinte loop:
+O índice da estação atual é obtido a partir do topo da fila de prioridade (int current = pq.top().second).
+O elemento do topo da fila de prioridade é removido (pq.pop()).
+Se a estação atual for igual à estação de destino (current == endIndex), isso significa que o caminho mais curto foi encontrado:
+O loop é interrompido usando o comando break.
+Se a estação atual já tiver sido visitada (visited[current]), o loop continua para a próxima iteração.
+A estação atual é marcada como visitada (visited[current] = true).
+Para cada conexão da estação atual, representada por um par (connection) na lista de adjacência (adjacencyList[current]):
+O índice da estação vizinha é obtido (int neighbor = connection.first).
+O peso da conexão é obtido (int weight = connection.second).
+É calculada uma nova distância até a estação vizinha (int newDistance = distances[current] + weight).
+Se a nova distância for menor que a distância atualmente armazenada para a estação vizinha (newDistance < distances[neighbor]):
+A distância é atualizada com o novo valor (distances[neighbor] = newDistance).
+O predecessor da estação vizinha é atualizado como a estação atual (previous[neighbor] = current).
+O par contendo a nova distância e o índice da estação vizinha é inserido na fila de prioridade (pq.push(make_pair(newDistance, neighbor))).
+
+4.Exibição do resultado:
+Se a distância até a estação de destino for diferente de INT_MAX, isso significa que um caminho foi encontrado:
+É exibida a mensagem "Menor caminho encontrado entre as estações [nome da estação de partida] e [nome da estação de destino]:".
+É criada uma pilha pathStack para armazenar os índices das estações no caminho mais curto.
+O índice da estação de destino é atribuído à variável current.
+Enquanto current for diferente de -1 (enquanto houver predecessores no caminho):
+O índice da estação é inserido na pilha pathStack (pathStack.push(current)).
+O predecessor de current é atribuído à variável current (current = previous[current]).
+Enquanto a pilha pathStack não estiver vazia:
+O índice da estação é retirado do topo da pilha (int stationIndex = pathStack.top()).
+O índice é removido da pilha (pathStack.pop()).
+O nome da estação correspondente ao índice é exibido (cout << stations[stationIndex].name << " ").
+É exibido um novo espaço em branco (cout << endl).
+É exibido o tempo total do caminho (cout << "Tempo do caminho: " << distances[endIndex] << endl).
+Caso contrário, é exibida a mensagem "Não foi possível encontrar um caminho entre as estações [nome da estação de partida] e [nome da estação de destino]".
+
+5.Mensagem de estação não encontrada:
+Se a estação de partida ou a estação de destino não forem encontradas (ou seja, startIt == stations.end() ou endIt == stations.end()), é exibida a mensagem "Estação não encontrada!".
+
+Conclusao findShortestPath(const string &startStation, const string &endStation):
+Essa função permite ao usuário encontrar o caminho mais curto (com base na menor distância) entre duas estações no sistema metroviário,
+levando em consideração os pesos das conexões entre as estações. 
+Além disso, ela exibe o caminho encontrado, caso exista, ou uma mensagem informando que não foi possível encontrar um caminho entre as estações especificadas.
+
+
+`Função findMinimumSpanningTree()'
+
+1.Inicialização:
+Vetor visited: Armazena o estado de visita das estações. Inicialmente, todas as estações são marcadas como não visitadas (false).
+Vetor distances: Armazena as distâncias mínimas entre as estações e a Árvore Geradora Mínima. Inicialmente, todas as distâncias são definidas como infinito (INT_MAX).
+Vetor parent: Armazena os pais de cada estação na Árvore Geradora Mínima. Inicialmente, todos os pais são definidos como -1, indicando que não possuem pai.
+A distância da estação inicial (índice 0) é definida como 0 (distances[0] = 0).
+
+2.Etapa principal:
+O loop externo é executado stations.size() - 1 vezes (uma vez para cada estação, exceto a inicial).
+A cada iteração, encontra-se a estação mais próxima que ainda não foi visitada:
+minDistance: Armazena a menor distância encontrada até o momento, inicialmente definida como infinito (INT_MAX).
+minIndex: Armazena o índice da estação com a menor distância encontrada, inicialmente definido como -1.
+
+3.O loop interno percorre todas as estações:
+Verifica se a estação não foi visitada e se a distância até ela é menor que a menor distância atual (!visited[j] && distances[j] < minDistance).
+Se a condição for verdadeira, atualiza minDistance com a nova menor distância encontrada e minIndex com o índice da estação.
+Após encontrar a estação mais próxima, marca-a como visitada (visited[minIndex] = true).
+Atualiza as distâncias mínimas e os pais das estações vizinhas à estação atual:
+Para cada conexão da estação atual (adjacencyList[minIndex]):
+Obtém o índice da estação vizinha (int neighbor = connection.first).
+Obtém o peso da conexão entre as estações (int weight = connection.second).
+Verifica se a estação vizinha não foi visitada e se o peso da conexão é menor que a distância mínima atual até a estação vizinha (!visited[neighbor] && weight < distances[neighbor]).
+Se a condição for verdadeira, atualiza o pai da estação vizinha como a estação atual (parent[neighbor] = minIndex) e atualiza a distância mínima até a estação vizinha com o peso da conexão (distances[neighbor] = weight).
+
+4.Exibição da Árvore Geradora Mínima:
+Após o loop, exibe-se a mensagem "Árvore geradora mínima do sistema metroviário:".
+Em seguida, percorre-se as estações a partir do índice 1 (excluindo a estação inicial) e exibe-se o nome da estação pai (stations[parent[i]].name) seguido do nome da estação atual (stations[i].name), indicando uma conexão na Árvore Geradora Mínima.
+
+Conclusao findMinimumSpanningTree():
+Essa função implementa o algoritmo de Prim para encontrar a Árvore Geradora Mínima (Minimum Spanning Tree) no sistema metroviário.
+Dessa forma, a função encontra e exibe a Árvore Geradora Mínima do sistema metroviário com base nas conexões e pesos das estações.
+
+`Função printAdjacencyList()'
+
+1.Imprime a mensagem "Lista de adjacência do sistema metroviário:" 
+para indicar a saída que será exibida.
+
+2.Inicia um loop que percorre cada estação no vetor stations.
+
+3.Para cada estação: 
+Imprime o nome da estação atual (stations[i].name) seguido de uma seta (->).
+
+4.Em seguida, percorre as conexões da estação atual no vetor adjacencyList[i].
+
+5.Para cada conexão:
+Imprime o nome da estação vizinha (stations[connection.first].name) seguido do peso da conexão (connection.second).
+
+6.Após percorrer todas as conexões da estação atual, imprime uma quebra de linha (endl).
+
+Conclusao printAdjacencyList():
+Dessa forma, a função percorre a lista de adjacência do sistema metroviário 
+e imprime as conexões entre as estações, juntamente com os pesos das conexões. 
+Isso permite visualizar de forma clara as relações de conectividade no sistema metroviário.
+
+`Função printAdjacencyMatrix()'
+
+1.Imprime a mensagem "Matriz de adjacência do sistema metroviário:" 
+Para indicar a saída que será exibida.
+
+2.Inicia dois loops aninhados:
+Sendo o primeiro responsável por percorrer as linhas da matriz (estações de partida) e o segundo por percorrer as colunas (estações de chegada).
+
+3.Para cada posição da matriz, verifica se o valor armazenado em adjacencyMatrix[i][j] é diferente de -1. Isso indica a existência de uma conexão entre as estações i e j.
+
+4.Se o valor for diferente de -1, significa que há uma conexão e imprime o peso da conexão (adjacencyMatrix[i][j]) seguido de um caractere de tabulação (\t).
+
+5.Caso o valor seja igual a -1, significa que não há conexão direta entre as estações i e j, e imprime um traço (-) seguido de um caractere de tabulação.
+
+6.Após percorrer todas as colunas da linha atual, imprime uma quebra de linha (endl) para passar para a próxima linha da matriz.
+
+Conclusao printAdjacencyMatrix():
+Dessa forma, a função percorre a matriz de adjacência do sistema metroviário 
+e imprime os pesos das conexões entre as estações. 
+Isso permite visualizar de forma tabular as conexões existentes e seus respectivos pesos, 
+facilitando a análise e compreensão da estrutura do sistema metroviário.
+
+`CODIGO'
+O código em questão implementa um sistema metroviário utilizando conceitos de grafos. 
+Ele permite adicionar estações, criar conexões entre elas com tempos de percurso, e realiza operações como busca em largura, busca em profundidade, busca de caminho mínimo, criação da árvore geradora mínima e exibição da lista de adjacência e matriz de adjacência.
+Em resumo, o código permite construir e manipular um sistema metroviário, realizando operações como busca de caminhos, determinação do caminho mais curto, exibição das conexões entre as estações e criação da árvore geradora mínima. É uma implementação básica de um sistema metroviário usando estruturas de grafos.
