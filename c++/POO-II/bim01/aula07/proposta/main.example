@@ -1,0 +1,33 @@
+#include <iostream>
+#include "Usuario.h"
+
+int main()
+{
+    //Instancia do objeto usuário
+    Usuario* u = new Usuario("Marcilio");
+
+    //Usuario está fazendo o cadastro em duas redes
+    u->cadastrar(new SocialNetwork("Instagram"));
+    u->cadastrar(new SocialNetwork("Twitter"));
+
+    //A partir do vector de redes, recuperamos a rede "Instagram" para interagir
+    SocialNetwork* s = u->getRede("Instagram");
+    //Realizamos um post na rede - Note o uso do CAST nessa etapa
+    //ao postar na rede social, a função devolve um ponteiro do tipo Post e convertemos
+    //ele em um tipo (InstagramPost*)
+    Post *p = (InstagramPost*) s->postar(new InstagramPost("Meu 1o post instagram", 0));
+    //Compartilhamos o post e curtimos
+    p->compartilhar();
+    p->curtir();
+
+    //A partir do vector de redes, recuperamos a rede "Twitter" para interagir
+    SocialNetwork* t = u->getRede("Twitter");
+    //Realizamos um post na rede - Note o uso do CAST nessa etapa
+    //ao postar na rede social, a função devolve um ponteiro do tipo Post e convertemos
+    //ele em um tipo (TwitterPost*)
+    Post* pt = (TwitterPost*)t->postar(new TwitterPost("Meu 1o post no twitter", 0));
+    pt->compartilhar();
+    pt->curtir();
+    
+    return 0;
+}
