@@ -1,4 +1,3 @@
-// TwitterPost.h
 #ifndef TWITTERPOST_H
 #define TWITTERPOST_H
 

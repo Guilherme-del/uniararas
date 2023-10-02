@@ -1,4 +1,3 @@
-// TwitterPost.cpp
 #include "TwitterPost.h"
 #include <iostream>
 
