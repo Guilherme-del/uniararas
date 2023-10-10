@@ -1,0 +1,27 @@
+HERENÇA:
+
+A herança permite que uma classe (chamada classe derivada ou subclasse) 
+herde atributos e métodos de outra classe (chamada classe base ou superclasse).
+
+EX:
+
+class Animal {
+public:
+    void comer() {
+        cout << "O animal está comendo." << endl;
+    }
+};
+
+class Cachorro : public Animal {
+public:
+    void latir() {
+        cout << "O cachorro está latindo." << endl;
+    }
+};
+
+int main() {
+    Cachorro meuCachorro;
+    meuCachorro.comer();  // Herdado de Animal
+    meuCachorro.latir();
+    return 0;
+}

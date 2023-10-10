@@ -1,0 +1,39 @@
+POLIMORFISMO:
+
+O polimorfismo permite que objetos de diferentes classes sejam tratados de maneira 
+genérica por meio de interfaces comuns.
+
+EX:
+
+class Veiculo {
+public:
+    virtual void dirigir() {
+        cout << "Dirigindo um veículo genérico." << endl;
+    }
+};
+
+class Carro : public Veiculo {
+public:
+    void dirigir() override {
+        cout << "Dirigindo um carro." << endl;
+    }
+};
+
+class Moto : public Veiculo {
+public:
+    void dirigir() override {
+        cout << "Pilotando uma moto." << endl;
+    }
+};
+
+int main() {
+    Veiculo* veiculo1 = new Carro();
+    Veiculo* veiculo2 = new Moto();
+
+    veiculo1->dirigir();  // Chama o método do carro
+    veiculo2->dirigir();  // Chama o método da moto
+
+    delete veiculo1;
+    delete veiculo2;
+    return 0;
+}

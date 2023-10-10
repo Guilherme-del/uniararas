@@ -1,0 +1,22 @@
+CLASSES:
+
+As classes são estruturas que permitem definir tipos de dados personalizados em C++.
+Elas encapsulam dados (variáveis) e funções (métodos) que operam nesses dados.
+
+EX:
+
+class Carro {
+public:
+    // Variáveis de instância
+    string marca;
+    string modelo;
+    int ano;
+    
+    // Método construtor
+    Carro(string m, string mod, int a) : marca(m), modelo(mod), ano(a) {}
+
+    // Método para exibir informações do carro
+    void exibirInfo() {
+        cout << "Marca: " << marca << ", Modelo: " << modelo << ", Ano: " << ano << endl;
+    }
+};
