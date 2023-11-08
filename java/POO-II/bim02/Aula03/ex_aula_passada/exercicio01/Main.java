@@ -3,15 +3,15 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		
-		System.out.print("Digite o primeiro numero: ");
-		float primeiroNumero = sc.nextFloat();
-		System.out.print("Digite o segundo numero: ");
-		float segundoNumero = sc.nextFloat();
-		
-		ComparaNumero  maiorNum = new ComparaNumero (primeiroNumero, segundoNumero);
-		maiorNum.comparaNum();
+		try (Scanner sc = new Scanner(System.in)) {
+			System.out.print("Digite o primeiro numero: ");
+			float primeiroNumero = sc.nextFloat();
+			System.out.print("Digite o segundo numero: ");
+			float segundoNumero = sc.nextFloat();
+			
+			ComparaNumero  maiorNum = new ComparaNumero (primeiroNumero, segundoNumero);
+			maiorNum.comparaNum();
+		}
 	}
 	public static class ComparaNumero {
 	    private float Numero1, Numero2;
