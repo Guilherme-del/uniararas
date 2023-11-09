@@ -1,0 +1,179 @@
+[
+    {
+        "day": "Monday",
+        "events": [
+            {
+                "key": 1,
+                "title": "CS335 | 109-B28",
+                "start_time_h": 17,
+                "start_time_m": 0,
+                "end_time_h": 18,
+                "end_time_m": 0,
+                "colour": "#DB2B39"
+            },
+            {
+                "key": 2,
+                "title": "QCBB Rehearsal",
+                "start_time_h": 19,
+                "start_time_m": 0,
+                "end_time_h": 21,
+                "end_time_m": 30,
+                "colour": "#034732"
+
+            }
+        ]
+    },
+    {
+        "day": "Tuesday",
+        "events": [
+            {
+                "key": 1,
+                "title": "CS335 | 109-B28",
+                "start_time_h": 14,
+                "start_time_m": 0,
+                "end_time_h": 15,
+                "end_time_m": 0,
+                "colour": "#DB2B39"
+            },
+            {
+                "key": 2,
+                "title": "ACB Rehearsal",
+                "start_time_h": 19,
+                "start_time_m": 30,
+                "end_time_h": 21,
+                "end_time_m": 30,
+                "colour": "#F3A712"
+
+            }
+        ]
+    },
+    {
+        "day": "Wednesday",
+        "events": [
+            {
+                "key": 1,
+                "title": "CS320 | 401-401",
+                "start_time_h": 17,
+                "start_time_m": 0,
+                "end_time_h": 18,
+                "end_time_m": 0,
+                "colour": "#29335C"
+            },
+            {
+                "key": 2,
+                "title": "AYO Rehearsal",
+                "start_time_h": 19,
+                "start_time_m": 0,
+                "end_time_h": 22,
+                "end_time_m": 0,
+                "colour": "#81A4CD"
+
+            }
+        ]
+    },
+    {
+        "day": "Thursday",
+        "events": [
+            {
+                "key": 1,
+                "title": "CS335 | 109-B28",
+                "start_time_h": 10,
+                "start_time_m": 0,
+                "end_time_h": 11,
+                "end_time_m": 0,
+                "colour": "#DB2B39"
+            },
+            {
+                "key": 2,
+                "title": "CS320 | 303-G16",
+                "start_time_h": 11,
+                "start_time_m": 0,
+                "end_time_h": 12,
+                "end_time_m": 0,
+                "colour": "#29335C"
+            },
+            {
+                "key": 3,
+                "title": "CS335 | 401-401",
+                "start_time_h": 14,
+                "start_time_m": 0,
+                "end_time_h": 15,
+                "end_time_m": 0,
+                "colour": "#DB2B39"
+            },
+            {
+                "key": 4,
+                "title": "CS320 | 260-073",
+                "start_time_h": 17,
+                "start_time_m": 0,
+                "end_time_h": 18,
+                "end_time_m": 0,
+                "colour": "#29335C"
+            }
+        ]
+    },
+    {
+        "day": "Friday",
+        "events": [
+            {
+                "key": 1,
+                "title": "CS320 | 401-439",
+                "start_time_h": 17,
+                "start_time_m": 0,
+                "end_time_h": 18,
+                "end_time_m": 0,
+                "colour": "#DB2B39"
+            }
+        ]
+    },
+    {
+        "day": "Saturday",
+        "events": [
+            {
+                "key": 1,
+                "title": "Samantha Lesson",
+                "start_time_h": 10,
+                "start_time_m": 0,
+                "end_time_h": 10,
+                "end_time_m": 45,
+                "colour": "#379E42"
+            },
+            {
+                "key": 2,
+                "title": "Rachel Lesson",
+                "start_time_h": 11,
+                "start_time_m": 0,
+                "end_time_h": 11,
+                "end_time_m": 30,
+                "colour": "#034732"
+
+            },
+            {
+                "key": 3,
+                "title": "Ben Lesson",
+                "start_time_h": 11,
+                "start_time_m": 45,
+                "end_time_h": 12,
+                "end_time_m": 30,
+                "colour": "#32873B"
+
+            },
+            {
+                "key": 4,
+                "title": "Louise Lesson",
+                "start_time_h": 12,
+                "start_time_m": 30,
+                "end_time_h": 13,
+                "end_time_m": 0,
+                "colour": "#3B7041"
+
+            }
+        ]
+    },
+    {
+        "day": "Sunday",
+        "events": [
+
+        ]
+    }
+]
