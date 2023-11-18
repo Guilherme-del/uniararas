@@ -24,38 +24,8 @@ function MenuScreen() {
         <Image source={appIcon} style={styles.image} />
         <TouchableOpacity
           style={styles.menu}
-          onPress={() => pushScreen('Calendars')}>
-          <Text style={styles.menuText}>Calendars</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menu}
-          onPress={() => pushScreen('CalendarsList')}>
-          <Text style={styles.menuText}>Calendar List</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menu}
-          onPress={() => pushScreen('HorizontalCalendarList')}>
-          <Text style={styles.menuText}>Horizontal Calendar List</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menu}
           onPress={() => pushScreen('Agenda')}>
           <Text style={styles.menuText}>Agenda</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menu}
-          onPress={() => pushScreen('ExpandableCalendar')}>
-          <Text style={styles.menuText}>Expandable Calendar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menu}
-          onPress={() => pushScreen('TimelineCalendar')}>
-          <Text style={styles.menuText}>Timeline Calendar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menu}
-          onPress={() => pushScreen('ExpandableCalendar', { weekView: true })}>
-          <Text style={styles.menuText}>Week Calendar</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
