@@ -1,7 +1,8 @@
+// AgendaScreen.js
 import React, { useState, useEffect } from 'react';
-import { Alert, StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
 import { Agenda } from 'react-native-calendars';
-import Modal from 'react-native-modal';
+import ModalComponent from './modal';
 
 const AgendaScreen = () => {
   const [items, setItems] = useState({});
@@ -13,117 +14,95 @@ const AgendaScreen = () => {
   }, []);
 
   const loadItems = (day) => {
-    setTimeout(() => {
-      setItems((prevItems) => {
-        const newItems = { ...prevItems };
-
-        for (let i = -15; i <= 30; i++) {
-          const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-          const strTime = timeToString(time);
-          if (!newItems[strTime]) {
-            newItems[strTime] = Array.from(
-              { length: 1 },
-              (_, j) => ({
-                timestamp: strTime,
-                name: `Item for ${strTime} #${j}`,
-                height: 50,
-                notes: ``,
-              })
-            );
-          }
+    if (Object.keys(items).length === 0) {
+      const newItems = {};
+      for (let i = -15; i <= 30; i++) {
+        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+        const strTime = timeToString(time);
+        if (!newItems[strTime]) {
+          newItems[strTime] = Array.from(
+            { length: 1 },
+            (_, j) => ({
+              height: 50,
+              timestamp: strTime,
+              name: `Item for ${strTime} #${j}`,
+              notes: ``,
+            })
+          );
         }
+      }
 
-        return newItems;
-      });
-    });
+      setItems(newItems);
+    }
   };
 
-  const renderItem = (item) => (
-    <TouchableOpacity
-      style={[styles.item, { height: item.height }]}
-      onPress={() => {
-        setSelectedItem(item);
-        setModalVisible(true);
-      }}>
-      <Text>{item.name}</Text>
-    </TouchableOpacity>
-  );
-
-  const renderEmptyDate = () => (
-    <View style={styles.emptyDate}>
-      <Text>This is an empty date!</Text>
-    </View>
-  );
-
-  const rowHasChanged = (r1, r2) => r1.name !== r2.name;
+  const renderItem = (item) => {
+    return (
+      <TouchableOpacity
+        style={[styles.item, { height: item.height }]}
+        onPress={() => {
+          try {
+            setModalVisible(true);
+          }
+          finally {
+            setSelectedItem(item);
+          }
+        }}
+      >
+        <Text style={styles.text}>
+          {item.notes == "" ? "No activities" : item.notes }
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   const timeToString = (time) => {
     const date = new Date(time);
     return date.toISOString().split('T')[0];
   };
 
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
   const saveNotes = (newNotes) => {
-    // Update the notes for the selected item in the state
-    setItems((prevItems) => {
-      const newItems = { ...prevItems };
-      const strTime = timeToString(selectedItem.timestamp);
-      const updatedItem = {
-        ...selectedItem,
-        notes: newNotes,
-      };
+    try {
+      setModalVisible(false);
+    } finally {
+      setItems((prevItems) => {
+        const newItems = { ...prevItems };
 
-      // Map over the existing items for the specified day and update the selected item
-      newItems[strTime] = (newItems[strTime] || []).map((item) =>
-        item.name === selectedItem.name ? updatedItem : item
-      );
-      console.log("newItems",newItems,"items",items)
-      return newItems;
-    });
+        const strTime = timeToString(selectedItem.timestamp);
+        const updatedItem = {
+          ...selectedItem,
+          notes: newNotes,
+        };
 
-    // Close the modal
-    setModalVisible(false);
+        newItems[strTime] = (newItems[strTime] || []).map((item) =>
+          item.name === selectedItem.name ? updatedItem : item
+        );
+
+        return newItems;
+      });
+    }
   };
-
 
   return (
     <View style={{ flex: 1 }}>
       <Agenda
         items={items}
-        loadItemsForMonth={loadItems}
         renderItem={renderItem}
-        renderEmptyDate={renderEmptyDate}
-        rowHasChanged={rowHasChanged}
-        showClosingKnob={true}
-        markingType={'multi-period'}
-        monthFormat={'yyyy'}
-        theme={{ calendarBackground: '#F8F8FF', agendaKnobColor: 'none', selectedDayTextColor: '#ADD8E6' }}
+        loadItemsForMonth={() => loadItems}
+        markingType={'period'}
+        monthFormat={'mm'}
+        theme={{ calendarBackground: '#F8F8FF', selectedDayTextColor: '#ADD8E6' }}
         hideExtraDays={false}
       />
 
-      <Modal isVisible={isModalVisible}>
-        <View style={styles.modalContent}>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter notes"
-            multiline
-            placeholderTextColor="gray"
-            value={selectedItem?.notes}
-            onChangeText={(text) => setSelectedItem({ ...selectedItem, notes: text })}
-          />
-          <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => saveNotes(selectedItem?.notes)}>
-              <Text style={styles.buttonText}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={closeModal}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>     
-          </View>
-        </View>
-      </Modal>
+      <ModalComponent
+        isVisible={isModalVisible}
+        setSelectedItem={setSelectedItem}
+        selectedItem={selectedItem}
+        closeModal={() => setModalVisible(false)}
+        saveNotes={saveNotes}
+      />
+
     </View>
   );
 };
@@ -137,6 +116,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 17,
   },
+  text: {
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black'
+  },
   emptyDate: {
     height: 15,
     flex: 1,
@@ -145,7 +129,7 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: 'white',
     padding: 22,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
