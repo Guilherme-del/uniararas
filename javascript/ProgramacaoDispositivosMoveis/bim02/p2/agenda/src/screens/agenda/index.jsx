@@ -81,7 +81,6 @@ const AgendaScreen = () => {
       Object.entries(additionalItems).forEach(([date, items]) => {
         newItems[date] = items;
       });
-      console.log(data);
       setItems(newItems);
     }
   };
