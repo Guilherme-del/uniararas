@@ -65,8 +65,8 @@ const AgendaScreen = () => {
       const daysNeeded = 31 - slicedKeys.length;
       // I want to slice the data object to remove the date from slicedKeys before passing it to newItems variable; 
       // Get the keys (dates) and remove the first three
-      if (daysNeeded === 1  ) {
-        var keysToRemove = Object.keys(data).slice(daysNeeded);
+      if (daysNeeded <= 1  ) {
+        var keysToRemove = Object.keys(data).slice(0,1);
       }
       else {
         var keysToRemove = Object.keys(data).slice(0,daysNeeded);
@@ -81,7 +81,7 @@ const AgendaScreen = () => {
       Object.entries(additionalItems).forEach(([date, items]) => {
         newItems[date] = items;
       });
-
+      console.log(data);
       setItems(newItems);
     }
   };
