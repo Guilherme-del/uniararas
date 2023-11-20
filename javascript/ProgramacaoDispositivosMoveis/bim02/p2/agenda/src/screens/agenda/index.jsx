@@ -142,7 +142,7 @@ const AgendaScreen = () => {
       <Agenda
         items={items}
         renderItem={renderItem}
-        loadItemsForMonth={loadItems}
+        loadItemsForMonth={()=>loadItems}
         markingType={'period'}
         monthFormat={'mm'}
         theme={{ calendarBackground: '#F8F8FF', selectedDayTextColor: '#ADD8E6' }}
