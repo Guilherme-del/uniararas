@@ -66,14 +66,13 @@ const AgendaScreen = () => {
       // I want to slice the data object to remove the date from slicedKeys before passing it to newItems variable; 
       // Get the keys (dates) and remove the first three
 
-      let keysToRemove = Object.keys(data).slice(0, daysNeeded);
-
+      let keysToRemove = Object.keys(data).slice(daysNeeded);
       keysToRemove.forEach(key => {
         delete data[key];
       });
       
       const newItems = { ...data };  
-      //// Generate new items for the remaining days and add them to the newItems object
+      // Generate new items for the remaining days and add them to the newItems object
       const additionalItems = generateNewItems({ timestamp: timestamp }, daysNeeded);
       Object.entries(additionalItems).forEach(([date, items]) => {
         newItems[date] = items;
