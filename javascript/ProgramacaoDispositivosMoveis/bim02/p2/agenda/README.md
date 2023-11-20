@@ -1,79 +1,49 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# React Native Agenda App
 
-# Getting Started
+Welcome to the React Native Agenda App project! This app helps users manage their daily agendas seamlessly.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Table of Contents
+- [Features](#features)
+- [Dependencies](#dependencies)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Step 1: Start the Metro Server
+## Features
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+- **Agenda Management**: Easily organize and view your daily schedule.
+- **Task Creation**: Add, edit, and delete tasks with ease.
+- **Reminder Notifications**: Receive timely reminders for upcoming events.
+- **Intuitive UI**: User-friendly interface for a seamless experience.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## Dependencies
+
+Make sure to install the following dependencies before running the app:
+
+- [@react-native-async-storage/async-storage](https://www.npmjs.com/package/@react-native-async-storage/async-storage): ^1.19.5
+- [@react-navigation/native](https://reactnavigation.org/): ^6.1.9
+- [@react-navigation/native-stack](https://reactnavigation.org/): ^6.9.17
+- [react](https://reactjs.org/): 18.2.0
+- [react-native](https://reactnative.dev/): 0.72.6
+- [react-native-calendars](https://www.npmjs.com/package/react-native-calendars): ^1.1302.0
+- [react-native-modal](https://www.npmjs.com/package/react-native-modal): ^13.0.1
+- [react-native-safe-area-context](https://www.npmjs.com/package/react-native-safe-area-context): ^4.7.4
+- [react-native-screens](https://www.npmjs.com/package/react-native-screens): ^3.27.0
+- [react-native-splash-screen](https://www.npmjs.com/package/react-native-splash-screen): ^3.3.0
+- [react-native-toast-message](https://www.npmjs.com/package/react-native-toast-message): ^2.1.7
+
+To install the dependencies, run the following command in your project directory:
 
 ```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+npm install
+# or
+yarn install
 ```
 
-## Step 2: Start your Application
+## Overview
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+<p align = "center">
+<img  src= 'https://github.com/Guilherme-del/uniararas/blob/master/assets/videos/agenda.gif' >
+</p>
 
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
