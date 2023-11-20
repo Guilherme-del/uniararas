@@ -5,7 +5,7 @@ import ModalComponent from '../../components/modal';
 import Toast from 'react-native-toast-message';
 //modules & components
 import { storeData, getData } from '../../module/async-storage';
-import { showToast,toastConfig } from '../../components/toastConfig/toastify';
+import { showToast, toastConfig } from '../../components/toastConfig/toastify';
 
 const AgendaScreen = () => {
   const [items, setItems] = useState({});
@@ -65,22 +65,26 @@ const AgendaScreen = () => {
       const daysNeeded = 31 - slicedKeys.length;
       // I want to slice the data object to remove the date from slicedKeys before passing it to newItems variable; 
       // Get the keys (dates) and remove the first three
-      if (daysNeeded <= 1  ) {
-        var keysToRemove = Object.keys(data).slice(0,1);
+      if (daysNeeded <= 1) {
+        var keysToRemove = Object.keys(data).slice(0, 1);
+        var additionalItems = generateNewItems({ timestamp: timestamp }, 1);
       }
       else {
-        var keysToRemove = Object.keys(data).slice(0,daysNeeded);
+        var keysToRemove = Object.keys(data).slice(0, daysNeeded);
+        var additionalItems = generateNewItems({ timestamp: timestamp }, daysNeeded);
       }
-
       keysToRemove.forEach(key => {
         delete data[key];
       });
-      const newItems = { ...data };  
+
+      const newItems = { ...data };
       // Generate new items for the remaining days and add them to the newItems object
-      const additionalItems = generateNewItems({ timestamp: timestamp }, daysNeeded);
       Object.entries(additionalItems).forEach(([date, items]) => {
-        newItems[date] = items;
+        if (newItems[date] === undefined) {
+          newItems[date] = items;
+        }
       });
+
       setItems(newItems);
     }
   };
@@ -133,7 +137,7 @@ const AgendaScreen = () => {
 
   return (
     <View style={{ flex: 1 }}>
-     <ModalComponent
+      <ModalComponent
         isVisible={isModalVisible}
         setSelectedItem={setSelectedItem}
         selectedItem={selectedItem}
@@ -143,7 +147,7 @@ const AgendaScreen = () => {
       <Agenda
         items={items}
         renderItem={renderItem}
-        loadItemsForMonth={()=>loadItems}
+        loadItemsForMonth={() => loadItems}
         markingType={'period'}
         monthFormat={'mm'}
         theme={{ calendarBackground: '#F8F8FF', selectedDayTextColor: '#ADD8E6' }}
