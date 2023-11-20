@@ -3,10 +3,9 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Agenda } from 'react-native-calendars';
 import ModalComponent from '../../components/modal';
 import Toast from 'react-native-toast-message';
-import {toastConfig } from '../../components/toastConfig/toastify';
 //modules & components
 import { storeData, getData } from '../../module/async-storage';
-import { showToast } from '../../components/toastConfig/toastify';
+import { showToast,toastConfig } from '../../components/toastConfig/toastify';
 
 const AgendaScreen = () => {
   const [items, setItems] = useState({});
