@@ -1,8 +1,10 @@
-// AgendaScreen.js
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Agenda } from 'react-native-calendars';
 import ModalComponent from './modal';
+//module
+import { storeData, getData } from '../../module/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AgendaScreen = () => {
   const [items, setItems] = useState({});
@@ -13,24 +15,68 @@ const AgendaScreen = () => {
     loadItems({ timestamp: Date.now() });
   }, []);
 
-  const loadItems = (day) => {
-    if (Object.keys(items).length === 0) {
-      const newItems = {};
-      for (let i = -15; i <= 30; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = timeToString(time);
-        if (!newItems[strTime]) {
-          newItems[strTime] = Array.from(
-            { length: 1 },
-            (_, j) => ({
-              height: 50,
-              timestamp: strTime,
-              name: `Item for ${strTime} #${j}`,
-              notes: ``,
-            })
-          );
-        }
+  const generateNewItems = (day, count) => {
+    const newItems = {};
+    for (let i = 0; i <= count; i++) {
+      const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+      const strTime = timeToString(time);
+      if (!newItems[strTime]) {
+        newItems[strTime] = Array.from(
+          { length: 1 },
+          (_, j) => ({
+            height: 50,
+            timestamp: strTime,
+            name: `Item for ${strTime} #${j}`,
+            notes: '',
+          })
+        );
       }
+    }
+    return newItems;
+  };
+
+  const loadItems = async (day) => {
+    //await AsyncStorage.clear();
+    const data = await getData();
+    if (!data || Object.keys(data).length === 0) {
+      // No data or empty data, generate new items for the next 30 days
+      setItems(generateNewItems(day, 31));
+      return;
+    }
+    const keys = Object.keys(data);
+    const firstDate = keys[0];
+    const todayStr = timeToString(new Date().getTime());
+    if (firstDate === todayStr){
+      setItems(data);
+    }
+    else {
+      const todayStr = timeToString(new Date().getTime());
+      const todayIndex = keys.indexOf(todayStr);
+      const slicedKeys = keys.slice(todayIndex - 1);
+      const lastDay = slicedKeys[slicedKeys.length - 1];
+      const startDate = new Date(lastDay);
+      // Add x days
+      startDate.setDate(startDate.getDate() + todayIndex - 1);
+      const newDateString = timeToString(startDate.getTime());
+      const dateObject = new Date(newDateString);
+      const timestamp = dateObject.getTime();
+      // If the first date is not today, generate new items for the remaining days  
+      const daysNeeded = 31 - slicedKeys.length;
+      // I want to slice the data object to remove the date from slicedKeys before passing it to newItems variable; 
+      // Get the keys (dates) and remove the first three
+
+      let keysToRemove = Object.keys(data).slice(0,daysNeeded);
+
+      keysToRemove.forEach(key => {
+        delete data[key];
+      });
+      
+      const newItems = { ...data };  
+      //// Generate new items for the remaining days and add them to the newItems object
+      const additionalItems = generateNewItems({ timestamp: timestamp }, daysNeeded);
+      Object.entries(additionalItems).forEach(([date, items]) => {
+        newItems[date] = items;
+      });
 
       setItems(newItems);
     }
@@ -50,7 +96,7 @@ const AgendaScreen = () => {
         }}
       >
         <Text style={styles.text}>
-          {item.notes == "" ? "No activities" : item.notes }
+          {item.notes == "" ? "No activities" : item.notes}
         </Text>
       </TouchableOpacity>
     );
@@ -61,27 +107,28 @@ const AgendaScreen = () => {
     return date.toISOString().split('T')[0];
   };
 
-  const saveNotes = (newNotes) => {
-    try {
-      setModalVisible(false);
-    } finally {
-      setItems((prevItems) => {
-        const newItems = { ...prevItems };
+const saveNotes = async (newNotes) => {
+    setModalVisible(false);
+    setItems((prevItems) => {
+      const newItems = { ...prevItems };
 
-        const strTime = timeToString(selectedItem.timestamp);
-        const updatedItem = {
-          ...selectedItem,
-          notes: newNotes,
-        };
+      const strTime = timeToString(selectedItem.timestamp);
+      const updatedItem = {
+        ...selectedItem,
+        notes: newNotes,
+      };
 
-        newItems[strTime] = (newItems[strTime] || []).map((item) =>
-          item.name === selectedItem.name ? updatedItem : item
-        );
+      newItems[strTime] = (newItems[strTime] || []).map((item) =>
+        item.name === selectedItem.name ? updatedItem : item
+      );
 
-        return newItems;
-      });
-    }
-  };
+      storeData(newItems);
+      return newItems;
+    });
+};
+
+
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -118,7 +165,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 15,
     color: 'black'
   },
   emptyDate: {

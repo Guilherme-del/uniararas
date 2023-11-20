@@ -1,4 +1,3 @@
-// ModalComponent.js
 import React from 'react';
 import { View, ScrollView, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';
