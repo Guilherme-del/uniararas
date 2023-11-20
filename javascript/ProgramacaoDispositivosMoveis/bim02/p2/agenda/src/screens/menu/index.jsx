@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const appIcon = require('../img/app-icon-120x120.png');
+const appIcon = require('../../img/app-icon-120x120.png');
 
 function MenuScreen() {
   const navigation = useNavigation();

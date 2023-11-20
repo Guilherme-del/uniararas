@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Agenda } from 'react-native-calendars';
-import ModalComponent from './modal';
-//module
+import ModalComponent from '../../components/modal';
+import Toast from 'react-native-toast-message';
+import {toastConfig } from '../../components/toastConfig/toastify';
+//modules & components
 import { storeData, getData } from '../../module/async-storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { showToast } from '../../components/toastConfig/toastify';
 
 const AgendaScreen = () => {
   const [items, setItems] = useState({});
@@ -46,7 +48,7 @@ const AgendaScreen = () => {
     const keys = Object.keys(data);
     const firstDate = keys[0];
     const todayStr = timeToString(new Date().getTime());
-    if (firstDate === todayStr){
+    if (firstDate === todayStr) {
       setItems(data);
     }
     else {
@@ -65,7 +67,7 @@ const AgendaScreen = () => {
       // I want to slice the data object to remove the date from slicedKeys before passing it to newItems variable; 
       // Get the keys (dates) and remove the first three
 
-      let keysToRemove = Object.keys(data).slice(0,daysNeeded);
+      let keysToRemove = Object.keys(data).slice(0, daysNeeded);
 
       keysToRemove.forEach(key => {
         delete data[key];
@@ -107,8 +109,9 @@ const AgendaScreen = () => {
     return date.toISOString().split('T')[0];
   };
 
-const saveNotes = async (newNotes) => {
+  const saveNotes = async (newNotes) => {
     setModalVisible(false);
+    showToast("success", "Succes", `Task saved to the following date: ${selectedItem.timestamp}`);
     setItems((prevItems) => {
       const newItems = { ...prevItems };
 
@@ -125,31 +128,27 @@ const saveNotes = async (newNotes) => {
       storeData(newItems);
       return newItems;
     });
-};
-
-
-
+  };
 
   return (
     <View style={{ flex: 1 }}>
-      <Agenda
-        items={items}
-        renderItem={renderItem}
-        loadItemsForMonth={() => loadItems}
-        markingType={'period'}
-        monthFormat={'mm'}
-        theme={{ calendarBackground: '#F8F8FF', selectedDayTextColor: '#ADD8E6' }}
-        hideExtraDays={false}
-      />
-
-      <ModalComponent
+     <ModalComponent
         isVisible={isModalVisible}
         setSelectedItem={setSelectedItem}
         selectedItem={selectedItem}
         closeModal={() => setModalVisible(false)}
         saveNotes={saveNotes}
       />
-
+      <Agenda
+        items={items}
+        renderItem={renderItem}
+        loadItemsForMonth={loadItems}
+        markingType={'period'}
+        monthFormat={'mm'}
+        theme={{ calendarBackground: '#F8F8FF', selectedDayTextColor: '#ADD8E6' }}
+        hideExtraDays={false}
+      />
+      <Toast config={toastConfig} />
     </View>
   );
 };
