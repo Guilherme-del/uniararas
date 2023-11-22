@@ -53,39 +53,45 @@ const AgendaScreen = () => {
     else {
       const todayStr = timeToString(new Date().getTime());
       const todayIndex = keys.indexOf(todayStr);
-      const slicedKeys = keys.slice(todayIndex - 1);
-      const lastDay = slicedKeys[slicedKeys.length - 1];
-      const startDate = new Date(lastDay);
-      // Add x days
-      startDate.setDate(startDate.getDate() + todayIndex - 1);
-      const newDateString = timeToString(startDate.getTime());
-      const dateObject = new Date(newDateString);
-      const timestamp = dateObject.getTime();
-      // If the first date is not today, generate new items for the remaining days  
-      const daysNeeded = 31 - slicedKeys.length;
-      // I want to slice the data object to remove the date from slicedKeys before passing it to newItems variable; 
-      // Get the keys (dates) and remove the first three
-      if (daysNeeded <= 1) {
-        var keysToRemove = Object.keys(data).slice(0, 1);
-        var additionalItems = generateNewItems({ timestamp: timestamp }, 1);
+      if (todayIndex === -1) {
+        const newItems = generateNewItems(day, 31);
+        setItems(newItems);
+        return;
       }
       else {
-        var keysToRemove = Object.keys(data).slice(0, daysNeeded);
-        var additionalItems = generateNewItems({ timestamp: timestamp }, daysNeeded);
-      }
-      keysToRemove.forEach(key => {
-        delete data[key];
-      });
-
-      const newItems = { ...data };
-      // Generate new items for the remaining days and add them to the newItems object
-      Object.entries(additionalItems).forEach(([date, items]) => {
-        if (newItems[date] === undefined) {
-          newItems[date] = items;
+        const slicedKeys = keys.slice(todayIndex - 1);
+        const lastDay = slicedKeys[slicedKeys.length - 1];
+        const startDate = new Date(lastDay);
+        // Add x days
+        startDate.setDate(startDate.getDate() + todayIndex - 1);
+        const newDateString = timeToString(startDate.getTime());
+        const dateObject = new Date(newDateString);
+        const timestamp = dateObject.getTime();
+        // If the first date is not today, generate new items for the remaining days  
+        const daysNeeded = 31 - slicedKeys.length;
+        // I want to slice the data object to remove the date from slicedKeys before passing it to newItems variable; 
+        // Get the keys (dates) and remove the first three
+        if (daysNeeded <= 1) {
+          var keysToRemove = Object.keys(data).slice(0, 1);
+          var additionalItems = generateNewItems({ timestamp: timestamp }, 1);
         }
-      });
+        else {
+          var keysToRemove = Object.keys(data).slice(0, daysNeeded);
+          var additionalItems = generateNewItems({ timestamp: timestamp }, daysNeeded);
+        }
+        keysToRemove.forEach(key => {
+          delete data[key];
+        });
 
-      setItems(newItems);
+        const newItems = { ...data };
+        // Generate new items for the remaining days and add them to the newItems object
+        Object.entries(additionalItems).forEach(([date, items]) => {
+          if (newItems[date] === undefined) {
+            newItems[date] = items;
+          }
+        });
+        setItems(newItems);
+      }
     }
   };
 
