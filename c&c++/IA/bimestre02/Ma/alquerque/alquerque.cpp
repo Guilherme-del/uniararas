@@ -60,7 +60,7 @@ std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> Game::obterMovi
     return movimentos;
 }
 
-int Game::avaliar() const {
+int Game::heuristica() const {
     int contJogador1 = 0, contJogador2 = 0;
     for (const auto& linha : tabuleiro) {
         contJogador1 += std::count(linha.begin(), linha.end(), '1');
@@ -71,7 +71,7 @@ int Game::avaliar() const {
 
 int Game::minimax(int profundidade, bool jogadorMaximizando) {
     if (profundidade == 0) {
-        return avaliar();
+        return heuristica();
     }
 
     char jogador = jogadorMaximizando ? '1' : '2';
@@ -141,7 +141,7 @@ void Game::jogar() {
         }
 
         // Verificar vitória do jogador 1
-        int avaliacaoJogador1 = avaliar();
+        int avaliacaoJogador1 = heuristica();
         if (avaliacaoJogador1 > 0) {
             std::cout << "Jogador 1 (humano) venceu!" << std::endl;
             break;
@@ -161,7 +161,7 @@ void Game::jogar() {
         }
 
         // Verificar vitória do jogador 2
-        int avaliacaoJogador2 = avaliar();
+        int avaliacaoJogador2 = heuristica();
         if (avaliacaoJogador2 < 0) {
             std::cout << "Jogador 2 (IA) venceu!" << std::endl;
             break;
