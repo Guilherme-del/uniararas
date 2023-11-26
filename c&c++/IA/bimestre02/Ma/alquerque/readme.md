@@ -1,11 +1,11 @@
 ## How to build
 
 ```bash
-g++ alquerque.cpp -o alquerque
+g++ main.cpp alquerque.cpp -o Alquerque
 ```
 
 ## How to run
 
 ```bash
-./alquerque
+./Alquerque
 ```
