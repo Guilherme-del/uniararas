@@ -1,6 +1,6 @@
 
 import java.util.Scanner;
-import controler.EmpresaControler;
+import controller.EmpresaController;
 
 public class Main {
     static void menu(){
@@ -38,9 +38,9 @@ public class Main {
                     op = input.nextInt();
                     input.nextLine();
                     if(op == 1){
-                        EmpresaControler.adicionarEmpresa(nomeEmpresa, descricaoEmpresa, totalFuncionarios, 1);
+                        EmpresaController.adicionarEmpresa(nomeEmpresa, descricaoEmpresa, totalFuncionarios, 1);
                     }else if(op == 2){
-                        EmpresaControler.adicionarEmpresa(nomeEmpresa, descricaoEmpresa, totalFuncionarios, 2);
+                        EmpresaController.adicionarEmpresa(nomeEmpresa, descricaoEmpresa, totalFuncionarios, 2);
                     }
 
                     break;
@@ -54,20 +54,20 @@ public class Main {
                     System.out.println("Total de funcionários: ");
                     totalFuncionarios = input.nextInt();
 
-                    EmpresaControler.updateEmpresa(nomeEmpresa, descricaoEmpresa, totalFuncionarios);
+                    EmpresaController.updateEmpresa(nomeEmpresa, descricaoEmpresa, totalFuncionarios);
 
                     break;
                 case 3:
                     System.out.println("Nome da empresa: ");
                     nomeEmpresa = input.nextLine();
 
-                    EmpresaControler.deleteEmpresa(nomeEmpresa);
+                    EmpresaController.deleteEmpresa(nomeEmpresa);
 
                     break;
                 case 4:
                     System.out.println("Nome da empresa: ");
                     nomeEmpresa = input.nextLine();
-                    EmpresaControler.vizualizarEmpresa(nomeEmpresa);
+                    EmpresaController.vizualizarEmpresa(nomeEmpresa);
                     break;
                 case 5:
                     exit = true;

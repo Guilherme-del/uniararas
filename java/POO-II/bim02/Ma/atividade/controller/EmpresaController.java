@@ -1,4 +1,4 @@
-package controler;
+package controller;
 
 import model.Empresa;
 import model.EmpInovacao;
@@ -6,7 +6,7 @@ import model.EmpresaInfra;
 import dao.empresaDAO;
 import dao.database;
 
-public class EmpresaControler {
+public class EmpresaController {
     public static void adicionarEmpresa(String nome, String descricao, int func, int op) {
         Empresa input = null;
         if (op == 1) {
