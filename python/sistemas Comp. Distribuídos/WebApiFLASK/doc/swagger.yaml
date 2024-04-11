@@ -1,0 +1,141 @@
+api: 3.0.0
+info:
+  title: Documentação da Web API
+  description: Documentação da Web API para gerenciamento de carrinhos de compras de usuários.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+paths:
+  /usuarios/{usuario}/carrinho:
+    get:
+      summary: Listar Produtos do Carrinho
+      parameters:
+        - in: path
+          name: usuario
+          required: true
+          description: Nome do usuário
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de produtos no carrinho do usuário
+    post:
+      summary: Adicionar Produto ao Carrinho
+      parameters:
+        - in: path
+          name: usuario
+          required: true
+          description: Nome do usuário
+          schema:
+            type: string
+        - in: body
+          name: body
+          required: true
+          description: Dados do produto a ser adicionado ao carrinho
+          schema:
+            type: object
+            properties:
+              codigo:
+                type: integer
+              nome:
+                type: string
+              valor:
+                type: number
+      responses:
+        '201':
+          description: Produto adicionado ao carrinho
+  /usuarios/{usuario}/carrinho/{codigo}:
+    delete:
+      summary: Remover Produto do Carrinho
+      parameters:
+        - in: path
+          name: usuario
+          required: true
+          description: Nome do usuário
+          schema:
+            type: string
+        - in: path
+          name: codigo
+          required: true
+          description: Código do produto a ser removido
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Produto removido do carrinho
+  /usuarios/{usuario}:
+    put:
+      summary: Atualizar Nome do Usuário
+      parameters:
+        - in: path
+          name: usuario
+          required: true
+          description: Nome do usuário
+          schema:
+            type: string
+        - in: body
+          name: body
+          required: true
+          description: Novo nome do usuário
+          schema:
+            type: object
+            properties:
+              nome:
+                type: string
+      responses:
+        '200':
+          description: Nome do usuário atualizado
+  /usuarios:
+    post:
+      summary: Criar Usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usuario:
+                  type: string
+                nome:
+                  type: string
+                id:
+                  type: integer
+                carrinho:
+                  type: object
+                  properties:
+                    total:
+                      type: number
+                    produtos:
+                      type: array
+                      items:
+                        type: object
+      responses:
+        '201':
+          description: Usuário criado
+  /usuarios/total:
+    get:
+      summary: Total de Usuários
+      responses:
+        '200':
+          description: Total de usuários existentes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_usuarios:
+                    type: integer
+  /carrinhos/total:
+    get:
+      summary: Somatória de Todos os Carrinhos
+      responses:
+        '200':
+          description: Somatória de todos os carrinhos existentes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_carrinhos:
+                    type: number
