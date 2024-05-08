@@ -7,6 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Carregar os dados
 data = pd.read_csv('dataset.csv')
@@ -96,45 +97,26 @@ average_metrics_knn = calculate_average_metrics(knn_reports)
 average_metrics_tree = calculate_average_metrics(tree_reports)
 average_metrics_forest = calculate_average_metrics(forest_reports)
 
-# Função para plotar os resultados
-def plot_results(average_metrics, title):
-    if not average_metrics:
-        print("No data to plot.")
-        return
-    
-    # Create a figure and axis object
-    fig, ax = plt.subplots(figsize=(10, 6))
-    
-    # Define colors for different metrics
-    colors = {'precision': 'blue', 'recall': 'orange', 'f1-score': 'green'}
-    
-    # Define the width of each bar
-    bar_width = 0.2
-    
-    # Define the positions of bars on the x-axis
-    positions = range(len(next(iter(average_metrics.values()))))
-    
-    # Plot bars for each metric
-    for i, (metric, values) in enumerate(average_metrics.items()):
-        ax.bar([p + i * bar_width for p in positions], values.values(), bar_width, label=metric, color=colors[metric])
-    
-    # Set x-axis labels and tick positions
-    ax.set_xticks([p + 1.5 * bar_width for p in positions])
-    ax.set_xticklabels(average_metrics[next(iter(average_metrics))].keys())  # Use keys of the first metric
-    
-    # Set labels and title
-    ax.set_xlabel('Class')
-    ax.set_ylabel('Value')
-    ax.set_title(title)
-    
-    # Add legend
-    ax.legend(title='Metric')
-    
-    # Show plot
-    plt.xticks(rotation=45)
+def plot_results(reports, classifier_name):
+    plt.figure(figsize=(10, 6))
+    x_ticks = np.arange(len(reports['precision']))  # Generate x ticks for the bar plot
+
+    precision = [reports['precision'][key] for key in reports['precision']]
+    recall = [reports['recall'][key] for key in reports['recall']]
+    f1_score = [reports['f1-score'][key] for key in reports['f1-score']]
+
+    plt.bar(x_ticks - 0.2, precision, width=0.2, label='Precision')
+    plt.bar(x_ticks, recall, width=0.2, label='Recall')
+    plt.bar(x_ticks + 0.2, f1_score, width=0.2, label='F1-Score')
+
+    plt.xlabel('Configuration')
+    plt.ylabel('Score')
+    plt.title(f'{classifier_name} Performance Comparison')
+    plt.xticks(x_ticks, [f'Config {i+1}' for i in range(len(reports['precision']))])
+    plt.legend()
     plt.tight_layout()
     plt.show()
-
+    
 # Plotar os resultados para K Neighbors
 print("K Nearest Neighbors:")
 plot_results(average_metrics_knn, 'K Nearest Neighbors')
