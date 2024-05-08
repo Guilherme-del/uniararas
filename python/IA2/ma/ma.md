@@ -94,6 +94,11 @@ Essas operações ajudaram a garantir que os dados estivessem limpos e prontos p
   - Precisão Média: 0.393
   - Recall Médio: 0.367
   - F1-Score Médio: 0.379
+- 
+## Gráficos
+![Knn](./img/knn.jpeg)
+![decision Three](./img/decisionthree.jpeg)
+![random Forest](./img/randomForest.jpeg)
 
 ## Descrição do Algoritmo Alternativo: Random Forest
 O Random Forest é um algoritmo de aprendizado supervisionado usado para classificação e regressão. Ele cria uma "floresta" de árvores de decisão durante o treinamento e faz previsões com base na maioria das previsões das árvores individuais. Cada árvore é treinada em uma amostra aleatória dos dados e, durante a previsão, cada árvore contribui com uma votação igual.
