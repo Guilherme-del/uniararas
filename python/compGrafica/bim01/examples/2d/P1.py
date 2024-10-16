@@ -1,251 +1,193 @@
-'''
-Prova P1 Computação Gráfica
-Guilherme Cavenaghi - 109317
-Movimentação - A W S D ou SETINHAS
-Seleção de Peça - F1
-'''
-
+import pygame
 from OpenGL.GL import *
-from OpenGL.GLUT import *
+from OpenGL.GLU import *
+import random
+import time
 
-W, H = 500, 500
-x_pos, y_pos,  = 128, 128
+# Define as formas das peças do Tetris
+FORMAS = [
+    [(0, 0), (1, 0), (0, 1), (1, 1)],  # O (não rotaciona)
+    [(0, 0), (1, 0), (2, 0), (3, 0)],  # I
+    [(0, 0), (0, 1), (0, 2), (1, 2)],  # L
+    [(1, 0), (1, 1), (1, 2), (0, 2)],  # J
+    [(0, 0), (1, 0), (1, 1), (2, 1)],  # Z
+    [(1, 0), (2, 0), (0, 1), (1, 1)],  # S
+    [(0, 0), (1, 0), (2, 0), (1, 1)]   # T
+]
 
-dama_azul_posicaox = [116, 180, 244, 308]
-dama_azul_posicaoy = 340
+# Cores das peças
+CORES = [
+    (1.0, 0.0, 0.0),  # Vermelho
+    (0.0, 1.0, 0.0),  # Verde
+    (0.0, 0.0, 1.0),  # Azul
+    (1.0, 1.0, 0.0),  # Amarelo
+    (1.0, 0.5, 0.0),  # Laranja
+    (0.5, 0.0, 1.0),  # Roxo
+    (0.0, 1.0, 1.0),  # Ciano
+    (1.0, 0.0, 1.0),  # Magenta
+    (0.5, 0.5, 0.5),  # Cinza
+    (0.8, 0.4, 0.1),  # Marrom
+    (1.0, 1.0, 1.0),  # Branco
+    (0.7, 0.1, 0.3),  # Rosa
+]
 
-dama_vermelha_posicaox = [148, 212, 276, 340]
-dama_vermelha_posicaoy = 116
+# Tamanho do grid
+LARGURA_GRADE, ALTURA_GRADE = 10, 20
+TAMANHO_CELULA = 30
 
-corBlue = (0, 0, 1)
-corRed = (1, 0, 0)
+# Inicializa o Pygame
+pygame.init()
+tela = pygame.display.set_mode((LARGURA_GRADE * TAMANHO_CELULA, ALTURA_GRADE * TAMANHO_CELULA), pygame.OPENGL | pygame.DOUBLEBUF)
+pygame.display.set_caption("Tetris-OpenGL")
 
-blue_1 = [148, 116, corBlue]
-blue_2 = [212 , 116, corBlue]
-blue_3 = [276, 116, corBlue]
-blue_4 = [340, 116, corBlue]
-blue_5 = [116, 148, corBlue]
-blue_6 = [180, 148, corBlue]
-blue_7 = [244, 148, corBlue]
-blue_8 = [308, 148, corBlue]
-blue_9 = [148, 180, corBlue]
-blue_10 =[212, 180, corBlue] 
-blue_11 =[276, 180, corBlue] 
-blue_12 =[340, 180, corBlue]
+# OpenGL
+glMatrixMode(GL_PROJECTION)
+glLoadIdentity()
+gluOrtho2D(-1, LARGURA_GRADE + 1, ALTURA_GRADE + 1, -1)  # Eixo Y
+glMatrixMode(GL_MODELVIEW)
+glLoadIdentity()
 
-red_1 = [116, 276, corRed]
-red_2 =[180, 276, corRed]
-red_3 =[244, 276, corRed]
-red_4 =[308, 276, corRed]
-red_5 =[148, 308, corRed]
-red_6 =[212, 308, corRed]
-red_7 =[276, 308, corRed]
-red_8 =[340, 308, corRed]
-red_9 =[116, 340, corRed]
-red_10 =[180, 340, corRed]
-red_11 =[244, 340, corRed]
-red_12 =[308, 340, corRed]
+# Peças e posições
+forma_atual = random.choice(FORMAS)
+cor_atual = random.choice(CORES)
+pos_atual = [LARGURA_GRADE // 2 - 1, 0]
 
-todasPecas = [blue_1,
-             blue_2,
-             blue_3,
-             blue_4,
-             blue_5,
-             blue_6,
-             blue_7,
-             blue_8,
-             blue_9,
-             blue_10,
-             blue_11,
-             blue_12,
-             red_1,
-             red_2,
-             red_3,
-             red_4,
-             red_5,
-             red_6,
-             red_7,
-             red_8,
-             red_9,
-             red_10,
-             red_11,
-             red_12
-             ]
-pecaSelecionada = []
+# Grid do jogo
+grade = [[None for _ in range(LARGURA_GRADE)] for _ in range(ALTURA_GRADE)]
 
-# Tabuleiro
-def tabuleiro():
-    posy = 0
-    posx1, posx2 = 0, 0
-    glColor3f(0.5, 0.50, 0.5)
+# Estado do jogo
+jogo_acabou = False
+
+# Desenha um bloco
+def desenhar_bloco(x, y, cor):
+    glColor3f(*cor)
     glBegin(GL_QUADS)
-    glVertex2f(0, 0)
-    glVertex2f(W, 0)
-    glVertex2f(W, H)
-    glVertex2f(0, H)
-    glEnd()
-    for e in range(8):
-        if e % 2 == 1:
-            posx1 = 32
-        if e % 2 == 0:
-            posx2 = 32
-        for i in range(4):
-            
-            glColor3f(1, 1, 1)
-            glBegin(GL_QUADS)
-            glVertex2f(100 + posx1, 100 + posy)
-            glVertex2f(132 + posx1, 100 + posy)
-            glVertex2f(132 + posx1, 132 + posy)
-            glVertex2f(100 + posx1, 132 + posy)
-            glEnd()
-            posx1 += 64
-        for i in range(4):
-            
-            glColor3f(0, 0, 0)
-            glBegin(GL_QUADS)
-            glVertex2f(100 + posx2, 100 + posy)
-            glVertex2f(132 + posx2, 100 + posy)
-            glVertex2f(132 + posx2, 132 + posy)
-            glVertex2f(100 + posx2, 132 + posy)
-            glEnd()
-            posx2 += 64
-        posx1, posx2 = 0, 0
-        posy += 32
-    
-# Peças
-def quadrado(posX, posY, color=(1, 1, 1)):
-    glColor3f(*color)
-    glBegin(GL_QUADS)
-
-    half_size = 12
-    glVertex2f(posX - half_size, posY - half_size)
-    glVertex2f(posX - half_size, posY + half_size)
-    glVertex2f(posX + half_size, posY + half_size)
-    glVertex2f(posX + half_size, posY - half_size)
+    glVertex2f(x, y)
+    glVertex2f(x + 1, y)
+    glVertex2f(x + 1, y + 1)
+    glVertex2f(x, y + 1)
     glEnd()
 
-def pecasAzuis():
-    quadrado(blue_1[0], blue_1[1], color=blue_1[2])
+# Desenha a peça atual
+def desenhar_peca(forma, pos, cor):
+    for bloco in forma:
+        desenhar_bloco(pos[0] + bloco[0], pos[1] + bloco[1], cor)
 
-    quadrado(blue_2[0], blue_2[1], color=blue_2[2])
-    quadrado(blue_3[0], blue_3[1], color=blue_3[2])
-    quadrado(blue_4[0], blue_4[1], color=blue_4[2])
-    quadrado(blue_5[0], blue_5[1], color=blue_5[2])
+# Desenha o grid
+def desenhar_grade():
+    glColor3f(0.5, 0.5, 0.5)
+    for y in range(ALTURA_GRADE):
+        for x in range(LARGURA_GRADE):
+            if grade[y][x]:
+                desenhar_bloco(x, y, grade[y][x])
 
-    quadrado(blue_6[0], blue_6[1], color=blue_6[2])
-    quadrado(blue_7[0], blue_7[1], color=blue_7[2])
-    quadrado(blue_8[0], blue_8[1], color=blue_8[2])
+# Desenha muros ao redor da tela
+def desenhar_paredes_externas():
+    cor_parede = (0.3, 0.3, 0.3)
+    for y in range(ALTURA_GRADE):
+        desenhar_bloco(-1, y, cor_parede)
+        desenhar_bloco(LARGURA_GRADE, y, cor_parede)
+    for x in range(LARGURA_GRADE):
+        desenhar_bloco(x, -1, cor_parede)
+        desenhar_bloco(x, ALTURA_GRADE, cor_parede)
 
-    quadrado(blue_9[0], blue_9[1], color=blue_9[2])
-    quadrado(blue_10[0], blue_10[1], color=blue_10[2])
-    quadrado(blue_11[0], blue_11[1], color=blue_11[2])
-    quadrado(blue_12[0], blue_12[1], color=blue_12[2])
+# Rotaciona a peça
+def rotacionar_forma(forma):
+    return [(-bloco[1], bloco[0]) for bloco in forma]
 
-def pecasVermelhas():
-    quadrado(red_1[0], red_1[1], color=red_1[2]) 
-    quadrado(red_2[0], red_2[1], color=red_2[2])
-    quadrado(red_3[0], red_3[1], color=red_3[2])
-    quadrado(red_4[0], red_4[1], color=red_4[2])
+# Mensagem GAME OVER
+def mensagem_jogo_acabado():
+    fonte = pygame.font.Font('freesansbold.ttf', 32)
+    texto = fonte.render("GAME OVER", True, (255, 0, 255))
+    return texto
 
-    quadrado(red_5[0], red_5[1], color=red_5[2])
-    quadrado(red_6[0], red_6[1], color=red_6[2])
-    quadrado(red_7[0], red_7[1], color=red_7[2])
-    quadrado(red_8[0], red_8[1], color=red_8[2])
+# Move a peça para baixo e checa colisão
+def mover_peca_baixo():
+    global pos_atual, forma_atual, cor_atual, jogo_acabou
+    pos_atual[1] += 1
+    if verificar_colisao(forma_atual, pos_atual):
+        pos_atual[1] -= 1
+        prender_peca()
+        forma_atual = random.choice(FORMAS)
+        cor_atual = random.choice(CORES)
+        pos_atual = [LARGURA_GRADE // 2 - 1, 0]
+        if verificar_colisao(forma_atual, pos_atual):
+            jogo_acabou = True
 
-    quadrado(red_9[0], red_9[1], color=red_9[2])
-    quadrado(red_10[0], red_10[1], color=red_10[2])
-    quadrado(red_11[0], red_11[1], color=red_11[2])
-    quadrado(red_12[0], red_12[1], color=red_12[2])
+# Checa colisão
+def verificar_colisao(forma, pos):
+    for bloco in forma:
+        x, y = bloco[0] + pos[0], bloco[1] + pos[1]
+        if x < 0 or x >= LARGURA_GRADE or y >= ALTURA_GRADE:
+            return True
+        if y >= 0 and grade[y][x]:
+            return True
+    return False
 
+# Prende a peça ao grid
+def prender_peca():
+    for bloco in forma_atual:
+        x, y = bloco[0] + pos_atual[0], bloco[1] + pos_atual[1]
+        grade[y][x] = cor_atual
+    limpar_linhas()
 
+# Limpa as linhas
+def limpar_linhas():
+    global grade
+    nova_grade = [linha for linha in grade if any(celula is None for celula in linha)]
+    linhas_limpa = ALTURA_GRADE - len(nova_grade)
+    grade = [[None for _ in range(LARGURA_GRADE)] for _ in range(linhas_limpa)] + nova_grade
 
+# Loop do jogo
+executando = True
+tempo_queda = time.time()  # Adiciona um tempo inicial
+intervalo_queda = 0.5  # Intervalo de queda
 
-# Seleção Peças
-def selecionarPeca():
-    glColor3f(0, 1, 0)
-    glBegin(GL_QUADS)
-    glVertex2f(104 + x_pos, 104 + y_pos)
-    glVertex2f(128 + x_pos, 104 + y_pos)
-    glVertex2f(128 + x_pos, 128 + y_pos)
-    glVertex2f(104 + x_pos, 128 + y_pos)
-    glEnd()
-    
+while executando:
+    # Lidar com eventos principais
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            executando = False
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_ESCAPE:
+                executando = False
+            if not jogo_acabou:  # Apenas mover a peça se o estado do jogo for verdadeiro
+                if evento.key == pygame.K_LEFT:
+                    pos_atual[0] -= 1
+                    if verificar_colisao(forma_atual, pos_atual):
+                        pos_atual[0] += 1
+                if evento.key == pygame.K_RIGHT:
+                    pos_atual[0] += 1
+                    if verificar_colisao(forma_atual, pos_atual):
+                        pos_atual[0] -= 1
+                if evento.key == pygame.K_DOWN:
+                    mover_peca_baixo()
+                if evento.key == pygame.K_UP:  # Rotaciona a peça
+                    forma_rotacionada = rotacionar_forma(forma_atual)
+                    if not verificar_colisao(forma_rotacionada, pos_atual):
+                        forma_atual = forma_rotacionada
 
+    if not jogo_acabou:
+        # Limpa a tela
+        glClear(GL_COLOR_BUFFER_BIT)
+        # Desenha o jogo
+        desenhar_grade()
+        desenhar_peca(forma_atual, pos_atual, cor_atual)
+        desenhar_paredes_externas()
 
-def key_callback(key, x, y):
-    global x_pos, y_pos
-    if (key == GLUT_KEY_LEFT or key == b'a') and x_pos > 0:
-        x_pos = x_pos-32
-    elif (key == GLUT_KEY_RIGHT or key == b'd') and x_pos < 224:
-        x_pos = x_pos+32
-    elif (key == GLUT_KEY_UP or key == b'w') and y_pos < 224:
-        y_pos = y_pos+32
-    elif (key == GLUT_KEY_DOWN or key == b's') and y_pos > 0:
-        y_pos = y_pos-32
-    elif (key == GLUT_KEY_F1):
-            # SÓ SELECIONA SE NÃO HOUVER NENHUMA SELECIONADA
-        if(len(pecaSelecionada) == 0):
-            for peca in todasPecas:
-                if(x_pos + 116 == peca[0] and y_pos + 116 == peca[1]):
-                    print("Selecionado peça: ", peca)
-                    pecaSelecionada.append(peca)
-                    print(pecaSelecionada)
-    elif (key == GLUT_KEY_F2):
-        print("Entrei na etapa de posicionar")
-        if(len(pecaSelecionada) == 0):
-            print("Selecione uma peça para mover.")
-        else:
-            for peca in todasPecas:
-                if(len(pecaSelecionada) > 0): 
-                    if(pecaSelecionada[0][0] == peca[0] and pecaSelecionada[0][1] == peca[1]):
-                        print("Posição OLD")
-                        print("[OLD] piece[0]: ", peca[0])
-                        print("[OLD] piece[1]: ", peca[1])
+        # Atualiza a tela
+        pygame.display.flip()
 
-                        peca[0], peca[1] = x_pos + 116, y_pos + 116
+        # Verifica se é hora de mover a peça para baixo
+        if time.time() - tempo_queda > intervalo_queda:
+            mover_peca_baixo()
+            tempo_queda = time.time()  # Atualiza o tempo da última queda
 
-                        print("Posição NEW")
-                        print("[NEW] piece[0]: ", peca[0])
-                        print("[NEW] piece[1]: ", peca[1])
-                        
-                        if (peca[1] == dama_azul_posicaoy and peca[0] in dama_azul_posicaox):
-                            print("F3 agora é uma dama")
-                            peca[2] = (0, 1, 1)
-                        if (peca[1] == dama_vermelha_posicaoy and peca[0] in dama_vermelha_posicaox):
-                            print("F3 agora é uma dama")
-                            peca[2] = (1, 1, 0)
-                        # Limpa seleção de peça
-                        pecaSelecionada.pop(0)
-                               
-def iterate():
-    glViewport(0, 0, W, H)
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    glOrtho(0.0, W, 0.0, H, 0.0, 1.0)
-    glMatrixMode (GL_MODELVIEW)
-    glLoadIdentity()
+    else:
+        # Desenhar mensagem GAME OVER
+        texto = mensagem_jogo_acabado()
+        tela.blit(texto, (LARGURA_GRADE * TAMANHO_CELULA / 2 - texto.get_width() / 2, ALTURA_GRADE * TAMANHO_CELULA / 2 - texto.get_height() / 2))
+        pygame.display.flip()
+        executando = False
 
-def showScreen():
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()
-    iterate()
-    tabuleiro()
-    pecasAzuis()
-    pecasVermelhas()
-    selecionarPeca()
-    glutSwapBuffers()
-
-def main():
-    glutInit()
-    glutInitDisplayMode(GLUT_RGBA)
-    glutInitWindowSize(W, H)
-    glutInitWindowPosition(0, 0)
-    glutCreateWindow("Jogo Damas - P1")
-    glutDisplayFunc(showScreen)
-    glutIdleFunc(showScreen)
-    glutSpecialFunc(key_callback)
-    glutKeyboardFunc(key_callback)
-    glutMainLoop()
-
-if __name__ == "__main__":
-    main()
+pygame.quit()
