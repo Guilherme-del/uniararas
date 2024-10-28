@@ -78,7 +78,7 @@ services:
 
 networks:
   mean_net:
-    driver: overlay
+    driver: bridge
 
 volumes:
   mongo_data:
