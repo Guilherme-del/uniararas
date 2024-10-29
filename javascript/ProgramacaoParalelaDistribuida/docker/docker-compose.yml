@@ -1,56 +1,49 @@
 version: '3.8'
 
 services:
-  # Serviço MongoDB com replicação
   mongo:
     image: mongo:6
-    command: mongod --replSet rs0 --bind_ip_all --keyFile /data/keyfile
+    entrypoint: /bin/sh -c "echo 'y8sCnGuoPUhEltYJNXU+GQ==' > /tmp/keyfile && chmod 400 /tmp/keyfile && mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
       - mongo_data:/data/db
-      - ./keyfile:/data/keyfile:ro
     networks:
       - mean_net
     deploy:
       replicas: 1
 
-  # Serviço MongoDB (réplica 1)
   mongo_replica_1:
     image: mongo:6
-    command: mongod --replSet rs0 --bind_ip_all --keyFile /data/keyfile
+    entrypoint: /bin/sh -c "echo 'y8sCnGuoPUhEltYJNXU+GQ==' > /tmp/keyfile && chmod 400 /tmp/keyfile && mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
       - mongo_replica1_data:/data/db
-      - ./keyfile:/data/keyfile:ro
     networks:
       - mean_net
     deploy:
       replicas: 1
 
-  # Serviço MongoDB (réplica 2)
   mongo_replica_2:
     image: mongo:6
-    command: mongod --replSet rs0 --bind_ip_all --keyFile /data/keyfile
+    entrypoint: /bin/sh -c "echo 'y8sCnGuoPUhEltYJNXU+GQ==' > /tmp/keyfile && chmod 400 /tmp/keyfile && mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
       - mongo_replica2_data:/data/db
-      - ./keyfile:/data/keyfile:ro
     networks:
       - mean_net
     deploy:
       replicas: 1
 
-  # Serviço do backend (Node.js + Express)
   backend:
     build:
       context: ../backEnd
-      dockerfile: dockerFile
+      dockerfile: Dockerfile
     environment:
       MONGO_URL: mongodb://root:password@mongo:27017,mongo_replica_1:27017,mongo_replica_2:27017/meancrud?replicaSet=rs0
     networks:
@@ -60,15 +53,14 @@ services:
       - mongo_replica_1
       - mongo_replica_2
     deploy:
-      replicas: 2
+      replicas: 1
 
-  # Serviço do frontend (Angular)
   frontend:
     build:
-      context: ../frontEnd  # Define o contexto para a pasta frontEnd
-      dockerfile: dockerFile  # Certifique-se de que o nome está correto (dockerFile ou Dockerfile)
+      context: ../frontEnd
+      dockerfile: Dockerfile
     ports:
-      - "4200:80" # Porta do Angular em produção
+      - "4200:80"
     networks:
       - mean_net
     depends_on:

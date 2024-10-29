@@ -8,7 +8,7 @@
 module.exports = {
   local:
   {
-    localUrl: 'mongodb://localhost:27017/meancrud',
+    localUrl: 'mongodb://root:password@mongo:27017/meancrud?replicaSet=rs0',
   },
 };
 
