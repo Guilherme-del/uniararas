@@ -43,7 +43,7 @@ services:
   backend:
     build:
       context: ../backEnd
-      dockerfile: Dockerfile
+      dockerfile: dockerFile
     environment:
       MONGO_URL: mongodb://root:password@mongo:27017,mongo_replica_1:27017,mongo_replica_2:27017/meancrud?replicaSet=rs0
     networks:
@@ -58,7 +58,7 @@ services:
   frontend:
     build:
       context: ../frontEnd
-      dockerfile: Dockerfile
+      dockerfile: dockerFile
     ports:
       - "4200:80"
     networks:
