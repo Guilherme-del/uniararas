@@ -1,45 +1,54 @@
+
+
 version: '3.8'
 
 services:
+  # Serviço MongoDB com replicação
   mongo:
     image: mongo:6
-    entrypoint: /bin/sh -c "echo 'y8sCnGuoPUhEltYJNXU+GQ==' > /tmp/keyfile && chmod 400 /tmp/keyfile && mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
+    entrypoint: /bin/sh -c "chmod 400 /tmp/keyfile && mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile"
     volumes:
       - mongo_data:/data/db
+      - ./keyfile:/tmp/keyfile
+    ports:
+      - "27017:27017"
     networks:
       - mean_net
-    deploy:
-      replicas: 1
 
+  # Serviço MongoDB (réplica 1)
   mongo_replica_1:
     image: mongo:6
-    entrypoint: /bin/sh -c "echo 'y8sCnGuoPUhEltYJNXU+GQ==' > /tmp/keyfile && chmod 400 /tmp/keyfile && mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
+    entrypoint: /bin/sh -c "chmod 400 /tmp/keyfile && mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile"
     volumes:
       - mongo_replica1_data:/data/db
+      - ./keyfile:/tmp/keyfile
+    ports:
+      - "27018:27017"
     networks:
       - mean_net
-    deploy:
-      replicas: 1
 
+  # Serviço MongoDB (réplica 2)
   mongo_replica_2:
     image: mongo:6
-    entrypoint: /bin/sh -c "echo 'y8sCnGuoPUhEltYJNXU+GQ==' > /tmp/keyfile && chmod 400 /tmp/keyfile && mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
+    entrypoint: /bin/sh -c "chmod 400 /tmp/keyfile && mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile"
     volumes:
       - mongo_replica2_data:/data/db
+      - ./keyfile:/tmp/keyfile
+    ports:
+      - "27019:27017"
     networks:
       - mean_net
-    deploy:
-      replicas: 1
 
+  # Serviço do backend (Node.js + Express)
   backend:
     build:
       context: ../backEnd
@@ -52,9 +61,8 @@ services:
       - mongo
       - mongo_replica_1
       - mongo_replica_2
-    deploy:
-      replicas: 1
 
+  # Serviço do frontend (Angular)
   frontend:
     build:
       context: ../frontEnd
@@ -65,8 +73,6 @@ services:
       - mean_net
     depends_on:
       - backend
-    deploy:
-      replicas: 1
 
 networks:
   mean_net:
