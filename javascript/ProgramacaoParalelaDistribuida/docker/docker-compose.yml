@@ -48,7 +48,7 @@ services:
       context: ../backEnd
       dockerfile: dockerFile
     environment:
-      MONGO_URL: mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/?replicaSet=rs0
+      MONGO_URL: mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0
     networks:
       - mean_net
     depends_on:
