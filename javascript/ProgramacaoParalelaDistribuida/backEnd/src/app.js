@@ -20,10 +20,10 @@ const localDatabase = require('./config/database'); // ==> persistencia de manei
 mongoose.Promise = global.Promise;
 
 // ==> Conexão com a Base de Dados:
-mongoose.connect(localDatabase.local.localUrl, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+mongoose.connect(localDatabase.local.localUrl).then(() => {
   console.log('A Base de dados foi conectada com sucesso!');
 }, (err) => {
-  console.log(`Erro ao conectar com a base de Dados...: ${err}`);
+  console.log(`Erro ao conectar com a base de Dados: ${err}`);
   process.exit();
 });
 
