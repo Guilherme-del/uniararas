@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Serviço do MongoDB
+
   mongo1:
     image: mongo:7.0
     hostname: mongo1
@@ -19,6 +19,10 @@ services:
       - "mongo1_config:/data/configdb"
     networks:
       - mean_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
   mongo2:
     image: mongo:7.0
@@ -31,6 +35,10 @@ services:
       - "mongo2_config:/data/configdb"
     networks:
       - mean_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
   mongo3:
     image: mongo:7.0
@@ -43,12 +51,15 @@ services:
       - "mongo3_config:/data/configdb"
     networks:
       - mean_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
-  # Serviço do backend (Node.js + Express)
   backend:
-    build:
-      context: ../backEnd
-      dockerfile: dockerFile
+    image: mean_backend # Usar a imagem construída
+    ports:
+      - "8000:8000"
     environment:
       MONGO_URL: mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0
     networks:
@@ -57,22 +68,27 @@ services:
       - mongo1
       - mongo2
       - mongo3
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
-  # Serviço do frontend (Angular)
   frontend:
-    build:
-      context: ../frontEnd
-      dockerfile: dockerFile
+    image: mean_frontend # Usar a imagem construída
     ports:
       - "4200:80"
     networks:
       - mean_net
     depends_on:
       - backend
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
 networks:
   mean_net:
-    driver: bridge
+    driver: overlay  # Driver overlay para o Swarm
 
 volumes:
   mongo1_data:
