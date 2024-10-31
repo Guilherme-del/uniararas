@@ -10,14 +10,15 @@ posicao_nave = -5
 dash_iniciado = False
 
 def desenhar_corpo_principal(raio_x, raio_y, profundidade, n_lados, n_camadas):
-    """Desenha uma cúpula convexa mais grossa para o corpo principal da nave."""
+    """Desenha uma cúpula convexa detalhada para o corpo principal da nave."""
     for i in range(n_camadas + 1):
-        camada_profundidade = profundidade * (1 - (i / n_camadas) ** 2)  # Aumentando a profundidade
+        camada_profundidade = profundidade * (1 - (i / n_camadas) ** 2)
         raio_atual_x = raio_x * (1 - i / n_camadas)
         raio_atual_y = raio_y * (1 - i / n_camadas)
         
+        # Camadas para o efeito convexo
         glBegin(GL_TRIANGLE_FAN)
-        glColor3f(0.6, 0.6, 1)
+        glColor3f(0.7, 0.7, 0.7)  # Cinza metálico para o corpo principal
         glVertex3f(0, 0, camada_profundidade / 2)
         for j in range(n_lados + 1):
             angle = 2 * math.pi * j / n_lados
@@ -26,37 +27,61 @@ def desenhar_corpo_principal(raio_x, raio_y, profundidade, n_lados, n_camadas):
             glVertex3f(x, y, camada_profundidade / 2)
         glEnd()
 
-def desenhar_cauda():
-    """Desenha uma cauda conectada ao corpo principal da nave."""
-    glBegin(GL_QUADS)
-    glColor3f(0.8, 0.2, 0.2)  # Vermelho escuro para a cauda
+    # Adiciona detalhes como linhas circulares na superfície
+    for i in range(1, 4):
+        glBegin(GL_LINE_LOOP)
+        glColor3f(0.6, 0.6, 0.6)
+        raio_detalhe = raio_x * (0.8 + i * 0.05)
+        for j in range(n_lados):
+            angle = 2 * math.pi * j / n_lados
+            x = raio_detalhe * math.cos(angle)
+            y = raio_detalhe * math.sin(angle)
+            glVertex3f(x, y, profundidade / 2 * 0.9)
+        glEnd()
 
-    # Ajustando a posição da cauda para que fique conectada ao corpo principal
-    altura_conexao = 0.35  # Valor aumentado para conectar mais a cauda ao corpo
+def desenhar_cauda():
+    """Desenha uma cauda detalhada conectada ao corpo principal da nave."""
+    glBegin(GL_QUADS)
+    glColor3f(0.7, 0.7, 0.7)  # Cinza metálico para a cauda, igual ao corpo principal
+
+    altura_conexao = 0.35  # Valor ajustado para conectar mais a cauda ao corpo
 
     # Parte da cauda conectada ao corpo
-    glVertex3f(-0.05, altura_conexao, -0.05)
-    glVertex3f(0.05, altura_conexao, -0.05)
-    glVertex3f(0.05, altura_conexao, -0.5)
-    glVertex3f(-0.05, altura_conexao, -0.5)
+    glVertex3f(-0.05, -0.02 + altura_conexao, -0.05)
+    glVertex3f(0.05, -0.02 + altura_conexao, -0.05)
+    glVertex3f(0.05, -0.02 + altura_conexao, -0.5)
+    glVertex3f(-0.05, -0.02 + altura_conexao, -0.5)
 
     # Parte traseira da cauda mais estreita
-    glVertex3f(-0.03, altura_conexao, -0.5)
-    glVertex3f(0.03, altura_conexao, -0.5)
-    glVertex3f(0.03, altura_conexao, -1.0)
-    glVertex3f(-0.03, altura_conexao, -1.0)
-
+    glVertex3f(-0.03, -0.02 + altura_conexao, -0.5)
+    glVertex3f(0.03, -0.02 + altura_conexao, -0.5)
+    glVertex3f(0.03, -0.02 + altura_conexao, -1.0)
+    glVertex3f(-0.03, -0.02 + altura_conexao, -1.0)
+    
     # Laterais da cauda para um visual mais detalhado
-    glVertex3f(-0.05, altura_conexao, -0.05)
-    glVertex3f(-0.05, altura_conexao, -0.05)
-    glVertex3f(-0.03, altura_conexao, -0.5)
-    glVertex3f(-0.03, altura_conexao, -0.5)
+    glVertex3f(-0.05, -0.02 + altura_conexao, -0.05)
+    glVertex3f(-0.05, 0.02 + altura_conexao, -0.05)
+    glVertex3f(-0.03, 0.02 + altura_conexao, -0.5)
+    glVertex3f(-0.03, -0.02 + altura_conexao, -0.5)
 
-    glVertex3f(0.05, altura_conexao, -0.05)
-    glVertex3f(0.05, altura_conexao, -0.05)
-    glVertex3f(0.03, altura_conexao, -0.5)
-    glVertex3f(0.03, altura_conexao, -0.5)
+    glVertex3f(0.05, -0.02 + altura_conexao, -0.05)
+    glVertex3f(0.05, 0.02 + altura_conexao, -0.05)
+    glVertex3f(0.03, 0.02 + altura_conexao, -0.5)
+    glVertex3f(0.03, -0.02 + altura_conexao, -0.5)
+    glEnd()
 
+    # Detalhe adicional: cilindros representando motores
+    glBegin(GL_QUADS)
+    glColor3f(0.2, 0.2, 0.8)  # Azul para os motores
+    glVertex3f(-0.03, -0.02 + altura_conexao, -0.5)
+    glVertex3f(-0.03, 0.02 + altura_conexao, -0.5)
+    glVertex3f(-0.03, 0.02 + altura_conexao, -0.6)
+    glVertex3f(-0.03, -0.02 + altura_conexao, -0.6)
+
+    glVertex3f(0.03, -0.02 + altura_conexao, -0.5)
+    glVertex3f(0.03, 0.02 + altura_conexao, -0.5)
+    glVertex3f(0.03, 0.02 + altura_conexao, -0.6)
+    glVertex3f(0.03, -0.02 + altura_conexao, -0.6)
     glEnd()
 
 def gerar_estrelas(qtd_estrelas):
@@ -104,7 +129,7 @@ def main():
         glTranslatef(0.0, 0.0, posicao_nave)  # Controla a posição da nave
         glRotatef(90, 1, 0, 0)  # Deita o corpo principal
         glRotatef(180, 0, 1, 0)  # Inverte a nave para deixar a cauda para baixo
-        desenhar_corpo_principal(raio_x=0.8, raio_y=0.8, profundidade=0.3, n_lados=50, n_camadas=10)  # Aumentei a profundidade
+        desenhar_corpo_principal(raio_x=0.8, raio_y=0.8, profundidade=0.3, n_lados=50, n_camadas=10)  # Corpo mais grosso
         desenhar_cauda()
         glPopMatrix()
 
