@@ -32,29 +32,29 @@ def desenhar_cauda():
     glColor3f(0.8, 0.2, 0.2)  # Vermelho escuro para a cauda
 
     # Ajustando a posição da cauda para que fique conectada ao corpo principal
-    altura_conexao = 0  # Valor aumentado para conectar mais a cauda ao corpo
+    altura_conexao = 0.35  # Valor aumentado para conectar mais a cauda ao corpo
 
     # Parte da cauda conectada ao corpo
-    glVertex3f(-0.05,altura_conexao, -0.05)
+    glVertex3f(-0.05, altura_conexao, -0.05)
     glVertex3f(0.05, altura_conexao, -0.05)
-    glVertex3f(0.5,  altura_conexao, -0.5)
-    glVertex3f(-0.05,  altura_conexao, -0.5)
+    glVertex3f(0.05, altura_conexao, -0.5)
+    glVertex3f(-0.05, altura_conexao, -0.5)
 
     # Parte traseira da cauda mais estreita
     glVertex3f(-0.03, altura_conexao, -0.5)
-    glVertex3f(0.03,  altura_conexao, -0.5)
+    glVertex3f(0.03, altura_conexao, -0.5)
     glVertex3f(0.03, altura_conexao, -1.0)
-    glVertex3f(-0.03,  altura_conexao, -1.0)
+    glVertex3f(-0.03, altura_conexao, -1.0)
 
     # Laterais da cauda para um visual mais detalhado
-    glVertex3f(-0.05,  altura_conexao, -0.05)
-    glVertex3f(-0.05, 0.02 + altura_conexao, -0.05)
-    glVertex3f(-0.03, 0.02 + altura_conexao, -0.5)
-    glVertex3f(-0.03,  altura_conexao, -0.5)
+    glVertex3f(-0.05, altura_conexao, -0.05)
+    glVertex3f(-0.05, altura_conexao, -0.05)
+    glVertex3f(-0.03, altura_conexao, -0.5)
+    glVertex3f(-0.03, altura_conexao, -0.5)
 
     glVertex3f(0.05, altura_conexao, -0.05)
-    glVertex3f(0.05, 0.02 + altura_conexao, -0.05)
-    glVertex3f(0.03, 0.02 + altura_conexao, -0.5)
+    glVertex3f(0.05, altura_conexao, -0.05)
+    glVertex3f(0.03, altura_conexao, -0.5)
     glVertex3f(0.03, altura_conexao, -0.5)
 
     glEnd()
