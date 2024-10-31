@@ -10,40 +10,66 @@ posicao_nave = -5
 dash_iniciado = False
 
 def desenhar_corpo_central_unico(raio_x, raio_y, profundidade, n_lados):
-    """Desenha um único disco sólido e convexo para o corpo central da nave."""
+    """Desenha um disco sólido e convexo para o corpo central da nave."""
     glColor3f(0.7, 0.7, 0.7)  # Cor cinza metálico
-
-    # Disco único com formato convexo
     glBegin(GL_TRIANGLE_FAN)
-    glVertex3f(0, 0, 0)  # Centro do disco
+    glVertex3f(0, 0, 0)
     for i in range(n_lados + 1):
         angle = 2 * math.pi * i / n_lados
         x = raio_x * math.cos(angle)
         y = raio_y * math.sin(angle)
-        glVertex3f(x, y, profundidade / 2)  # Superfície superior convexa
+        glVertex3f(x, y, profundidade / 2)
     glEnd()
 
 def desenhar_cauda():
-    """Desenha a cauda conectada ao corpo central da nave."""
-    glColor3f(0.7, 0.7, 0.7)  # Cor cinza metálico para a cauda
+    """Desenha uma cauda mais detalhada para a nave."""
+    glColor3f(0.6, 0.6, 0.6)
     glBegin(GL_QUADS)
-    altura_conexao = 0.15  # Ajuste para conectar a cauda diretamente ao corpo
+    altura_conexao = 0.15
 
-    # Parte da cauda conectada ao corpo
+    # Conexão ao corpo
     glVertex3f(-0.05, -0.02 + altura_conexao, -0.05)
     glVertex3f(0.05, -0.02 + altura_conexao, -0.05)
     glVertex3f(0.05, -0.02 + altura_conexao, -0.5)
     glVertex3f(-0.05, -0.02 + altura_conexao, -0.5)
 
-    # Parte traseira da cauda mais estreita
+    # Parte traseira mais estreita
     glVertex3f(-0.03, -0.02 + altura_conexao, -0.5)
     glVertex3f(0.03, -0.02 + altura_conexao, -0.5)
     glVertex3f(0.03, -0.02 + altura_conexao, -1.0)
     glVertex3f(-0.03, -0.02 + altura_conexao, -1.0)
     glEnd()
 
+def desenhar_asas():
+    """Desenha asas laterais na nave."""
+    glColor3f(0.5, 0.5, 0.5)
+    glBegin(GL_TRIANGLES)
+
+    # Asa esquerda
+    glVertex3f(-0.6, 0, -0.1)
+    glVertex3f(-0.2, 0.1, 0.1)
+    glVertex3f(-0.2, -0.1, 0.1)
+
+    # Asa direita
+    glVertex3f(0.6, 0, -0.1)
+    glVertex3f(0.2, 0.1, 0.1)
+    glVertex3f(0.2, -0.1, 0.1)
+    glEnd()
+
+def desenhar_cockpit():
+    """Desenha uma cúpula na parte superior da nave, representando o cockpit."""
+    glColor3f(0.3, 0.3, 0.8)
+    glBegin(GL_TRIANGLE_FAN)
+    glVertex3f(0, 0, 0.15)
+    for i in range(21):
+        angle = 2 * math.pi * i / 20
+        x = 0.3 * math.cos(angle)
+        y = 0.3 * math.sin(angle)
+        glVertex3f(x, y, 0.1)
+    glEnd()
+
 def desenhar_detalhes():
-    """Adiciona pequenos detalhes como linhas de divisão no corpo central."""
+    """Desenha linhas e detalhes adicionais no corpo da nave."""
     glColor3f(0.5, 0.5, 0.5)
     glBegin(GL_LINES)
     for i in range(-5, 6):
@@ -52,7 +78,7 @@ def desenhar_detalhes():
     glEnd()
 
 def gerar_estrelas(qtd_estrelas):
-    """Gera uma lista de posições de estrelas no fundo."""
+    """Gera posições de estrelas no fundo."""
     estrelas = []
     for _ in range(qtd_estrelas):
         x = random.uniform(-10, 10)
@@ -91,10 +117,14 @@ def main():
 
         glPushMatrix()
         glTranslatef(0.0, 0.0, posicao_nave)
-        glRotatef(-90, 1, 0, 0)  # Inverte a nave para visualizar de baixo para cima
-        desenhar_corpo_central_unico(1.2, 1.2, 0.2, 50)  # Disco único central
+        glRotatef(-90, 1, 0, 0)
+
+        desenhar_corpo_central_unico(1.2, 1.2, 0.2, 50)
+        desenhar_asas()
+        desenhar_cockpit()
         desenhar_detalhes()
         desenhar_cauda()
+        
         glPopMatrix()
 
         if not dash_iniciado:
