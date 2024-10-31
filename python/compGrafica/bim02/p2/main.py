@@ -12,9 +12,17 @@ dash_iniciado = False
 # Propulsores
 cor_propulsor = 0.5  # Intensidade inicial do propulsor
 
+# Paleta de cores homogênea
+COR_CORPO = (0.5, 0.5, 0.6)  # Cor principal do corpo da nave
+COR_PAINEL = (0.4, 0.4, 0.5)  # Painéis e detalhes
+COR_DETALHES = (0.3, 0.3, 0.4)  # Linhas e detalhes extras
+COR_COCKPIT = (0.2, 0.2, 0.6)  # Cockpit
+COR_ASAS = (0.4, 0.4, 0.5)  # Asas
+COR_ESTRELAS = (1, 1, 1)  # Estrelas no fundo
+
 def desenhar_corpo_central_unico(raio_x, raio_y, profundidade, n_lados):
     """Desenha o corpo principal da nave com textura segmentada."""
-    glColor3f(0.7, 0.7, 0.7)
+    glColor3f(*COR_CORPO)
     glBegin(GL_TRIANGLE_FAN)
     glVertex3f(0, 0, 0)
     for i in range(n_lados + 1):
@@ -25,7 +33,7 @@ def desenhar_corpo_central_unico(raio_x, raio_y, profundidade, n_lados):
     glEnd()
 
     # Adicionando painéis
-    glColor3f(0.4, 0.4, 0.4)
+    glColor3f(*COR_PAINEL)
     for j in range(6):
         angle1 = 2 * math.pi * j / 6
         angle2 = 2 * math.pi * (j + 1) / 6
@@ -38,7 +46,7 @@ def desenhar_corpo_central_unico(raio_x, raio_y, profundidade, n_lados):
 
 def desenhar_cauda():
     """Desenha uma cauda detalhada com camadas adicionais."""
-    glColor3f(0.6, 0.6, 0.6)
+    glColor3f(*COR_PAINEL)
     glBegin(GL_QUADS)
     altura_conexao = 0.15
 
@@ -54,7 +62,7 @@ def desenhar_cauda():
     glEnd()
 
     # Detalhes extras
-    glColor3f(0.3, 0.3, 0.3)
+    glColor3f(*COR_DETALHES)
     glBegin(GL_LINES)
     for i in range(1, 5):
         glVertex3f(-0.05 + i * 0.02, -0.02 + altura_conexao, -0.05)
@@ -63,7 +71,7 @@ def desenhar_cauda():
 
 def desenhar_asas():
     """Desenha asas detalhadas com segmentos."""
-    glColor3f(0.5, 0.5, 0.5)
+    glColor3f(*COR_ASAS)
     glBegin(GL_TRIANGLES)
 
     # Asa esquerda
@@ -78,7 +86,7 @@ def desenhar_asas():
     glEnd()
 
     # Linhas de detalhe nas asas
-    glColor3f(0.3, 0.3, 0.3)
+    glColor3f(*COR_DETALHES)
     glBegin(GL_LINES)
     for i in range(-3, 4):
         glVertex3f(-0.6 + i * 0.1, 0, -0.1)
@@ -87,7 +95,7 @@ def desenhar_asas():
 
 def desenhar_cockpit():
     """Desenha uma cúpula no topo da nave para representar o cockpit."""
-    glColor3f(0.3, 0.3, 0.8)
+    glColor3f(*COR_COCKPIT)
     glBegin(GL_TRIANGLE_FAN)
     glVertex3f(0, 0, 0.15)
     for i in range(21):
@@ -97,10 +105,9 @@ def desenhar_cockpit():
         glVertex3f(x, y, 0.1)
     glEnd()
 
-
 def desenhar_detalhes():
     """Adiciona pequenos detalhes ao corpo da nave."""
-    glColor3f(0.5, 0.5, 0.5)
+    glColor3f(*COR_DETALHES)
     glBegin(GL_LINES)
     for i in range(-5, 6):
         glVertex3f(i * 0.1, 0, 0.15)
@@ -120,7 +127,7 @@ def gerar_estrelas(qtd_estrelas):
 def desenhar_estrelas(estrelas):
     """Desenha as estrelas no fundo."""
     glBegin(GL_POINTS)
-    glColor3f(1, 1, 1)
+    glColor3f(*COR_ESTRELAS)
     for estrela in estrelas:
         glVertex3f(*estrela)
     glEnd()
