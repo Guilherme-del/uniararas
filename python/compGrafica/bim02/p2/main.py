@@ -97,26 +97,6 @@ def desenhar_cockpit():
         glVertex3f(x, y, 0.1)
     glEnd()
 
-def desenhar_propulsores():
-    """Desenha propulsores traseiros com efeito de luz."""
-    global cor_propulsor
-    cor_propulsor = 0.5 if cor_propulsor > 1.0 else cor_propulsor + 0.02
-
-    glColor3f(1, cor_propulsor, 0)
-    glBegin(GL_QUADS)
-
-    # Propulsor esquerdo
-    glVertex3f(-0.1, -0.05, -1.1)
-    glVertex3f(0.0, -0.05, -1.1)
-    glVertex3f(0.0, -0.05, -1.3)
-    glVertex3f(-0.1, -0.05, -1.3)
-
-    # Propulsor direito
-    glVertex3f(0.1, -0.05, -1.1)
-    glVertex3f(0.0, -0.05, -1.1)
-    glVertex3f(0.0, -0.05, -1.3)
-    glVertex3f(0.1, -0.05, -1.3)
-    glEnd()
 
 def desenhar_detalhes():
     """Adiciona pequenos detalhes ao corpo da nave."""
@@ -174,7 +154,6 @@ def main():
         desenhar_cockpit()
         desenhar_detalhes()
         desenhar_cauda()
-        desenhar_propulsores()
         
         glPopMatrix()
 

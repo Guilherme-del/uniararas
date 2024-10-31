@@ -1,19 +1,3 @@
-# Nome: Enzo Barbosa das Neves
-# RA: 107501
-
-# CONTROLES DE MOVIMENTO DA CAMERA:
-    # Setas (Direita, Esquerda, Cima, Baixo)
-    # PageUp e PageDown
-    # Home
-    # End
-
-# CONTROLE DE MOVIMENTO DO CARRO:
-    # W - move para a frente, depende da posição da asa traseira sobe ou desce
-    # 4 - rotaciona asa vertical para esquerda
-    # 6 - rotaciona asa vertical para direita
-    # 8 - rotaciona asa horizontal para baixo
-    # 5 - rotaciona asa horizontal para cima
-
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from OpenGL.GL import *
