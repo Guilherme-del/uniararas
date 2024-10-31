@@ -19,7 +19,7 @@ COR_DETALHES = (0.3, 0.3, 0.4)  # Linhas e detalhes extras
 COR_COCKPIT = (0.2, 0.2, 0.2)  # Cockpit em cinza escuro
 COR_ASAS = (0.4, 0.4, 0.5)  # Asas
 COR_ESTRELAS = (1, 1, 1)  # Estrelas no fundo
-COR_VERMElHA = (1.0, 0.0, 0.0)  # Cor vermelha
+COR_VERMELHA = (1.0, 0.0, 0.0)  # Cor vermelha
 
 def desenhar_corpo_central_unico(raio_x, raio_y, profundidade, n_lados):
     """Desenha o corpo principal da nave com camadas adicionais e detalhes inspirados na Firebrand NCC-68723."""
@@ -60,35 +60,35 @@ def desenhar_cauda():
     """Desenha uma cauda detalhada com camadas adicionais e um quadrado vermelho no final inferior."""
     glColor3f(*COR_PAINEL)
     glBegin(GL_QUADS)
-    altura_conexao = 0.1  # Reduzindo para harmonizar com o corpo achatado
+    altura_conexao = 0.01  # Reduzindo para harmonizar com o corpo achatado
 
-    # Camadas da cauda
+    # Camadas da cauda 
     glVertex3f(-0.05, -0.02 + altura_conexao, -0.05)
     glVertex3f(0.05, -0.02 + altura_conexao, -0.05)
-    glVertex3f(0.05, -0.02 + altura_conexao, -0.5)
-    glVertex3f(-0.05, -0.02 + altura_conexao, -0.5)
+    glVertex3f(0.05, -0.02 + altura_conexao, -0.3)
+    glVertex3f(-0.05, -0.02 + altura_conexao, -0.3)
 
-    glVertex3f(-0.03, -0.02 + altura_conexao, -0.5)
-    glVertex3f(0.03, -0.02 + altura_conexao, -0.5)
-    glVertex3f(0.03, -0.02 + altura_conexao, -1.0)
-    glVertex3f(-0.03, -0.02 + altura_conexao, -1.0)
+    glVertex3f(-0.03, -0.02 + altura_conexao, -0.3)
+    glVertex3f(0.03, -0.02 + altura_conexao, -0.3)
+    glVertex3f(0.03, -0.02 + altura_conexao, -0.6)
+    glVertex3f(-0.03, -0.02 + altura_conexao, -0.6)
     glEnd()
 
     # Detalhes extras
     glColor3f(*COR_DETALHES)
     glBegin(GL_LINES)
     for i in range(1, 5):
-        glVertex3f(-0.05 + i * 0.02,  altura_conexao, -0.05)
-        glVertex3f(-0.05 + i * 0.02, altura_conexao, -1.0)
+        glVertex3f(-0.05 + i * 0.02, altura_conexao, -0.05)
+        glVertex3f(-0.05 + i * 0.02, altura_conexao, -0.6)  # Alinhando com a nova altura da cauda
     glEnd()
 
     # Quadrado vermelho no final da cauda
-    glColor3f(*COR_VERMElHA)  # Define a cor vermelha
+    glColor3f(*COR_VERMELHA)  # Define a cor vermelha
     glBegin(GL_QUADS)
-    glVertex3f(-0.03, altura_conexao, -1.0)
-    glVertex3f(0.03, altura_conexao, -1.0)
-    glVertex3f(0.03, -0.3 + altura_conexao, -1.0)  # Parte inferior do quadrado
-    glVertex3f(-0.03, -0.3 + altura_conexao, -1.0)
+    glVertex3f(-0.03, altura_conexao, -0.6)
+    glVertex3f(0.03, altura_conexao, -0.6)
+    glVertex3f(0.03, -0.5 + altura_conexao, -0.6)  # Parte inferior do quadrado
+    glVertex3f(-0.03, -0.5 + altura_conexao, -0.6)
     glEnd()
 
 def gerar_estrelas(qtd_estrelas):
