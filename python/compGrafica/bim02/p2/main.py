@@ -87,8 +87,8 @@ def desenhar_cauda():
     glBegin(GL_QUADS)
     glVertex3f(-0.03, altura_conexao, -1.0)
     glVertex3f(0.03, altura_conexao, -1.0)
-    glVertex3f(0.03, -0.5 + altura_conexao, -1.0)  # Parte inferior do quadrado
-    glVertex3f(-0.03, -0.5 + altura_conexao, -1.0)
+    glVertex3f(0.03, -0.3 + altura_conexao, -1.0)  # Parte inferior do quadrado
+    glVertex3f(-0.03, -0.3 + altura_conexao, -1.0)
     glEnd()
 
 def gerar_estrelas(qtd_estrelas):
