@@ -11,9 +11,6 @@ dash_iniciado = False
 dash_completado = False  # Indica se o dash terminou
 dash_permitido = True    # Indica se o dash pode ser feito
 
-# Propellers
-cor_propulsor = 0.5  # Initial intensity of the propeller
-
 # Color palette
 COR_CORPO = (0.5, 0.5, 0.6)
 COR_PAINEL = (0.4, 0.4, 0.5)
@@ -23,7 +20,7 @@ COR_ASAS = (0.4, 0.4, 0.5)
 COR_ESTRELAS = (1, 1, 1)
 COR_VERMELHA = (1.0, 0.0, 0.0)
 
-# Variables for controlling camera angles
+# Variables for controlling angles
 angle_x, angle_y = 0, 0
 rotation_speed = 2
 
@@ -33,7 +30,7 @@ velocidade_dash = 0.5
 velocidade_fundo = velocidade_normal  # Velocidade inicial do movimento do fundo
 
 def desenhar_corpo_central_unico(raio_x, raio_y, profundidade, n_lados):
-    """Draw the main body of the ship with additional layers and details."""
+    """Draw the main body of the ship."""
     glColor3f(*COR_CORPO)
     glBegin(GL_TRIANGLE_FAN)
     glVertex3f(0, 0, 0)
@@ -55,51 +52,27 @@ def desenhar_corpo_central_unico(raio_x, raio_y, profundidade, n_lados):
         glVertex3f(raio_x * math.cos(angle1), raio_y * math.sin(angle1), -profundidade / 6)
         glEnd()
 
-    for j in range(6):
-        angle = 2 * math.pi * j / 6
-        glBegin(GL_LINES)
-        glVertex3f(0, 0, profundidade / 6)
-        glVertex3f(raio_x * math.cos(angle), raio_y * math.sin(angle), -profundidade / 6)
-        glEnd()
-
 def desenhar_cauda():
-    """Draws a detailed tail with additional layers and a red square at the end."""
+    """Draws the tail of the ship."""
     glColor3f(*COR_PAINEL)
     glBegin(GL_QUADS)
-    altura_conexao = 0.01
-
-    glVertex3f(-0.05, -0.02 + altura_conexao, -0.05)
-    glVertex3f(0.05, -0.02 + altura_conexao, -0.05)
-    glVertex3f(0.05, -0.02 + altura_conexao, -0.3)
-    glVertex3f(-0.05, -0.02 + altura_conexao, -0.3)
-
-    glVertex3f(-0.03, -0.02 + altura_conexao, -0.3)
-    glVertex3f(0.03, -0.02 + altura_conexao, -0.3)
-    glVertex3f(0.03, -0.02 + altura_conexao, -0.6)
-    glVertex3f(-0.03, -0.02 + altura_conexao, -0.6)
+    glVertex3f(-0.05, 0.01, -0.05)
+    glVertex3f(0.05, 0.01, -0.05)
+    glVertex3f(0.05, 0.01, -0.3)
+    glVertex3f(-0.05, 0.01, -0.3)
+    glVertex3f(-0.03, 0.01, -0.3)
+    glVertex3f(0.03, 0.01, -0.3)
+    glVertex3f(0.03, 0.01, -0.6)
+    glVertex3f(-0.03, 0.01, -0.6)
     glEnd()
 
-    glColor3f(*COR_DETALHES)
-    glBegin(GL_LINES)
-    for i in range(1, 5):
-        glVertex3f(-0.05 + i * 0.02, altura_conexao, -0.05)
-        glVertex3f(-0.05 + i * 0.02, altura_conexao, -0.6)
-    glEnd()
-
-    glColor3f(*COR_VERMELHA)
-    glBegin(GL_QUADS)
-    glVertex3f(-0.03, altura_conexao, -0.6)
-    glVertex3f(0.03, altura_conexao, -0.6)
-    glVertex3f(0.03, -0.5 + altura_conexao, -0.6)
-    glVertex3f(-0.03, -0.5 + altura_conexao, -0.6)
-    glEnd()
-
-def gerar_estrelas(qtd_estrelas, raio_min=30, raio_max=60):
+def gerar_estrelas(qtd_estrelas, raio_min=5, raio_max=30):
+    """Generate stars around the ship within a sphere."""
     estrelas = []
     for _ in range(qtd_estrelas):
         theta = random.uniform(0, 2 * math.pi)
         phi = random.uniform(0, math.pi)
-        r = random.uniform(raio_min, raio_max)  # Mantém as estrelas mais distantes do centro
+        r = random.uniform(raio_min, raio_max)
 
         x = r * math.sin(phi) * math.cos(theta)
         y = r * math.sin(phi) * math.sin(theta)
@@ -109,34 +82,23 @@ def gerar_estrelas(qtd_estrelas, raio_min=30, raio_max=60):
     return estrelas
 
 def atualizar_estrelas(estrelas, velocidade):
-    """Move as estrelas e reposiciona aquelas que saem do campo de visão."""
+    """Move stars and reposition those that exit the field of view."""
     for estrela in estrelas:
-        # Move as estrelas ao longo do eixo Z
-        estrela[2] += velocidade
+        estrela[2] += velocidade  # Move along the Z-axis
 
-        # Reposiciona as estrelas fora do campo de visão para uma nova posição distante do centro
-        if estrela[2] > 0:
-            theta = random.uniform(0, 2 * math.pi)
-            phi = random.uniform(0, math.pi)
-            r = random.uniform(30, 60)  # Manter a distância mínima do centro
-
-            estrela[0] = r * math.sin(phi) * math.cos(theta)
-            estrela[1] = r * math.sin(phi) * math.sin(theta)
-            estrela[2] = r * math.cos(phi)
+        # Reposition stars that exit the view, bringing them back around the ship
+        if estrela[2] > 5:  # Adjusted range to make stars surround the ship
+            estrela[2] = -30
+            estrela[0] = random.uniform(-30, 30)
+            estrela[1] = random.uniform(-30, 30)
 
 def desenhar_estrelas(estrelas):
-    """Desenha as estrelas ao redor da nave com rotação da câmera."""
-    glPushMatrix()
-    glRotatef(angle_x, 1, 0, 0)
-    glRotatef(angle_y, 0, 1, 0)
-
+    """Draws stars to create an immersive environment."""
     glBegin(GL_POINTS)
     glColor3f(*COR_ESTRELAS)
     for estrela in estrelas:
         glVertex3f(*estrela)
     glEnd()
-
-    glPopMatrix()
 
 def main():
     global dash_iniciado, dash_completado, dash_permitido, angle_x, angle_y, velocidade_fundo, posicao_nave_z
@@ -145,9 +107,9 @@ def main():
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
     gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
-    glTranslatef(0.0, 0.0, -10)  # Inicialização da posição da câmera
+    glTranslatef(0.0, 0.0, -10)
 
-    estrelas = gerar_estrelas(2000)  # Aumenta a quantidade inicial de estrelas
+    estrelas = gerar_estrelas(2000)
 
     while True:
         for evento in pygame.event.get():
@@ -156,37 +118,31 @@ def main():
                 quit()
             elif evento.type == pygame.KEYDOWN:
                 if (evento.key == pygame.K_SPACE or evento.key == pygame.K_RETURN) and dash_permitido:
-                    dash_iniciado = True  # Inicia o dash
-                    dash_completado = False  # Reinicia o estado do dash
+                    dash_iniciado = True
+                    dash_completado = False
 
-        # Checa o estado atual das teclas para rotacionar a nave
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
-            angle_x += rotation_speed  # Rotação para cima
+            angle_x += rotation_speed
         if keys[pygame.K_s]:
-            angle_x -= rotation_speed  # Rotação para baixo
+            angle_x -= rotation_speed
         if keys[pygame.K_a]:
-            angle_y += rotation_speed  # Rotação para a esquerda
+            angle_y += rotation_speed
         if keys[pygame.K_d]:
-            angle_y -= rotation_speed  # Rotação para a direita
+            angle_y -= rotation_speed
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glPushMatrix()
-        # A câmera permanece fixa
-
-        # Desenha as estrelas e atualiza sua posição conforme o movimento
         desenhar_estrelas(estrelas)
         atualizar_estrelas(estrelas, velocidade_fundo)
 
-        # Exibe a nave enquanto o dash não foi completado
         if not dash_completado:
             glPushMatrix()
-            # Aplica rotação da nave em torno dos eixos X e Y
-            glTranslatef(0.0, 0.0, posicao_nave_z)  # Posição da nave
-            glRotatef(-90, 1, 0, 0)  # Rotação inicial da nave para a posição correta
-            glRotatef(angle_x, 1, 0, 0)  # Rotação pelo eixo X (para cima e para baixo)
-            glRotatef(angle_y, 0, 1, 0)  # Rotação pelo eixo Y (para esquerda e direita)
+            glTranslatef(0.0, 0.0, posicao_nave_z)
+            glRotatef(-90, 1, 0, 0)
+            glRotatef(angle_x, 1, 0, 0)
+            glRotatef(angle_y, 0, 1, 0)
 
             desenhar_corpo_central_unico(1.5, 1.5, 0.2, 50)
             desenhar_cauda()
@@ -195,14 +151,13 @@ def main():
 
         glPopMatrix()
 
-        # Movimento da nave durante o dash
         if dash_iniciado:
             posicao_nave_z += velocidade_dash
-            if posicao_nave_z > 5:  # Aproxima a nave bem perto da tela antes de sumir
-                dash_completado = True  # Marca o dash como concluído
+            if posicao_nave_z > 5:
+                dash_completado = True
                 dash_iniciado = False
-                dash_permitido = False  # Impede que o dash seja reiniciado
-                posicao_nave_z = -5  # Reseta a posição da nave para uma próxima vez
+                dash_permitido = False
+                posicao_nave_z = -5
         else:
             velocidade_fundo = velocidade_normal
 
