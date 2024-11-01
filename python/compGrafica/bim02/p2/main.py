@@ -126,7 +126,7 @@ def main():
     gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
     glTranslatef(0.0, 0.0, -10)  # Inicialização da posição da câmera
 
-    estrelas = gerar_estrelas(400)
+    estrelas = gerar_estrelas(1000)
 
     while True:
         for evento in pygame.event.get():
@@ -134,17 +134,20 @@ def main():
                 pygame.quit()
                 quit()
             elif evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_w:
-                    angle_x += rotation_speed
-                elif evento.key == pygame.K_s:
-                    angle_x -= rotation_speed
-                elif evento.key == pygame.K_a:
-                    angle_y += rotation_speed
-                elif evento.key == pygame.K_d:
-                    angle_y -= rotation_speed
-                elif (evento.key == pygame.K_SPACE or evento.key == pygame.K_RETURN) and dash_permitido:
+                if (evento.key == pygame.K_SPACE or evento.key == pygame.K_RETURN) and dash_permitido:
                     dash_iniciado = True  # Inicia o dash
                     dash_completado = False  # Reinicia o estado do dash
+
+        # Checa o estado atual das teclas para rotacionar a câmera continuamente
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w]:
+            angle_x += rotation_speed
+        if keys[pygame.K_s]:
+            angle_x -= rotation_speed
+        if keys[pygame.K_a]:
+            angle_y += rotation_speed
+        if keys[pygame.K_d]:
+            angle_y -= rotation_speed
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
