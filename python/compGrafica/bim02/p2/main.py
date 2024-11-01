@@ -159,23 +159,21 @@ def main():
                     dash_iniciado = True  # Inicia o dash
                     dash_completado = False  # Reinicia o estado do dash
 
-        # Checa o estado atual das teclas para rotacionar a câmera continuamente
+        # Checa o estado atual das teclas para rotacionar a nave
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
-            angle_x += rotation_speed
+            angle_x += rotation_speed  # Rotação para cima
         if keys[pygame.K_s]:
-            angle_x -= rotation_speed
+            angle_x -= rotation_speed  # Rotação para baixo
         if keys[pygame.K_a]:
-            angle_y += rotation_speed
+            angle_y += rotation_speed  # Rotação para a esquerda
         if keys[pygame.K_d]:
-            angle_y -= rotation_speed
+            angle_y -= rotation_speed  # Rotação para a direita
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glPushMatrix()
-        # Aplica rotação da câmera em torno dos eixos X e Y
-        glRotatef(angle_x, 1, 0, 0)
-        glRotatef(angle_y, 0, 1, 0)
+        # A câmera permanece fixa
 
         # Desenha as estrelas e atualiza sua posição conforme o movimento
         desenhar_estrelas(estrelas)
@@ -184,8 +182,11 @@ def main():
         # Exibe a nave enquanto o dash não foi completado
         if not dash_completado:
             glPushMatrix()
+            # Aplica rotação da nave em torno dos eixos X e Y
             glTranslatef(0.0, 0.0, posicao_nave_z)  # Posição da nave
-            glRotatef(-90, 1, 0, 0)
+            glRotatef(-90, 1, 0, 0)  # Rotação inicial da nave para a posição correta
+            glRotatef(angle_x, 1, 0, 0)  # Rotação pelo eixo X (para cima e para baixo)
+            glRotatef(angle_y, 0, 1, 0)  # Rotação pelo eixo Y (para esquerda e direita)
 
             desenhar_corpo_central_unico(1.5, 1.5, 0.2, 50)
             desenhar_cauda()
