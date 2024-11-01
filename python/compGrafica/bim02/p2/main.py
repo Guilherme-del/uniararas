@@ -144,7 +144,7 @@ def main():
             glRotatef(angle_x, 1, 0, 0)
             glRotatef(angle_y, 0, 1, 0)
 
-            desenhar_corpo_central_unico(1.5, 1.5, 0.2, 50)
+            desenhar_corpo_central_unico(1.5, 1.5, 0.3, 40)
             desenhar_cauda()
 
             glPopMatrix()
