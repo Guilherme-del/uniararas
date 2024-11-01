@@ -94,28 +94,49 @@ def desenhar_cauda():
     glVertex3f(-0.03, -0.5 + altura_conexao, -0.6)
     glEnd()
 
-def gerar_estrelas(qtd_estrelas):
+def gerar_estrelas(qtd_estrelas, raio_min=30, raio_max=60):
     estrelas = []
     for _ in range(qtd_estrelas):
-        x = random.uniform(-10, 10)
-        y = random.uniform(-10, 10)
-        z = random.uniform(-20, -5)
+        theta = random.uniform(0, 2 * math.pi)
+        phi = random.uniform(0, math.pi)
+        r = random.uniform(raio_min, raio_max)  # Mantém as estrelas mais distantes do centro
+
+        x = r * math.sin(phi) * math.cos(theta)
+        y = r * math.sin(phi) * math.sin(theta)
+        z = r * math.cos(phi)
+
         estrelas.append([x, y, z])
     return estrelas
 
+def atualizar_estrelas(estrelas, velocidade):
+    """Move as estrelas e reposiciona aquelas que saem do campo de visão."""
+    for estrela in estrelas:
+        # Move as estrelas ao longo do eixo Z
+        estrela[2] += velocidade
+
+        # Reposiciona as estrelas fora do campo de visão para uma nova posição distante do centro
+        if estrela[2] > 0:
+            theta = random.uniform(0, 2 * math.pi)
+            phi = random.uniform(0, math.pi)
+            r = random.uniform(30, 60)  # Manter a distância mínima do centro
+
+            estrela[0] = r * math.sin(phi) * math.cos(theta)
+            estrela[1] = r * math.sin(phi) * math.sin(theta)
+            estrela[2] = r * math.cos(phi)
+
 def desenhar_estrelas(estrelas):
+    """Desenha as estrelas ao redor da nave com rotação da câmera."""
+    glPushMatrix()
+    glRotatef(angle_x, 1, 0, 0)
+    glRotatef(angle_y, 0, 1, 0)
+
     glBegin(GL_POINTS)
     glColor3f(*COR_ESTRELAS)
     for estrela in estrelas:
         glVertex3f(*estrela)
     glEnd()
 
-def atualizar_estrelas(estrelas, velocidade):
-    """Move the stars backward to create the illusion of forward movement."""
-    for estrela in estrelas:
-        estrela[2] += velocidade  # Move the star along the Z-axis
-        if estrela[2] > -5:  # Reset star position if it gets too close
-            estrela[2] = random.uniform(-20, -10)
+    glPopMatrix()
 
 def main():
     global dash_iniciado, dash_completado, dash_permitido, angle_x, angle_y, velocidade_fundo, posicao_nave_z
@@ -126,7 +147,7 @@ def main():
     gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
     glTranslatef(0.0, 0.0, -10)  # Inicialização da posição da câmera
 
-    estrelas = gerar_estrelas(1000)
+    estrelas = gerar_estrelas(2000)  # Aumenta a quantidade inicial de estrelas
 
     while True:
         for evento in pygame.event.get():
@@ -156,6 +177,7 @@ def main():
         glRotatef(angle_x, 1, 0, 0)
         glRotatef(angle_y, 0, 1, 0)
 
+        # Desenha as estrelas e atualiza sua posição conforme o movimento
         desenhar_estrelas(estrelas)
         atualizar_estrelas(estrelas, velocidade_fundo)
 
