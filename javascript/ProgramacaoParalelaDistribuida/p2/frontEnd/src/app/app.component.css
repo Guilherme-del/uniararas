@@ -1,0 +1,97 @@
+/* Estilizando a barra de navegação */
+.navbar {
+  background-color: #4CAF50; /* Cor de fundo verde */
+  border-bottom: 2px solid #388E3C; /* Borda inferior */
+}
+
+.navbar-nav .nav-item .nav-link {
+  color: white !important; /* Cor branca para o texto */
+  font-weight: bold; /* Font-weight mais forte para os links */
+  padding: 10px 15px; /* Espaçamento interno para links */
+  text-transform: uppercase; /* Maiúsculas para os links */
+  font-size: 16px; /* Tamanho da fonte */
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+  background-color: #388E3C; /* Cor de fundo ao passar o mouse */
+  border-radius: 5px; /* Bordas arredondadas no hover */
+}
+
+.navbar-nav .nav-item .nav-link.active {
+  background-color: #2C6B31; /* Cor de fundo quando ativo */
+  border-radius: 5px;
+}
+
+/* Estilo para o container */
+.container {
+  margin-top: 30px;
+}
+
+/* Estilizando a barra de carregamento */
+ng2-slim-loading-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999; /* Garantir que o carregamento esteja acima de outros conteúdos */
+}
+
+/* Ajustes no router-outlet */
+router-outlet {
+  margin-top: 30px; /* Espaçamento para o conteúdo abaixo da navbar */
+}
+
+/* Estilos gerais para os itens da página */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', sans-serif; /* Fontes modernas */
+  color: #333; /* Cor padrão para textos */
+}
+
+button {
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.btn-success {
+  background-color: #4CAF50;
+  border-color: #388E3C;
+}
+
+.btn-danger {
+  background-color: #F44336;
+  border-color: #D32F2F;
+}
+
+.btn {
+  text-transform: uppercase; /* Botões em maiúsculas */
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.card-header {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .navbar-nav .nav-item .nav-link {
+    font-size: 14px; /* Font-size menor em telas pequenas */
+  }
+
+  .container {
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,89 @@
+/* Estilo geral para o componente */
+.container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Estilo para a tabela */
+table {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: #f8f9fa;
+}
+
+thead th {
+  text-align: center;
+  padding: 12px;
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+tbody td {
+  padding: 10px;
+  text-align: center;
+  font-size: 1rem;
+  color: #343a40;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+/* Estilo para os botões */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.fa {
+  margin-right: 5px;
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 768px) {
+  table {
+    font-size: 0.9rem;
+  }
+
+  td, th {
+    padding: 8px;
+  }
+
+  .btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+}
