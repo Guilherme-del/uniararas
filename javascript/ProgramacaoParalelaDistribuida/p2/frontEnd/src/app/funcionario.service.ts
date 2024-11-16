@@ -16,22 +16,13 @@ export class FuncionarioService {
   constructor(private http: HttpClient, private router: Router) {}
 
   // Método responsável por adicionar um novo 'Funcionário' btn 'Adicionar Funcionário':
-  adicionarFuncionario(nomeFuncionario, cargo, numeroIdentificador) {
-    const objFuncionario = {
-      nomeFuncionario,
-      cargo,
-      numeroIdentificador,
-    };
-
-    // ==> (POST - URL no Back-End:): http://localhost:8000/api/funcionarios
-    this.http.post(`${this.uri}/funcionarios`, objFuncionario).subscribe({
-      next: () => {
-        this.router.navigate(["/funcionario"]); // Redireciona para a rota /funcionario
-      },
-      error: (err) => {
-        console.error("Erro ao adicionar funcionário:", err);
-      },
-    });
+  /**
+   * Método para adicionar um novo funcionário.
+   * Agora retorna um Observable para que possamos usar o subscribe.
+   */
+  adicionarFuncionario(nomeFuncionario: string, cargo: string, numeroIdentificador: string): Observable<Funcionario> {
+    const novoFuncionario = { nomeFuncionario, cargo, numeroIdentificador };
+    return this.http.post<Funcionario>(`${this.uri}/funcionarios`, novoFuncionario);
   }
 
   /**
