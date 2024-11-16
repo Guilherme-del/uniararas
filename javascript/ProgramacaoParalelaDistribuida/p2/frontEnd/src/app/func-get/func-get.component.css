@@ -52,6 +52,7 @@ tbody tr:hover {
   background-color: #28a745;
   color: white;
   border: none;
+  margin-right: 10px; /* Adiciona um espaçamento entre os botões */
 }
 
 .btn-success:hover {
