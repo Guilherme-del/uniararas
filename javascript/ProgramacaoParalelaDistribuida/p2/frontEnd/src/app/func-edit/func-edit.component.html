@@ -1,3 +1,18 @@
-<p>
-  func-edit works!
-</p>
+<div class="container">
+  <h2>Editar Funcionário</h2>
+  <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="nomeFuncionario">Nome do Funcionário</label>
+      <input id="nomeFuncionario" formControlName="nomeFuncionario" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label for="cargo">Cargo</label>
+      <input id="cargo" formControlName="cargo" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label for="numeroIdentificador">Número Identificador</label>
+      <input id="numeroIdentificador" formControlName="numeroIdentificador" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Salvar</button>
+  </form>
+</div>

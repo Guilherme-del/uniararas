@@ -1,35 +1,36 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router'; // Importe o Router
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { Observable } from "rxjs";
+
+import Funcionario from './Funcionario';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
-
 export class FuncionarioService {
   // ==> Uri da api (Back-End)
-  uri = 'http://localhost:8000/api';
+  uri = "http://localhost:8000/api";
 
   // Injetando o Router no construtor
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {}
 
   // Método responsável por adicionar um novo 'Funcionário' btn 'Adicionar Funcionário':
   adicionarFuncionario(nomeFuncionario, cargo, numeroIdentificador) {
     const objFuncionario = {
       nomeFuncionario,
       cargo,
-      numeroIdentificador
+      numeroIdentificador,
     };
 
     // ==> (POST - URL no Back-End:): http://localhost:8000/api/funcionarios
     this.http.post(`${this.uri}/funcionarios`, objFuncionario).subscribe({
       next: () => {
-        this.router.navigate(['/funcionario']); // Redireciona para a rota /funcionario
+        this.router.navigate(["/funcionario"]); // Redireciona para a rota /funcionario
       },
       error: (err) => {
-        console.error('Erro ao adicionar funcionário:', err);
-      }
+        console.error("Erro ao adicionar funcionário:", err);
+      },
     });
   }
 
@@ -40,9 +41,23 @@ export class FuncionarioService {
     // ==> (GET - Url no Back-End): http://localhost:8000/api/funcionarios
     return this.http.get(`${this.uri}/funcionarios`);
   }
+  // Método para buscar um funcionário por ID
+  getFuncionarioById(id: string): Observable<Funcionario> {
+    return this.http.get<Funcionario>(`${this.uri}/funcionarios/${id}`);
+  }
 
-    // Método para excluir um funcionário
-    excluirFuncionario(id: string): Observable<void> {
-      return this.http.delete<void>(`${this.uri}/funcionarios/${id}`);
-    }
+  // Método para atualizar um funcionário
+  updateFuncionario(
+    id: string,
+    funcionario: Funcionario
+  ): Observable<Funcionario> {
+    return this.http.put<Funcionario>(
+      `${this.uri}/funcionarios/${id}`,
+      funcionario
+    );
+  }
+  // Método para excluir um funcionário
+  excluirFuncionario(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.uri}/funcionarios/${id}`);
+  }
 }
