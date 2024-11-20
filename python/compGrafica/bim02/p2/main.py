@@ -1,3 +1,8 @@
+"""
+USS Firebrand (NCC-68723)
+Autor: 
+"""
+
 import pygame
 from pygame.locals import *
 from OpenGL.GL import *
@@ -10,6 +15,8 @@ posicao_nave_z = -5
 dash_iniciado = False
 dash_completado = False  # Indica se o dash terminou
 dash_permitido = True    # Indica se o dash pode ser feito
+dash_tempo = 0           # Controla o tempo de duração do dash
+dash_duracao = 30        # Duração do dash
 
 # Color palette
 COR_CORPO = (0.5, 0.5, 0.6)
@@ -30,7 +37,7 @@ velocidade_dash = 0.5
 velocidade_fundo = velocidade_normal  # Velocidade inicial do movimento do fundo
 
 def desenhar_corpo_central_unico(raio_x, raio_y, profundidade, n_lados):
-    """Draw the main body of the ship."""
+    """Desenha o corpo principal da nave"""
     glColor3f(*COR_CORPO)
     glBegin(GL_TRIANGLE_FAN)
     glVertex3f(0, 0, 0)
@@ -53,7 +60,7 @@ def desenhar_corpo_central_unico(raio_x, raio_y, profundidade, n_lados):
         glEnd()
 
 def desenhar_cauda():
-    """Draws the tail of the ship."""
+    """Desenha a cauda da nave"""
     glColor3f(*COR_PAINEL)
     glBegin(GL_QUADS)
     glVertex3f(-0.05, 0.01, -0.05)
@@ -67,7 +74,7 @@ def desenhar_cauda():
     glEnd()
 
 def gerar_estrelas(qtd_estrelas, raio_min=5, raio_max=30):
-    """Generate stars around the ship within a sphere."""
+    """Gera estrelas ao redor da nave"""
     estrelas = []
     for _ in range(qtd_estrelas):
         theta = random.uniform(0, 2 * math.pi)
@@ -82,18 +89,18 @@ def gerar_estrelas(qtd_estrelas, raio_min=5, raio_max=30):
     return estrelas
 
 def atualizar_estrelas(estrelas, velocidade):
-    """Move stars and reposition those that exit the field of view."""
+    """Atualiza a posição das estrelas"""
     for estrela in estrelas:
-        estrela[2] += velocidade  # Move along the Z-axis
+        estrela[2] += velocidade  # Move ao longo do eixo Z
 
-        # Reposition stars that exit the view, bringing them back around the ship
-        if estrela[2] > 5:  # Adjusted range to make stars surround the ship
+        # Reposiciona as estrelas que saem do campo de visão
+        if estrela[2] > 5:  # Ajuste de distância para as estrelas
             estrela[2] = -30
             estrela[0] = random.uniform(-30, 30)
             estrela[1] = random.uniform(-30, 30)
 
 def desenhar_estrelas(estrelas):
-    """Draws stars to create an immersive environment."""
+    """Desenha as estrelas no fundo"""
     glBegin(GL_POINTS)
     glColor3f(*COR_ESTRELAS)
     for estrela in estrelas:
@@ -101,7 +108,7 @@ def desenhar_estrelas(estrelas):
     glEnd()
 
 def main():
-    global dash_iniciado, dash_completado, dash_permitido, angle_x, angle_y, velocidade_fundo, posicao_nave_z
+    global dash_iniciado, dash_completado, dash_permitido, angle_x, angle_y, velocidade_fundo, posicao_nave_z, dash_tempo
 
     pygame.init()
     display = (800, 600)
@@ -120,6 +127,7 @@ def main():
                 if (evento.key == pygame.K_SPACE or evento.key == pygame.K_RETURN) and dash_permitido:
                     dash_iniciado = True
                     dash_completado = False
+                    dash_tempo = 0  # Resetando o tempo do dash
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -152,12 +160,14 @@ def main():
         glPopMatrix()
 
         if dash_iniciado:
+            dash_tempo += 1
             posicao_nave_z += velocidade_dash
-            if posicao_nave_z > 5:
+            if posicao_nave_z > 5 or dash_tempo > dash_duracao:
                 dash_completado = True
                 dash_iniciado = False
                 dash_permitido = False
                 posicao_nave_z = -5
+                # Resetando a nave após o dash
         else:
             velocidade_fundo = velocidade_normal
 
