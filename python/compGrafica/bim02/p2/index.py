@@ -40,14 +40,10 @@ num_stars = 20000
 # Função para desenhar um cubo
 def draw_cube():
     glutInit()
-
     glColor3f(0.5, 0.5, 0.5)
-
     glRotatef(px, 0, 0, 0)  # Rotaciona em relação ao eixo X
     glRotatef(py, 0, 0, 0)  # Rotaciona em relação ao eixo Y
     glTranslatef(0, subir, zoom)  # Aplica o zoom
-
-
     glPushMatrix()
     glTranslatef(0, 0.2, 0)
     glRotatef(90, 1, 0, 0)
