@@ -183,7 +183,7 @@ def main():
     global pos_inicial_x, pos_final_x, pos_inicial_y, pos_final_y, viajem, escala
 
     pygame.init()
-    display = (800, 600)
+    display = (1980, 1080)
     pygame.display.set_mode(display, pygame.DOUBLEBUF | pygame.OPENGL)
     glTranslatef(0, 0, -50)
     glEnable(GL_DEPTH_TEST)
@@ -195,7 +195,7 @@ def main():
 
     while True:
         for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
+            if evento.type == KEYDOWN and evento.key == K_ESCAPE:
                 pygame.quit()
                 quit()
 
