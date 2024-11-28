@@ -1,3 +1,11 @@
+# Author info
+| Nome | Ra |
+| ------------- | ------------- |
+| Wayner Moraes  | 109097  |
+| Guilherme Cavenaghi | 109317 |
+| Vinicius Rossi | 110273 |
+| Rafael Souza | 109680 |
+| Rafael Godoy | 110453 |
 
 # MEAN Stack Docker Swarm Deployment
 
