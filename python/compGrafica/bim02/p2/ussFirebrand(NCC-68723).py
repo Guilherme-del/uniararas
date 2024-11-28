@@ -183,7 +183,7 @@ def main():
     global pos_inicial_x, pos_final_x, pos_inicial_y, pos_final_y, viajem, escala
 
     pygame.init()
-    display = (1980, 1080)
+    display = (1280, 720)
     pygame.display.set_mode(display, pygame.DOUBLEBUF | pygame.OPENGL)
     glTranslatef(0, 0, -50)
     glEnable(GL_DEPTH_TEST)
