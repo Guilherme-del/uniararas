@@ -32,7 +32,6 @@ COR_FAIXAS = (0.3, 0.3, 1)
 # Movement speed variables
 velocidade_fundo = 0.02  # Velocidade inicial do movimento do fundo
 
-
 def gerar_estrelas(qtd_estrelas, raio_min=5, raio_max=30):
     """Gera estrelas ao redor da nave"""
     estrelas = []
@@ -69,7 +68,6 @@ def desenhar_estrelas(estrelas):
 
 def desenha_nave():
     glutInit()
-
     glPushMatrix()
     glTranslatef(0, -1, -40)
     glRotatef(90, 1, 0, 0)
