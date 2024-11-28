@@ -26,11 +26,15 @@ COR_CORPO = (0.5, 0.5, 0.6)
 COR_DETALHES = (0.3, 0.3, 0.4)
 COR_COCKPIT = (0.2, 0.2, 0.2)
 COR_ESTRELAS = (1, 1, 1)
-COR_LARANJA = (1, 0.5, 0)
-COR_FAIXAS = (0.3, 0.3, 1)
+COR_LARANJA = [1, 0.5, 0]
+COR_FAIXAS = [0.3, 0.3, 1]
 
 # Movement speed variables
 velocidade_fundo = 0.02  # Velocidade inicial do movimento do fundo
+intensidade_laranja = 1.0
+intensidade_faixas = 1.0
+direcao_intensidade = 1  # 1 para aumentar, -1 para diminuir
+direcao_faixas = 1  # 1 para aumentar, -1 para diminuir
 
 def gerar_estrelas(qtd_estrelas, raio_min=5, raio_max=30):
     """Gera estrelas ao redor da nave"""
@@ -67,6 +71,21 @@ def desenhar_estrelas(estrelas):
     glEnd()
 
 def desenha_nave():
+    global intensidade_laranja, direcao_intensidade, intensidade_faixas, direcao_faixas
+
+    # Controle do brilho laranja
+    if viajem < -5:  # Quando a nave está prestes a entrar em dobra
+        intensidade_laranja += 0.02 * direcao_intensidade
+        intensidade_faixas += 0.02 * direcao_faixas
+        if intensidade_laranja >= 1.5:
+            direcao_intensidade = -1
+        elif intensidade_laranja <= 1.0:
+            direcao_intensidade = 1
+        if intensidade_faixas >= 1.5:
+            direcao_faixas = -1
+        elif intensidade_faixas <= 1.0:
+            direcao_faixas = 1
+
     glutInit()
     glPushMatrix()
     glTranslatef(0, -1, -40)
@@ -145,15 +164,20 @@ def desenha_nave():
 
     glPushMatrix()
     glTranslatef(6, -9, -40)
-    glRotatef(90,0,1,0)
-    glColor3f(*COR_LARANJA)
+    glRotatef(90, 0, 1, 0)
+    glColor3f(COR_LARANJA[0] * intensidade_laranja,
+              COR_LARANJA[1] * intensidade_laranja,
+              COR_LARANJA[2] * intensidade_laranja)
     gluCylinder(gluNewQuadric(), 2.55, 2.55, 1, 40, 40)
     glPopMatrix()
+
 
     glPushMatrix()
     glTranslatef(4.5, -9, -39)
     glRotatef(90,0,1,0)
-    glColor3f(*COR_FAIXAS)
+    glColor3f(COR_FAIXAS[0] * intensidade_faixas,
+              COR_FAIXAS[1] * intensidade_faixas,
+              COR_FAIXAS[2] * intensidade_faixas)
     gluCylinder(gluNewQuadric(), 1.5, 2, 35, 35, 35)
     glPopMatrix()
 
@@ -211,32 +235,31 @@ def main():
 
         # Aplica as movimentações da nave
         glPushMatrix()
-        if (pos_inicial_x !=  pos_final_x):
+        if pos_inicial_x != pos_final_x:
             pos_inicial_x -= 0.5
-        
-        if (pos_inicial_x == pos_final_x and pos_inicial_y != pos_final_y):
+
+        if pos_inicial_x == pos_final_x and pos_inicial_y != pos_final_y:
             pos_final_y += 0.5
 
-        glRotatef(pos_final_y,0,1,0)
-        glTranslatef(pos_inicial_x,0,20)
+        glRotatef(pos_final_y, 0, 1, 0)
+        glTranslatef(pos_inicial_x, 0, 20)
 
-        if (pos_inicial_x == pos_final_x and pos_inicial_y == pos_final_y):
-            if (viajem >= -10): 
+        if pos_inicial_x == pos_final_x and pos_inicial_y == pos_final_y:
+            if viajem >= -10:
                 viajem -= 0.1
-                glTranslatef(viajem,0,0)
-            else: 
+                glTranslatef(viajem, 0, 0)
+            else:
                 viajem -= 1
-                if (escala > 0):
-                   escala -= 0.09
-                glTranslatef(viajem,0,0)
+                if escala > 0:
+                    escala -= 0.09
+                glTranslatef(viajem, 0, 0)
                 glScalef(escala, escala, escala)
-        if (not escala < 0):
+        if not escala < 0:
             desenha_nave()
         glPopMatrix()
 
         pygame.display.flip()
         pygame.time.wait(10)
-
 
 if __name__ == "__main__":
     main()
