@@ -198,6 +198,9 @@ def main():
             if evento.type == KEYDOWN and evento.key == K_ESCAPE:
                 pygame.quit()
                 quit()
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                quit()
 
         # Limpar buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
