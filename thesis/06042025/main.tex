@@ -1,0 +1,147 @@
+% ------------------------------------------------------------
+% Arquivo principal do TCC - Guilherme Cavenaghi
+% ------------------------------------------------------------
+\documentclass[12pt,oneside,a4paper]{report}
+
+% ----------------- Pacotes -----------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{indentfirst}
+\usepackage{setspace}
+\usepackage{lmodern}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+
+% ----------------- Configurações -----------------
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0.2cm}
+
+% ----------------- Informações da Capa -----------------
+\title{\textbf{Avaliação Comparativa de Algoritmos em Diferentes Linguagens de Programação: Impacto no Desempenho e Eficiência Computacional}}
+\author{Guilherme Cavenaghi \\ RA: 109317 \\ Engenharia da Computação -- 11º Período \\ Centro Universitário Hermínio Ometto - UniAraras}
+\date{Março de 2025}
+
+\begin{document}
+
+% ----------------- Capa -----------------
+\begin{titlepage}
+    \begin{center}
+        \large
+        CENTRO UNIVERSITÁRIO HERMINIO OMETTO\\
+        UNIARARAS\\[1.5cm]
+
+        \textbf{GUILHERME CAVENAGHI}\\[5cm]
+
+        \textbf{\Large Avaliação Comparativa de Algoritmos em Diferentes Linguagens de Programação: Impacto no Desempenho e Eficiência Computacional}\\[5cm]
+
+        ARARAS\\
+        2025
+    \end{center}
+\end{titlepage}
+
+% ----------------- Folha de rosto -----------------
+\begin{titlepage}
+    \begin{center}
+        \large
+        CENTRO UNIVERSITÁRIO HERMINIO OMETTO\\
+        UNIARARAS\\[1.5cm]
+
+        \textbf{GUILHERME CAVENAGHI}\\[5cm]
+
+        \textbf{\Large Avaliação Comparativa de Algoritmos em Diferentes Linguagens de Programação: Impacto no Desempenho e Eficiência Computacional}\\[1.5cm]
+
+        Projeto de Trabalho de Conclusão de Curso apresentado ao curso de Engenharia da Computação da UniAraras, como parte dos requisitos para obtenção do grau de Bacharel.\\[0.5cm]
+
+        Orientador: Prof. Renato Luciano Cagnin\\[3cm]
+
+        ARARAS\\
+        2025
+    \end{center}
+\end{titlepage}
+
+% ----------------- Resumo -----------------
+\chapter*{Resumo}
+Este trabalho tem como objetivo realizar uma análise comparativa de desempenho de algoritmos clássicos implementados em diferentes linguagens de programação. Com base nas linguagens mais utilizadas na indústria e na comunidade acadêmica, serão avaliadas métricas como tempo de execução, uso de memória e complexidade de implementação. A proposta visa identificar como a escolha da linguagem pode influenciar na eficiência computacional de uma aplicação.
+
+\textbf{Palavras-chave:} algoritmos, linguagens de programação, desempenho, eficiência computacional.
+
+% ----------------- Abstract -----------------
+\chapter*{Abstract}
+This project aims to perform a comparative performance analysis of classic algorithms implemented in different programming languages. Based on the most used languages in the industry and academia, metrics such as execution time, memory usage, and implementation complexity will be evaluated. The proposal aims to identify how the choice of language can influence computational efficiency.
+
+\textbf{Keywords:} algorithms, programming languages, performance, computational efficiency.
+
+\tableofcontents
+
+% ----------------- Capítulos -----------------
+\chapter{Introdução}
+A escolha da linguagem de programação impacta diretamente no desempenho de sistemas computacionais. Diversos fatores como paradigma, gerenciamento de memória, compilação e tempo de execução afetam o comportamento dos algoritmos em diferentes ambientes \cite{greenwade93}. Assim, entender como linguagens populares se comportam em tarefas computacionalmente relevantes pode orientar melhores decisões no desenvolvimento de software.
+
+\chapter{Objetivos}
+\begin{itemize}
+    \item Avaliar o desempenho de algoritmos clássicos (como ordenação, busca e recursão) em diferentes linguagens de programação.
+    \item Identificar fatores que influenciam a performance nas linguagens analisadas.
+    \item Discutir o impacto da linguagem no consumo de recursos computacionais.
+\end{itemize}
+
+\chapter{Fundamentação Teórica}
+\section{Algoritmos Clássicos}
+Definição de algoritmos como ordenação (QuickSort, MergeSort), busca (Binária) e estruturas recursivas.
+
+\section{Complexidade Computacional}
+A análise dos algoritmos considerados neste trabalho será baseada nas classes de complexidade da Teoria da Computação. Estas classes descrevem o comportamento dos algoritmos em termos de tempo e espaço exigidos conforme o tamanho da entrada cresce.
+
+A classe \textbf{P} representa os problemas que podem ser resolvidos em tempo polinomial por uma máquina determinística. Já a classe \textbf{NP} representa os problemas cujas soluções podem ser verificadas em tempo polinomial, mesmo que não saibamos resolvê-los de forma eficiente.
+
+Problemas \textbf{NP-completos} são os mais difíceis dentro da classe NP, e um algoritmo eficiente para qualquer um deles implicaria em uma solução eficiente para todos os problemas NP. Já os \textbf{NP-difíceis} não pertencem necessariamente à classe NP, mas são ao menos tão difíceis quanto os problemas NP-completos.
+
+As definições e análises dos algoritmos implementados neste trabalho serão fundamentadas nessas categorias de complexidade, permitindo compreender não apenas a eficiência empírica, mas também os limites teóricos esperados para cada abordagem em diferentes linguagens de programação.
+
+\section{Linguagens de Programação}
+Serão consideradas as linguagens mais populares de acordo com rankings do TIOBE \cite{tiobe}, GitHub Octoverse \cite{octoverse} e Stack Overflow Developer Survey \cite{stackoverflow}:
+
+\begin{itemize}
+    \item Python
+    \item C
+    \item C++
+    \item Java
+    \item JavaScript
+    \item Go
+    \item Rust
+    \item TypeScript
+    \item C\#
+    \item Kotlin
+\end{itemize}
+
+\chapter{Justificativa}
+Com a crescente demanda por sistemas eficientes e responsivos, a escolha da linguagem de programação tornou-se um fator crítico no desenvolvimento de software. Embora existam inúmeros estudos sobre algoritmos, poucos se concentram em comparações práticas entre linguagens populares no contexto da eficiência computacional. Este trabalho se justifica pela necessidade de fornecer uma base empírica que auxilie desenvolvedores, estudantes e pesquisadores na tomada de decisões mais conscientes, considerando o impacto direto da linguagem no desempenho final das aplicações.
+
+\chapter{Delimitação do Tema}
+Este estudo foca na avaliação de algoritmos clássicos, como ordenação, busca e estruturas recursivas, implementados em linguagens de programação populares. A análise será limitada ao desempenho desses algoritmos em ambiente controlado, utilizando dados sintéticos. O escopo não abrange algoritmos paralelos ou distribuídos, nem aspectos específicos de bibliotecas ou frameworks externos. O foco é a linguagem em si e sua eficiência na execução de algoritmos representativos.
+
+\chapter{Metodologia}
+Será desenvolvida uma suíte de testes para implementar os mesmos algoritmos em cada linguagem selecionada. Os testes medirão:
+\begin{itemize}
+    \item Tempo de execução
+    \item Uso de memória
+    \item Facilidade de implementação (complexidade de código)
+\end{itemize}
+
+As execuções serão repetidas várias vezes em uma mesma máquina para garantir consistência. Serão usados dados sintéticos com diferentes tamanhos para simular cenários variados.
+
+\chapter{Resultados Esperados}
+Espera-se identificar quais linguagens oferecem melhor desempenho para tarefas específicas e como características como paradigma, tipagem, compilação influenciam o comportamento dos algoritmos. Esses dados poderão auxiliar desenvolvedores e pesquisadores na escolha mais adequada de linguagem para projetos com requisitos de desempenho.
+
+% ----------------- Referências -----------------
+\bibliographystyle{plainnat}
+\bibliography{Bibliografia}
+
+\end{document}
