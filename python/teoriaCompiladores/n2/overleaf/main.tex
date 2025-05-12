@@ -6,8 +6,11 @@
 \title{Uma Linguagem Específica de Domínio (DSL) para Resolução do Problema da Mochila em Python}
 
 \author{
-    \IEEEauthorblockN{Guilherme Cavenaghi}
-    \IEEEauthorblockA{Centro Universitário FHO \\ guilherme.cavenaghi@fho.edu.br}
+    \IEEEauthorblockN{Guilherme Cavenaghi - 109317,
+    Rafael Godoy - 110453,
+    Rafael Pereira de Souza - 109680}
+    \IEEEauthorblockA{Centro Universitário FHO\\
+    \{guilherme.cavenaghi, Rafagodoy330, rafael.souza\}@alunos.fho.edu.br}
 }
 
 \begin{document}
@@ -19,16 +22,16 @@ Este trabalho apresenta o desenvolvimento de uma linguagem específica de domín
 \end{abstract}
 
 \section{Introdução}
-O Problema da Mochila 0/1 é um clássico problema de otimização combinatória e pertence à classe NP-completo. Sua importância teórica e prática motivou a criação de ferramentas de modelagem e resolução. Neste contexto, propomos uma linguagem específica de domínio (DSL) que permite ao usuário descrever instâncias do problema de forma simples, sendo interpretadas por um analisador léxico, parser e máquina virtual escritos em Python.
+O Problema da Mochila 0/1 é um clássico problema de otimização combinatória e pertence à classe NP-completo \cite{martello1990knapsack}. Sua importância teórica e prática motivou a criação de ferramentas de modelagem e resolução. Neste contexto, propomos uma linguagem específica de domínio (DSL) que permite ao usuário descrever instâncias do problema de forma simples, sendo interpretadas por um analisador léxico, parser e máquina virtual escritos em Python.
 
 \section{Análise do Artigo-Base}
 Inspiramo-nos em trabalhos que utilizam DSLs para modelagem de problemas em logística e produção, adaptando o conceito à modelagem matemática do Knapsack Problem. As abordagens anteriores focam em sistemas WMS, enquanto este trabalho foca em complexidade computacional e algoritmos.
 
 \section{Definição do Novo Contexto}
-O problema da mochila é ideal para comparar a aplicabilidade de algoritmos das classes P e NP. Criar uma linguagem específica para esse fim permite estudar linguagens formais, gramáticas, autômatos e análise sintática em um contexto prático de TCC e teoria da computação.
+O problema da mochila é ideal para comparar a aplicabilidade de algoritmos das classes P e NP \cite{cormen2022algorithms}. Criar uma linguagem específica para esse fim permite estudar linguagens formais, gramáticas, autômatos e análise sintática em um contexto prático de TCC e teoria da computação.
 
 \section{Adaptação da Abordagem Metodológica}
-Utilizamos a biblioteca PLY (Python Lex-Yacc) para implementar o lexer e o parser. A gramática foi projetada em EBNF para permitir a entrada de instâncias da mochila com lista de itens, pesos, valores e capacidade.
+Utilizamos a biblioteca PLY (Python Lex-Yacc) para implementar o lexer e o parser. A gramática foi projetada em EBNF para permitir a entrada de instâncias da mochila com lista de itens, pesos, valores e capacidade. O uso de uma DSL para esse tipo de problema segue recomendações de projetos similares apresentados em \cite{mernik2005dsl}.
 
 \subsection{Exemplo de Entrada da DSL}
 \begin{lstlisting}
@@ -61,7 +64,7 @@ Resultados preliminares mostram que o tempo de entrada de dados via DSL é reduz
 A implementação da DSL permitiu explorar de maneira prática conceitos da teoria da computação, em especial linguagens formais e classes de complexidade. O projeto é extensível para resolução de outros problemas NP-Completo.
 
 \section*{Repositório}
-Disponível em: \texttt{https://github.com/SEU-USUARIO/knapsack-dsl}
+Disponível em: \texttt{https://github.com/Guilherme-del/uniararas/tree/master/python/teoriaCompiladores/n2}
 
 \bibliographystyle{IEEEtran}
 \bibliography{referencias}
