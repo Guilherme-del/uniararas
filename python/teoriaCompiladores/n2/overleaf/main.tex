@@ -11,7 +11,7 @@
     Rafael Godoy - 110453,
     Rafael Pereira de Souza - 109680}
     \IEEEauthorblockA{Centro Universitário FHO\\
-    \{guilherme.cavenaghi, Rafagodoy330, r.souza\}@alunos.fho.edu.br}
+    \{guilherme.cavenaghi, rafagodoy330, r.souza\}@alunos.fho.edu.br}
 }
 
 \begin{document}
@@ -23,7 +23,7 @@ Este trabalho apresenta o desenvolvimento de uma linguagem específica de domín
 \end{abstract}
 
 \section{Introdução}
-O Problema da Mochila 0/1 é um clássico problema de otimização combinatória e pertence à classe NP-completo \cite{martello1990knapsack}. Sua importância teórica e prática motivou a criação de ferramentas de modelagem e resolução. Neste contexto, propomos uma linguagem específica de domínio (DSL) que permite ao usuário descrever instâncias do problema de forma simples, sendo interpretadas por um analisador léxico, parser e máquina virtual escritos em Python.
+O Problema da Mochila 0/1 é um clássico problema de otimização combinatória e pertence à classe NP-completo \cite{martello1990knapsack}. Sua importância teórica e prática motivou a criação de ferramentas de modelagem e resolução. Neste contexto, propomos uma linguagem específica de domínio (DSL) que permite ao usuário descrever instâncias do problema de forma simples, sendo interpretada por um analisador léxico, parser e máquina virtual escritos em Python.
 
 \section{Análise do Artigo-Base}
 Inspiramo-nos em trabalhos que utilizam DSLs para modelagem de problemas em logística e produção, adaptando o conceito à modelagem matemática do Knapsack Problem. As abordagens anteriores focam em sistemas WMS, enquanto este trabalho foca em complexidade computacional e algoritmos.
@@ -31,7 +31,9 @@ Inspiramo-nos em trabalhos que utilizam DSLs para modelagem de problemas em log�
 \section{Definição do Novo Contexto}
 O problema da mochila é ideal para comparar a aplicabilidade de algoritmos das classes P e NP \cite{cormen2022algorithms}. Criar uma linguagem específica para esse fim permite estudar linguagens formais, gramáticas, autômatos e análise sintática em um contexto prático de TCC e teoria da computação.
 
-\section{Adaptação da Abordagem Metodológica}
+\section{Metodologia}
+
+\subsection{Adaptação da Abordagem}
 Utilizamos a biblioteca PLY (Python Lex-Yacc) para implementar o lexer e o parser. A gramática foi projetada em EBNF para permitir a entrada de instâncias da mochila com lista de itens, pesos, valores e capacidade. O uso de uma DSL para esse tipo de problema segue recomendações de projetos similares apresentados em \cite{mernik2005dsl}.
 
 \subsection{Exemplo de Entrada da DSL}
@@ -42,7 +44,16 @@ mochila capacidade=50:
   item "Fone" peso=1 valor=500
 \end{lstlisting}
 
-\section{Desenvolvimento da Aplicação}
+\subsection{Análise Semântica}
+A análise semântica garante que os comandos descritos na linguagem estejam logicamente corretos dentro das regras do domínio. No contexto desta DSL, serão avaliados:
+\begin{itemize}
+    \item Capacidade da mochila deve ser inteiro positivo;
+    \item Cada \texttt{item} deve possuir \texttt{peso} e \texttt{valor} inteiros positivos;
+    \item Comando \texttt{resolver} deve existir para acionar a execução.
+\end{itemize}
+Essas verificações são realizadas logo após o parser construir a estrutura interna. Caso algum valor inválido seja detectado, o interpretador gera mensagem de erro antes da execução. Uma fase semântica separada não foi implementada pois a linguagem é restrita e não exige verificação de tipos complexos ou escopos.
+
+\subsection{Desenvolvimento da Aplicação}
 \begin{itemize}
     \item Linguagem: Python 3.11
     \item Bibliotecas: PLY para lexer/parser, argparse para CLI
@@ -51,7 +62,8 @@ mochila capacidade=50:
         \item Definição da gramática da DSL
         \item Implementação do lexer
         \item Implementação do parser
-        \item Criação de interpretador e resolução do problema com algoritmos exato (NP) e heurístico (P)
+        \item Validação semântica integrada
+        \item Resolução do problema com algoritmo exato (NP) e heurístico (P)
     \end{enumerate}
 \end{itemize}
 
