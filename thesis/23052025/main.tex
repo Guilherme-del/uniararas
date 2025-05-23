@@ -1,0 +1,249 @@
+% ------------------------------------------------------------
+% Arquivo principal do TCC - Guilherme Cavenaghi
+% ------------------------------------------------------------
+\documentclass[12pt,oneside,a4paper]{report}
+
+% ----------------- Pacotes -----------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{indentfirst}
+\usepackage{setspace}
+\usepackage{lmodern}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage{geometry}
+\usepackage{titlesec} % Pacote para customizar títulos
+\geometry{a4paper, margin=2.5cm}
+
+% ----------------- Configurações -----------------
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0.2cm}
+
+% Remove a palavra "Capítulo" dos títulos dos capítulos
+\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter}{1em}{}
+
+\title{\textbf{Avaliação Comparativa de Algoritmos em Diferentes Linguagens de Programação: Impacto no Desempenho e Eficiência Computacional}}
+\author{Guilherme Cavenaghi \\ RA: 109317 \\ Engenharia da Computação -- 11º Período \\ Centro Universitário Hermínio Ometto - UniAraras}
+\date{Março de 2025}
+
+\begin{document}
+
+% ----------------- Folha de rosto -----------------
+\begin{titlepage}
+    \begin{center}
+        \large
+        CENTRO UNIVERSITÁRIO HERMINIO OMETTO\\
+        UNIARARAS\\[1.5cm]
+
+        \textbf{GUILHERME CAVENAGHI}\\[5cm]
+
+        \textbf{\Large Avaliação Comparativa de Algoritmos em Diferentes Linguagens de Programação: Impacto no Desempenho e Eficiência Computacional}\\[1.5cm]
+
+        Projeto de Trabalho de Conclusão de Curso apresentado ao curso de Engenharia da Computação da UniAraras, como parte dos requisitos para obtenção do grau de Bacharel.\\[0.5cm]
+
+        Orientador: Prof. Renato Luciano Cagnin\\[3cm]
+
+        ARARAS\\
+        2025
+    \end{center}
+\end{titlepage}
+
+% ----------------- Resumo -----------------
+\chapter*{Resumo}
+Este trabalho tem como objetivo realizar uma análise comparativa de desempenho de algoritmos clássicos implementados em diferentes linguagens de programação. Com base nas linguagens mais utilizadas na indústria e na comunidade acadêmica, serão avaliadas métricas como tempo de execução, uso de memória e complexidade de implementação. A proposta visa identificar como a escolha da linguagem pode influenciar na eficiência computacional de uma aplicação.
+
+\textbf{Palavras-chave:} algoritmos, linguagens de programação, desempenho, eficiência computacional.
+
+% ----------------- Capítulos -----------------
+
+% ----------------- Introdução -----------------
+\chapter{Introdução}
+O desenvolvimento de software eficiente depende de diversos fatores, e entre eles destaca-se a linguagem de programação utilizada. Embora a lógica dos algoritmos possa ser universal, a forma como eles são implementados e executados varia significativamente entre as linguagens. Neste contexto, torna-se relevante compreender de que forma essa escolha impacta o desempenho e a eficiência computacional.
+
+O conceito central deste trabalho é a análise comparativa entre diferentes linguagens, com foco em algoritmos clássicos. Parte-se do princípio de que, embora o algoritmo em si permaneça constante, o ambiente de execução, o modelo de compilação e a forma de gerenciamento de memória diferem entre linguagens, afetando diretamente os resultados. O problema (GAP) reside na carência de estudos empíricos que abordem essa comparação de maneira prática, considerando dados objetivos como tempo e memória.
+
+A justificativa para esta pesquisa se baseia na crescente demanda por aplicações de alto desempenho e na necessidade de tomar decisões mais embasadas na escolha da linguagem, tanto na academia quanto na indústria. Entender esses impactos pode auxiliar desenvolvedores a optarem por ferramentas mais adequadas ao seu contexto de projeto.
+
+A motivação deste trabalho surge da curiosidade em saber se determinadas linguagens, vistas como mais modernas ou mais populares, realmente oferecem vantagens práticas em termos de desempenho, ou se essa percepção está mais ligada a fatores culturais e de mercado do que técnicos.
+
+Os objetivos desta pesquisa incluem: avaliar o desempenho de algoritmos clássicos implementados em diferentes linguagens; identificar os fatores técnicos que afetam esse desempenho; e oferecer uma síntese clara de quais linguagens se destacam em cada aspecto analisado.
+
+Por fim, será apresentado um resumo dos resultados obtidos com os testes comparativos, destacando os pontos fortes e fracos de cada linguagem no contexto dos algoritmos utilizados.
+
+% ----------------- Referencial Teorico -----------------
+\chapter{Fundamentação Teórica}
+
+\section{Algoritmos Clássicos}
+
+Algoritmos são sequências finitas de instruções bem definidas que, partindo de um estado inicial, visam resolver um problema ou realizar uma tarefa específica. Entre os algoritmos clássicos, destacam-se:
+
+\begin{itemize}
+    \item \textbf{Algoritmos de ordenação}: como o QuickSort e o MergeSort, fundamentais para organizar dados de maneira eficiente.
+    \item \textbf{Algoritmos de busca}: como a Busca Binária, que permite localizar elementos em listas ordenadas com complexidade logarítmica.
+    \item \textbf{Estruturas recursivas}: padrões de implementação onde a solução de um problema envolve a chamada do próprio algoritmo em subproblemas menores.
+\end{itemize}
+
+\section{Complexidade Computacional}
+
+A análise dos algoritmos considerados neste trabalho será baseada nas classes de complexidade da Teoria da Computação. Estas classes descrevem o comportamento dos algoritmos em termos de tempo e espaço exigidos conforme o tamanho da entrada cresce.
+
+A classe \textbf{P} representa os problemas que podem ser resolvidos em tempo polinomial por uma máquina determinística. Já a classe \textbf{NP} representa os problemas cujas soluções podem ser verificadas em tempo polinomial, mesmo que não saibamos resolvê-los de forma eficiente.
+
+Problemas \textbf{NP-completos} são os mais difíceis dentro da classe NP, e um algoritmo eficiente para qualquer um deles implicaria em uma solução eficiente para todos os problemas NP. Já os \textbf{NP-difíceis} não pertencem necessariamente à classe NP, mas são ao menos tão difíceis quanto os problemas NP-completos.
+
+As definições e análises dos algoritmos implementados neste trabalho serão fundamentadas nessas categorias de complexidade, permitindo compreender não apenas a eficiência empírica, mas também os limites teóricos esperados para cada abordagem em diferentes linguagens de programação.
+
+\subsection{Exemplo de Algoritmo da Classe P}
+
+Um exemplo clássico de algoritmo da classe \textbf{P} é o \textbf{MergeSort}, um algoritmo de ordenação baseado no paradigma "dividir para conquistar", cuja complexidade é \( O(n \log n) \). Este algoritmo sempre resolve o problema de ordenar uma lista em tempo polinomial.
+
+\subsection{Exemplo de Problema da Classe NP}
+
+Um exemplo de problema da classe \textbf{NP} é o \textbf{Problema de Satisfatibilidade Booleana (SAT)}. Dada uma fórmula booleana composta por variáveis e operadores lógicos, o objetivo é determinar se existe uma atribuição de valores que satisfaça todas as cláusulas. Embora verificar uma solução seja rápido, encontrar uma solução não possui, até o momento, algoritmo determinístico em tempo polinomial.
+
+\subsection{Exemplo de Problema NP-Completo}
+
+O \textbf{Problema do Caixeiro Viajante (TSP — Traveling Salesman Problem)} é um exemplo clássico de problema \textbf{NP-completo}. Nele, dada uma lista de cidades e as distâncias entre elas, busca-se o menor caminho possível que visite cada cidade exatamente uma vez e retorne à cidade de origem. Apesar de ser fácil verificar uma solução proposta, encontrar a melhor solução é um desafio computacional ainda sem solução eficiente conhecida.
+
+\subsection{Exemplo de Problema NP-Difícil}
+
+O \textbf{Problema da Parada (Halting Problem)} é um exemplo clássico de problema \textbf{NP-difícil}. Este problema consiste em determinar se um programa de computador, dado um input específico, terminará sua execução ou continuará indefinidamente. Alan Turing demonstrou que não existe algoritmo capaz de resolver esse problema para todos os casos possíveis, caracterizando-o como indecidível.
+
+\subsection{Resumo das Classes e Exemplos}
+
+A seguir, são apresentados exemplos representativos de algoritmos e problemas relacionados a cada uma das principais classes de complexidade computacional:
+
+\begin{itemize}
+    \item \textbf{Classe P}: O \textbf{MergeSort} é um algoritmo de ordenação com tempo polinomial \(O(n \log n)\). Ele resolve de forma eficiente o problema de ordenar uma lista de elementos.
+    
+    \item \textbf{Classe NP}: O \textbf{Problema de Satisfatibilidade Booleana (SAT)} consiste em determinar se existe uma atribuição de valores que satisfaça todas as cláusulas de uma fórmula booleana. Embora a verificação de uma solução seja rápida, encontrar a solução pode ser computacionalmente difícil.
+    
+    \item \textbf{Classe NP-completo}: O \textbf{Problema do Caixeiro Viajante (TSP)} busca o menor percurso que visita todas as cidades exatamente uma vez e retorna à cidade de origem. Embora seja fácil verificar se um percurso proposto é válido, encontrar o percurso ótimo é um problema notoriamente difícil.
+    
+    \item \textbf{Classe NP-difícil}: O \textbf{Problema da Parada (Halting Problem)} questiona se, dado um programa e uma entrada, é possível determinar se o programa terminará ou continuará executando indefinidamente. Alan Turing provou que este problema é indecidível, ou seja, não existe um algoritmo geral que resolva essa questão para todos os casos.
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|p{8cm}|}
+\hline
+\textbf{Classe} & \textbf{Exemplo e Descrição} \\ \hline
+\textbf{P} & \textbf{MergeSort}: algoritmo de ordenação com tempo polinomial \(O(n \log n)\). \\ \hline
+\textbf{NP} & \textbf{SAT}: verificar se uma fórmula booleana pode ser satisfeita. \\ \hline
+\textbf{NP-completo} & \textbf{TSP}: encontrar o menor percurso que visita todas as cidades e retorna à origem. \\ \hline
+\textbf{NP-difícil} & \textbf{Problema da Parada}: determinar se um programa finaliza sua execução; problema indecidível. \\ \hline
+\end{tabular}
+\caption{Resumo das classes de complexidade e exemplos.}
+\end{table}
+
+\section{Linguagens de Programação}
+
+Serão consideradas as linguagens mais populares de acordo com rankings do TIOBE \cite{tiobe}, GitHub Octoverse \cite{octoverse} e Stack Overflow Developer Survey \cite{stackoverflow}:
+
+\begin{itemize}
+    \item Python
+    \item C
+    \item C++
+    \item Java
+    \item JavaScript
+    \item Go
+    \item Rust
+    \item TypeScript
+    \item C\#
+    \item Kotlin
+\end{itemize}
+
+Estas linguagens foram escolhidas devido à sua ampla adoção na indústria e na comunidade acadêmica, proporcionando uma base representativa para a análise comparativa do desempenho dos algoritmos clássicos implementados neste trabalho.
+
+% ----------------- Materiais e Métodos -----------------
+
+\chapter{Materiais e Métodos}
+
+\section{Materiais}
+
+Para a realização deste estudo, foram utilizados os seguintes recursos:
+
+\begin{itemize}
+    \item \textbf{Hardware}: Computador pessoal com processador multi-core, arquitetura x64, 16GB de memória RAM, e sistema operacional Linux Ubuntu 22.04.
+    \item \textbf{Ambientes de desenvolvimento}: 
+    \begin{itemize}
+        \item Compiladores e interpretadores específicos de cada linguagem: \textit{GCC} para C e C++, \textit{OpenJDK} para Java, \textit{Python 3.x}, \textit{Node.js} para JavaScript e TypeScript, \textit{Go Compiler}, \textit{Rust Compiler}, \textit{.NET SDK} para C\# e \textit{Kotlin Compiler}.
+        \item IDEs e editores: Visual Studio Code, IntelliJ IDEA e terminal de linha de comando.
+    \end{itemize}
+    \item \textbf{Ferramentas de medição}: 
+    \begin{itemize}
+        \item Ferramentas internas das linguagens para medição de tempo (por exemplo, \texttt{time}, \texttt{System.nanoTime}, \texttt{performance.now}).
+        \item Monitoramento de uso de memória via \texttt{/usr/bin/time} e ferramentas nativas do sistema.
+    \end{itemize}
+\end{itemize}
+
+Os algoritmos selecionados para este estudo foram implementados de forma equivalente em cada linguagem de programação, respeitando suas características sintáticas, mas preservando a lógica algorítmica original.
+
+\section{Métodos}
+
+\subsection{Seleção dos Algoritmos}
+
+Foram selecionados algoritmos clássicos amplamente reconhecidos na literatura de ciência da computação, com diferentes propósitos e níveis de complexidade:
+
+\begin{itemize}
+    \item \textbf{Ordenação}: QuickSort e MergeSort.
+    \item \textbf{Busca}: Busca Binária.
+    \item \textbf{Estruturas Recursivas}: cálculo do fatorial e sequência de Fibonacci.
+\end{itemize}
+
+\subsection{Implementação}
+
+Cada algoritmo foi implementado nas seguintes linguagens de programação:
+Python, C,C++,Java, JavaScript, Go, Rust, TypeScript, C\# e Kotlin.  
+As implementações buscaram manter a estrutura algorítmica o mais fiel possível, evitando otimizações específicas ou uso de bibliotecas externas que pudessem alterar significativamente o desempenho.
+
+\subsection{Procedimentos de Teste}
+
+Os algoritmos foram executados sobre conjuntos de dados sintéticos, com tamanhos variados para simular diferentes níveis de carga computacional:
+
+\begin{itemize}
+    \item Pequeno: 1.000 elementos.
+    \item Médio: 10.000 elementos.
+    \item Grande: 100.000 elementos.
+\end{itemize}
+
+Cada teste foi repetido 10 vezes para reduzir o impacto de variações esporádicas do sistema. Os seguintes parâmetros foram registrados:
+
+\begin{itemize}
+    \item \textbf{Tempo de execução}: medido em milissegundos.
+    \item \textbf{Uso de memória}: medido em megabytes.
+    \item \textbf{Facilidade de implementação}: avaliada qualitativamente com base na extensão e complexidade do código fonte.
+\end{itemize}
+
+\subsection{Análise dos Resultados}
+
+Os dados coletados foram organizados em tabelas e gráficos para facilitar a análise comparativa. A avaliação focou em:
+
+\begin{itemize}
+    \item Identificação da linguagem com melhor desempenho em cada categoria.
+    \item Comparação da eficiência entre linguagens compiladas e interpretadas.
+    \item Discussão sobre a relação entre características da linguagem (paradigma, tipagem, compilação) e o desempenho obtido.
+\end{itemize}
+
+Os resultados serviram de base para as conclusões acerca do impacto da escolha da linguagem de programação na eficiência computacional dos algoritmos clássicos.
+
+% ----------------- Justificativa -----------------
+
+\chapter{Justificativa}
+Com a crescente demanda por sistemas eficientes e responsivos, a escolha da linguagem de programação tornou-se um fator crítico no desenvolvimento de software. Embora existam inúmeros estudos sobre algoritmos, poucos se concentram em comparações práticas entre linguagens populares no contexto da eficiência computacional. Este trabalho se justifica pela necessidade de fornecer uma base empírica que auxilie desenvolvedores, estudantes e pesquisadores na tomada de decisões mais conscientes, considerando o impacto direto da linguagem no desempenho final das aplicações.
+
+% ----------------- Resultados Esperados -----------------
+\chapter{Resultados Esperados}
+Espera-se identificar quais linguagens oferecem melhor desempenho para tarefas específicas e como características como paradigma, tipagem, compilação influenciam o comportamento dos algoritmos. Esses dados poderão auxiliar desenvolvedores e pesquisadores na escolha mais adequada de linguagem para projetos com requisitos de desempenho.
+
+% ----------------- Referências -----------------
+\bibliographystyle{plainnat}
+\bibliography{Bibliografia}
+
+\end{document}
