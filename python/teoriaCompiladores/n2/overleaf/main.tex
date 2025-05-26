@@ -19,7 +19,7 @@
 \maketitle
 
 \begin{abstract}
-Este trabalho apresenta o desenvolvimento de uma linguagem específica de domínio (DSL) voltada à resolução do Problema da Mochila (Knapsack Problem), utilizando ferramentas de análise léxica e sintática em Python. A proposta permite representar instâncias do problema em uma linguagem legível e interpretável, com posterior execução por uma máquina virtual baseada em algoritmos P e NP. O objetivo é estudar a complexidade computacional e aplicar conceitos de teoria da computação em diferentes linguagens formais.
+Este trabalho apresenta o desenvolvimento de uma linguagem específica de domínio (DSL) voltada à resolução do Problema da Mochila (Knapsack Problem), utilizando ferramentas de análise léxica e sintática implementadas diretamente em Python. A proposta permite representar instâncias do problema em uma linguagem legível e interpretável, com posterior execução por uma máquina virtual baseada em algoritmos P e NP. O objetivo é estudar a complexidade computacional e aplicar conceitos de teoria da computação em diferentes linguagens formais.
 \end{abstract}
 
 \section{Introdução}
@@ -34,47 +34,48 @@ O problema da mochila é ideal para comparar a aplicabilidade de algoritmos das 
 \section{Metodologia}
 
 \subsection{Adaptação da Abordagem}
-Utilizamos a biblioteca PLY (Python Lex-Yacc) para implementar o lexer e o parser. A gramática foi projetada em EBNF para permitir a entrada de instâncias da mochila com lista de itens, pesos, valores e capacidade. O uso de uma DSL para esse tipo de problema segue recomendações de projetos similares apresentados em \cite{mernik2005dsl}.
+Implementamos o analisador léxico utilizando expressões regulares nativas do Python (\texttt{re}), e o parser foi criado de forma manual, com estruturas condicionais. A entrada da DSL é processada linha a linha, identificando comandos de definição de mochila, itens e execução. A análise sintática é simples e direta, adequada à estrutura restrita da linguagem proposta.
 
 \subsection{Exemplo de Entrada da DSL}
 \begin{lstlisting}
-mochila capacidade=50:
-  item "Notebook" peso=20 valor=2000
-  item "Livro" peso=5 valor=300
-  item "Fone" peso=1 valor=500
+mochila capacidade=50
+item nome=Notebook peso=20 valor=2000
+item nome=Livro peso=5 valor=300
+item nome=Fone peso=1 valor=500
+resolver
 \end{lstlisting}
 
 \subsection{Análise Semântica}
-A análise semântica garante que os comandos descritos na linguagem estejam logicamente corretos dentro das regras do domínio. No contexto desta DSL, serão avaliados:
+A análise semântica verifica que os comandos descritos na linguagem estejam logicamente corretos dentro das regras do domínio. No contexto desta DSL, são avaliados:
 \begin{itemize}
-    \item Capacidade da mochila deve ser inteiro positivo;
+    \item Capacidade da mochila deve ser um inteiro positivo;
     \item Cada \texttt{item} deve possuir \texttt{peso} e \texttt{valor} inteiros positivos;
-    \item Comando \texttt{resolver} deve existir para acionar a execução.
+    \item O comando \texttt{resolver} deve existir para acionar a execução.
 \end{itemize}
-Essas verificações são realizadas logo após o parser construir a estrutura interna. Caso algum valor inválido seja detectado, o interpretador gera mensagem de erro antes da execução. Uma fase semântica separada não foi implementada pois a linguagem é restrita e não exige verificação de tipos complexos ou escopos.
+Essas verificações são realizadas após o parser construir a estrutura interna. Caso algum valor inválido seja detectado, o interpretador gera mensagem de erro antes da execução. Não foi implementada uma fase semântica separada, pois a linguagem é restrita e não exige verificação de tipos complexos ou escopos.
 
 \subsection{Desenvolvimento da Aplicação}
 \begin{itemize}
     \item Linguagem: Python 3.11
-    \item Bibliotecas: PLY para lexer/parser, argparse para CLI
+    \item Bibliotecas: \texttt{re} para expressões regulares
     \item Etapas:
     \begin{enumerate}
-        \item Definição da gramática da DSL
-        \item Implementação do lexer
-        \item Implementação do parser
+        \item Definição da gramática da DSL (implícita nas expressões regulares)
+        \item Implementação do lexer com \texttt{re}
+        \item Implementação do parser com estruturas condicionais
         \item Validação semântica integrada
-        \item Resolução do problema com algoritmo exato (NP) e heurístico (P)
+        \item Resolução do problema com algoritmo exato (programação dinâmica)
     \end{enumerate}
 \end{itemize}
 
 \section{Justificativas das Escolhas Técnicas}
-Python foi escolhido pela facilidade de prototipagem e por possuir bibliotecas robustas para construção de compiladores. A representação DSL textual permite reusabilidade, clareza e padronização das instâncias.
+Python foi escolhido pela facilidade de prototipagem e por possuir suporte nativo a expressões regulares, facilitando a criação do analisador léxico. A implementação direta do parser simplifica o desenvolvimento, considerando a gramática simples da DSL. A entrada textual permite reusabilidade, clareza e padronização das instâncias.
 
 \section{Resultados}
-Resultados preliminares mostram que o tempo de entrada de dados via DSL é reduzido, e a resolução com heurística apresenta desempenho satisfatório frente a soluções exatas com instâncias pequenas e médias.
+Resultados preliminares mostram que o tempo de entrada de dados via DSL é reduzido, e a resolução com programação dinâmica apresenta desempenho satisfatório em instâncias pequenas e médias.
 
 \section{Conclusão}
-A implementação da DSL permitiu explorar de maneira prática conceitos da teoria da computação, em especial linguagens formais e classes de complexidade. O projeto é extensível para resolução de outros problemas NP-Completo.
+A implementação da DSL permitiu explorar de maneira prática conceitos da teoria da computação, em especial linguagens formais e classes de complexidade. O projeto é extensível para resolução de outros problemas NP-completo.
 
 \section*{Repositório}
 Disponível em: \href{https://github.com/Guilherme-del/uniararas/tree/master/python/teoriaCompiladores/n2}{GitHub}
