@@ -1,7 +1,7 @@
 import re
 
-# ==========
-# 1️⃣ LEXER
+# ==========  
+# 1️⃣ LEXER  
 # ==========
 
 def lexer(linhas):
@@ -23,8 +23,8 @@ def lexer(linhas):
             tokens.append(('RESOLVER',))
     return tokens
 
-# =============
-# 2️⃣ PARSER
+# =============  
+# 2️⃣ PARSER  
 # =============
 
 def parser(tokens):
@@ -39,8 +39,8 @@ def parser(tokens):
             estrutura["resolver"] = True
     return estrutura
 
-# ==========================
-# 3️⃣ INTERPRETADOR / ALGORITMO
+# ==========================  
+# 3️⃣ INTERPRETADOR / ALGORITMO  
 # ==========================
 
 def resolver_mochila(capacidade, itens):
@@ -58,30 +58,71 @@ def resolver_mochila(capacidade, itens):
     
     return dp[n][capacidade]
 
-# ===================
-# 4️⃣ EXECUÇÃO FINAL
+# ==========================  
+# 4️⃣ FUNÇÃO DE LEITURA DE ARQUIVO  
+# ==========================
+
+def ler_entrada_arquivo(caminho):
+    try:
+        with open(caminho, 'r') as arquivo:
+            return arquivo.read()
+    except FileNotFoundError:
+        print(f"Erro: Arquivo '{caminho}' não encontrado.")
+        return ""
+    except Exception as e:
+        print(f"Erro ao ler o arquivo: {e}")
+        return ""
+
+# ===================  
+# 5️⃣ EXECUÇÃO PRINCIPAL  
 # ===================
 
 if __name__ == "__main__":
-    # 📥 Entrada da linguagem customizada (pode vir de arquivo ou string)
-    entrada = """
-    mochila capacidade=50
-    item nome=livro peso=10 valor=60
-    item nome=notebook peso=20 valor=100
-    item nome=jaqueta peso=30 valor=120
-    resolver
-    """
+    print("Escolha o modo de entrada:")
+    print("1 - Input manual")
+    print("2 - Arquivo")
+    print("3 - Exemplo")
     
+    modo = input("Digite 1, 2 ou 3: ").strip()
+
+    if modo == '1':
+        print("Digite sua entrada (termine com a palavra 'FIM'):")
+        linhas_input = []
+        while True:
+            linha = input()
+            if linha.strip().upper() == 'FIM':
+                break
+            linhas_input.append(linha)
+        entrada = '\n'.join(linhas_input)
+
+    elif modo == '2':
+        caminho = input("Digite o caminho do arquivo: ").strip()
+        entrada = ler_entrada_arquivo(caminho)
+
+    elif modo == '3':
+        entrada = """
+        mochila capacidade=50
+        item nome=livro peso=10 valor=60
+        item nome=notebook peso=20 valor=100
+        item nome=jaqueta peso=30 valor=120
+        resolver
+        """
+        print(entrada.strip())
+
+    else:
+        print("Modo inválido.")
+        exit(1)
+
     linhas = entrada.strip().split('\n')
-    
+
     # Passo 1: lexer
     tokens = lexer(linhas)
     print("[TOKENS]", tokens)
-    
+
     # Passo 2: parser
     estrutura = parser(tokens)
     print("[ESTRUTURA]", estrutura)
-    
+
     # Passo 3: interpretador
     if estrutura.get("resolver"):
         resultado = resolver_mochila(estrutura["capacidade"], estrutura["itens"])
