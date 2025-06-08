@@ -1,20 +1,18 @@
 \documentclass[12pt, a4paper]{article}
+\usepackage[lmargin=3cm,rmargin=2cm,tmargin=3cm,bmargin=2cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{titling}
 \usepackage[brazil]{babel}
-\usepackage{graphicx}
-\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{enumerate,setspace,graphicx,amsmath,tikz,amsfonts,amssymb}
 \usepackage{indentfirst}
-\usepackage{setspace}
 \usepackage{lmodern}
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage[alf]{abntex2cite}
 \usepackage{url}
-\usepackage{geometry}
 \usepackage{float}
 \usepackage[skip=10pt]{caption}
-\geometry{a4paper, margin=2.5cm}
 
 % Formatação do artigo
 \onehalfspacing
@@ -22,28 +20,27 @@
 \setlength{\parskip}{0.2cm}
 
 % Configurações do título e autores
-\usepackage{titling}
 \pretitle{\raggedright\large\bfseries}
-\posttitle{\par\vspace{0.5em}}
+\posttitle{\par\vspace{0.1em}}
 \preauthor{\raggedright\small}
-\postauthor{}
+\postauthor{\par\vspace{-5em}}
 
-% Título e autores em linha única
+% Título e autores
 \title{Avaliação Comparativa de Algoritmos em Diferentes Linguagens de Programação: Impacto no Desempenho e Eficiência Computacional}
-\author{Guilherme Cavenaghi (Fundação Hermínio Ometto) \texttt{guilherme.cavenaghi@alunos.fho.edu.br}}
+\author{Guilherme Cavenaghi (Fundação Hermínio Ometto) guilherme.cavenaghi@alunos.fho.edu.br}
 \date{}
+
 \begin{document}
 \pagenumbering{gobble}
 
 \maketitle
-\vspace{-5em}
 
 % Resumo alinhado à esquerda
 \begin{flushleft}
 \section*{Resumo}
 \noindent Este trabalho apresenta uma análise comparativa de desempenho de algoritmos de classes polinomiais implementados em múltiplas linguagens de programação. O estudo busca avaliar métricas como tempo de execução, uso de memória e complexidade de implementação, considerando diferentes paradigmas de execução e modelos de tipagem. A investigação tem como objetivo identificar potenciais impactos da linguagem de programação na eficiência computacional, fornecendo subsídios para decisões fundamentadas em contextos de desenvolvimento e pesquisa. A abordagem adotada inclui experimentos controlados e repetidos para garantir confiabilidade estatística, permitindo a comparação rigorosa entre as linguagens avaliadas. Espera-se, com isso, contribuir para o entendimento do papel das linguagens de programação no desempenho de algoritmos, orientando escolhas tecnológicas em projetos computacionais de diferentes naturezas.
 
-\vspace{0.2cm}
+\vspace{0.15cm}
 \noindent\textbf{Palavras-chave:} algoritmos, linguagens de programação, desempenho computacional, análise de complexidade, eficiência de execução.
 \end{flushleft}
 
