@@ -9,7 +9,7 @@
 \usepackage{lmodern}
 \usepackage{color}
 \usepackage{hyperref}
-\usepackage{natbib}
+\usepackage[alf]{abntex2cite}
 \usepackage{url}
 \usepackage{geometry}
 \usepackage{float}
@@ -50,7 +50,7 @@
 
 % 1. Introdução
 \section{Introdução}
-O desenvolvimento de software de alta qualidade e desempenho constitui um aspecto central da computação, uma vez que a eficiência computacional afeta diretamente o tempo de execução, o consumo de recursos e a escalabilidade das aplicações. Nesse contexto, a escolha da linguagem de programação emerge como uma variável determinante, influenciando a forma como algoritmos são implementados e executados, impactando, consequentemente, o desempenho geral dos sistemas. Embora a lógica algorítmica seja, em essência, independente da linguagem, fatores como modelo de execução (interpretado ou compilado), gerenciamento de memória (manual ou automático), tipagem (estática ou dinâmica) e otimizações aplicadas pelos compiladores ou interpretadores introduzem variações significativas no comportamento prático dos algoritmos \cite{sebesta2016}.
+O desenvolvimento de software de alta qualidade e desempenho constitui um aspecto central da computação, uma vez que a eficiência computacional afeta diretamente o tempo de execução, o consumo de recursos e a escalabilidade das aplicações. Nesse contexto, a escolha da linguagem de programação emerge como uma variável determinante, influenciando a forma como algoritmos são implementados e executados, impactando, consequentemente, o desempenho geral dos sistemas. Embora a lógica algorítmica seja, em essência, independente da linguagem, fatores como modelo de execução (interpretado ou compilado), gerenciamento de memória (manual ou automático), tipagem (estática ou dinâmica) e otimizações aplicadas pelos compiladores ou interpretadores introduzem variações significativas no comportamento prático dos algoritmos, como destaca \citeonline{sebesta2016}.
 
 Apesar da reconhecida importância desse tema, observa-se na literatura uma lacuna no que diz respeito a estudos empíricos que abordem comparativamente o impacto das linguagens de programação no desempenho de algoritmos. A maioria dos trabalhos existentes limita-se a análises conceituais ou relatos de experiências pontuais, carecendo de experimentação controlada e de dados quantitativos robustos que permitam fundamentar decisões de escolha de linguagem em cenários computacionais diversos. Tal lacuna evidencia a necessidade de investigações sistemáticas que transcendam discussões meramente subjetivas e contribuam para a consolidação do conhecimento científico na área.
 
@@ -79,7 +79,7 @@ Neste trabalho, o foco recai sobre as classes de complexidade polinomial, fundam
     \[
     T(n) = O(n^k)
     \]
-    para alguma constante \( k \). Essa classe representa problemas considerados tratáveis na prática, como o MergeSort (\( O(n \log n) \)) \cite{knuth1998}.
+    para alguma constante \( k \). Essa classe representa problemas considerados tratáveis na prática, como o MergeSort (\( O(n \log n) \)) \citeonline{knuth1998}.
 
     \item \textbf{Classe NP}: Compreende problemas cujas soluções podem ser verificadas em tempo polinomial, mesmo que não exista algoritmo determinístico conhecido para resolvê-los em tempo polinomial. Para todo \( L \in \text{NP} \), existe um verificador determinístico \( V(x,y) \):
     \[
@@ -89,13 +89,13 @@ Neste trabalho, o foco recai sobre as classes de complexidade polinomial, fundam
     \[
     T_V(|x| + |y|) = O((|x| + |y|)^k)
     \]
-    Exemplo: Satisfatibilidade Booleana (SAT) \cite{garey1979}.
+    Exemplo: Satisfatibilidade Booleana (SAT) \citeonline{garey1979}.
 
     \item \textbf{Classe NP-completo}: Engloba problemas para os quais qualquer problema em NP pode ser reduzido a eles em tempo polinomial. Para \( A \) ser NP-completo:
     \[
     A \in \text{NP} \quad \text{e} \quad \forall B \in \text{NP}, \quad B \leq_P A
     \]
-    onde \( B \leq_P A \) indica uma redução polinomial. Exemplo: Problema da Mochila (Knapsack) \cite{garey1979}.
+    onde \( B \leq_P A \) indica uma redução polinomial. Exemplo: Problema da Mochila (Knapsack) \citeonline{garey1979}.
 
     \item \textbf{Classe NP-difícil}: Abrange problemas que são no mínimo tão difíceis quanto qualquer problema de NP, podendo ser ou não verificáveis em tempo polinomial. Para \( A \) ser NP-difícil:
     \[
@@ -109,7 +109,7 @@ Neste trabalho, o foco recai sobre as classes de complexidade polinomial, fundam
     \text{Não}, & \text{caso contrário}
     \end{cases}
     \]
-    O Teorema de Turing demonstra que HALT é indecidível, não existindo algoritmo que resolva o problema para todas as entradas \cite{sipser2012}.
+    O Teorema de Turing demonstra que HALT é indecidível, não existindo algoritmo que resolva o problema para todas as entradas \citeonline{sipser2012}.
 \end{itemize}
 
 \begin{figure}[H]
@@ -144,9 +144,9 @@ A linguagem de programação exerce impacto significativo na implementação de 
 As linguagens foram escolhidas com base em:
 
 \begin{itemize}
-    \item \textbf{Popularidade}: Métricas como o TIOBE Index \cite{tiobe}, GitHub Octoverse \cite{octoverse} e Stack Overflow Developer Survey \cite{stackoverflow}.
+    \item \textbf{Popularidade}: Métricas como o TIOBE Index \citeonline{tiobe}, GitHub Octoverse \citeonline{octoverse} e Stack Overflow Developer Survey \citeonline{stackoverflow}.
     \item \textbf{Diversidade de paradigmas}: Compiladas (C, C++, Rust), interpretadas (Python, JavaScript) e híbridas (Java, C\#, Go, Kotlin, TypeScript).
-    \item \textbf{Aplicabilidade acadêmica e industrial}: Referências como Sebesta \cite{sebesta2016} evidenciam o uso prático e teórico das linguagens.
+    \item \textbf{Aplicabilidade acadêmica e industrial}: Referências como Sebesta \citeonline{sebesta2016} evidenciam o uso prático e teórico das linguagens.
 \end{itemize}
 
 \subsubsection{Paradigmas e Modelos de Execução}
@@ -161,10 +161,6 @@ A diversidade de linguagens reflete diferenças como:
 
 Essas características influenciam diretamente o desempenho e a escalabilidade dos algoritmos, justificando a escolha das linguagens para os experimentos.
 
-\subsection{Conexão entre Algoritmos e Linguagens}
-
-A análise comparativa proposta neste trabalho visa relacionar a complexidade teórica dos algoritmos com a eficiência prática das linguagens de programação. Essa conexão é fundamental para compreender os trade-offs entre teoria (complexidade assintótica) e prática (tempo de execução real e uso de recursos), subsidiando decisões mais embasadas na seleção de linguagens em contextos acadêmicos e industriais.
-
 
 % 3. Materiais e Métodos
 \section{Materiais e Métodos}
@@ -174,9 +170,10 @@ A análise comparativa proposta neste trabalho visa relacionar a complexidade te
 Os experimentos serão realizados em ambiente controlado, a fim de reduzir variações externas que possam interferir nas medições de desempenho. A configuração de hardware e software utilizada é a seguinte:
 
 \begin{itemize}
-    \item \textbf{Processador}: Intel Core i7-11800H, com 8 núcleos físicos e suporte a múltiplos threads, o que possibilita executar algoritmos em diferentes linguagens com capacidade computacional adequada.
-    \item \textbf{Memória RAM}: 16 GB DDR4, garantindo que a execução dos experimentos ocorra sem restrições de memória para os tamanhos de entrada definidos.
-    \item \textbf{Sistema Operacional}: Ubuntu 22.04 LTS, escolhido por sua estabilidade e suporte a múltiplas linguagens de programação, além de ferramentas de monitoramento de desempenho.
+    \item \textbf{Processador}: 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80 GHz, com suporte a múltiplos threads, adequado para executar algoritmos em diferentes linguagens com boa capacidade computacional.
+    \item \textbf{Memória RAM}: 16 GB DDR4 (2667 MHz), garantindo que a execução dos experimentos ocorra sem restrições de memória para os tamanhos de entrada definidos.
+    \item \textbf{Placa de Vídeo}: Intel(R) Iris(R) Xe Graphics com 128 MB de memória dedicada, suficiente para suportar ambientes gráficos e alguns experimentos que exigem renderização leve.
+    \item \textbf{Sistema Operacional}: Ubuntu 22.04 LTS, escolhido por sua estabilidade, suporte a múltiplas linguagens de programação e ferramentas robustas de monitoramento de desempenho.
 \end{itemize}
 
 Essa infraestrutura assegura uniformidade na execução dos algoritmos, minimizando influências externas como processos em segundo plano ou gerenciadores de energia.
@@ -221,7 +218,7 @@ Para cada linguagem de programação e algoritmo, o procedimento experimental se
 
 \subsection{Desempenho por Classe de Algoritmo}
 
-Com base na literatura técnica \cite{cormen2022,sebesta2016} e na fundamentação teórica apresentada, antecipa-se que os algoritmos classificados na Classe P (como o MergeSort) apresentem desempenho significativamente superior em linguagens compiladas (C, Rust) em relação a linguagens interpretadas (Python, JavaScript). Estima-se que, para entradas de tamanho médio e grande (\( n \geq 10^4 \)), linguagens como C e Rust possam apresentar desempenho entre 3 a 5 vezes superior ao de linguagens interpretadas, devido à compilação nativa e à ausência de overheads de máquina virtual. Espera-se também que linguagens como C++ se beneficiem de otimizações estáticas de compilação, apresentando resultados consistentes em termos de tempo de execução, especialmente para algoritmos como Knapsack.
+Com base na literatura técnica \citeonline{cormen2022,sebesta2016} e na fundamentação teórica apresentada, antecipa-se que algoritmos classificados na Classe P, como o MergeSort, apresentem desempenho superior quando implementados em linguagens compiladas (por exemplo, C e Rust) em relação a linguagens interpretadas (como Python e JavaScript). Isso se deve principalmente à compilação nativa, que elimina a sobrecarga associada a interpretadores e máquinas virtuais, conforme discutido por \citeonline{sebesta2016}. Para entradas de tamanho médio e grande (\( n \geq 10^4 \)), estima-se que linguagens compiladas possam ser de três a cinco vezes mais rápidas do que linguagens interpretadas, graças a otimizações de tempo de compilação e execução mais eficiente. Além disso, espera-se que linguagens como C++ se beneficiem de técnicas de otimização estática, proporcionando resultados consistentes em termos de tempo de execução, especialmente para algoritmos como o Knapsack, cuja análise de complexidade e estrutura algorítmica são amplamente detalhadas por \citeonline{cormen2022}.
 
 Para problemas da Classe NP, como SAT, espera-se que linguagens com gerenciamento automático de memória e otimizações de execução just-in-time (JIT), como Java e Go, apresentem bom equilíbrio entre tempo de execução e consumo de memória. Em problemas NP-completos como Knapsack, o uso de recursos (tempo e memória) tende a crescer exponencialmente com o tamanho da entrada. Ainda assim, linguagens como C++ devem apresentar vantagem devido à eficiência de compilação e ao controle de memória manual, possibilitando otimizações específicas para entradas grandes.
 
@@ -258,7 +255,7 @@ De forma consolidada, espera-se:
 \end{itemize}
 
 % REFERÊNCIAS
-\bibliographystyle{plainnat}
+\bibliographystyle{abntex2-alf}
 \bibliography{Bibliografia}
 
 \end{document}
