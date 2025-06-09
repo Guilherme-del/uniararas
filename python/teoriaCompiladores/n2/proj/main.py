@@ -80,10 +80,9 @@ def ler_entrada_arquivo(caminho):
 if __name__ == "__main__":
     print("Escolha o modo de entrada:")
     print("1 - Input manual")
-    print("2 - Arquivo")
-    print("3 - Exemplo")
+    print("2 - Exemplo")
     
-    modo = input("Digite 1, 2 ou 3: ").strip()
+    modo = input("Digite 1 ou 2: ").strip()
 
     if modo == '1':
         print("Digite sua entrada (termine com a palavra 'FIM'):")
@@ -94,12 +93,7 @@ if __name__ == "__main__":
                 break
             linhas_input.append(linha)
         entrada = '\n'.join(linhas_input)
-
     elif modo == '2':
-        caminho = input("Digite o caminho do arquivo: ").strip()
-        entrada = ler_entrada_arquivo(caminho)
-
-    elif modo == '3':
         entrada = """
         mochila capacidade=50
         item nome=livro peso=10 valor=60
