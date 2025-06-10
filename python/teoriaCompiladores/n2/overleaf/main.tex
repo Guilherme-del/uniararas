@@ -34,7 +34,7 @@ O problema da mochila é ideal para comparar a aplicabilidade de algoritmos das 
 \section{Metodologia}
 
 \subsection{Adaptação da Abordagem}
-Implementamos o analisador léxico utilizando expressões regulares nativas do Python (\texttt{re}), e o parser foi criado de forma manual, com estruturas condicionais. A entrada da DSL é processada linha a linha, identificando comandos de definição de mochila, itens e execução. A análise sintática é simples e direta, adequada à estrutura restrita da linguagem proposta.
+Implementamos o analisador léxico utilizando expressões regulares nativas do Python (re), e o parser foi criado de forma manual, com estruturas condicionais. A entrada da DSL é processada linha a linha, identificando comandos de definição de mochila, itens e execução. A análise sintática é simples e direta, adequada à estrutura restrita da linguagem proposta, que apresenta uma gramática linear e regular, com sentenças formadas por comandos sequenciais e sem aninhamento ou construções recursivas complexas.
 
 \subsection{Exemplo de Entrada da DSL}
 \begin{lstlisting}
@@ -75,7 +75,7 @@ Python foi escolhido pela facilidade de prototipagem e por possuir suporte nativ
 Resultados preliminares mostram que o tempo de entrada de dados via DSL é reduzido, e a resolução com programação dinâmica apresenta desempenho satisfatório em instâncias pequenas e médias.
 
 \section{Conclusão}
-A implementação da DSL permitiu explorar de maneira prática conceitos da teoria da computação, em especial linguagens formais e classes de complexidade. O projeto é extensível para resolução de outros problemas NP-completo.
+A implementação da DSL permitiu explorar de maneira prática conceitos da teoria da computação, em especial linguagens formais e classes de complexidade. O projeto é extensível para resolução de outros problemas de classes polinomiais.
 
 \section*{Repositório}
 Disponível em: \href{https://github.com/Guilherme-del/uniararas/blob/master/python/teoriaCompiladores/n2/proj/main.py}{GitHub}
