@@ -48,7 +48,7 @@ public class NP {
 
     public static void main(String[] args) throws IOException {
         String size = args.length > 0 ? args[0] : "small";
-        String path = "../data/" + size + "/sat_" + size + ".json";
+        String path = "../datasets/" + size + "/sat_" + size + ".json";
         List<List<Integer>> cnf = readSAT(path);
         boolean sat = isSatisfiable(cnf, 20);
         System.out.println("SAT (" + size + "): " + (sat ? "Satisfatível" : "Insatisfatível"));

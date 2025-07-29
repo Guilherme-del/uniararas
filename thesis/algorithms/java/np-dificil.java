@@ -4,7 +4,7 @@ import java.util.*;
 public class NPDificil {
     public static void main(String[] args) throws IOException {
         String size = args.length > 0 ? args[0] : "small";
-        String path = "../data/" + size + "/halting_" + size + ".json";
+        String path = "../datasets/" + size + "/halting_" + size + ".json";
         BufferedReader reader = new BufferedReader(new FileReader(path));
         String line;
         int halted = 0, total = 0;

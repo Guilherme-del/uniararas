@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[]) {
     std::string size = argc > 1 ? argv[1] : "small";
-    std::string path = "../data/" + size + "/halting_" + size + ".json";
+    std::string path = "../datasets/" + size + "/halting_" + size + ".json";
     std::ifstream file(path);
     std::string line;
     int halted = 0, total = 0;

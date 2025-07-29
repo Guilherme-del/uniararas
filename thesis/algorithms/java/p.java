@@ -32,7 +32,7 @@ public class P {
 
     public static void main(String[] args) throws IOException {
         String size = args.length > 0 ? args[0] : "small";
-        String path = "../data/" + size + "/merge_sort_" + size + ".json";
+        String path = "../datasets/" + size + "/merge_sort_" + size + ".json";
         int[] arr = readJsonArray(path);
         mergeSort(arr, 0, arr.length - 1);
         System.out.println("Ordenado " + arr.length + " elementos (" + size + ")");

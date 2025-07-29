@@ -35,7 +35,7 @@ func main() {
         size = os.Args[1]
     }
 
-    path := "../data/" + size + "/knapsack_" + size + ".json"
+    path := "../datasets/" + size + "/knapsack_" + size + ".json"
     data, err := ioutil.ReadFile(path)
     if err != nil {
         fmt.Println("Erro ao ler arquivo:", err)

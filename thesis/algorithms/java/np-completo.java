@@ -39,7 +39,7 @@ public class NPCompleto {
 
     public static void main(String[] args) throws IOException {
         String size = args.length > 0 ? args[0] : "small";
-        String path = "../data/" + size + "/knapsack_" + size + ".json";
+        String path = "../datasets/" + size + "/knapsack_" + size + ".json";
         int[] capacity = new int[1];
         List<Item> items = readItems(path, capacity);
         int result = knapsack(items, capacity[0]);

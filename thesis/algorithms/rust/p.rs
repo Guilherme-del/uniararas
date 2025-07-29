@@ -31,7 +31,7 @@ fn merge(left: Vec<i32>, right: Vec<i32>) -> Vec<i32> {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let size = args.get(1).unwrap_or(&"small".to_string());
-    let path = format!("../data/{}/merge_sort_{}.json", size, size);
+    let path = format!("../datasets/{}/merge_sort_{}.json", size, size);
     let data = fs::read_to_string(&path).expect("Erro ao ler o arquivo");
     let arr: Vec<i32> = serde_json::from_str(&data).expect("Erro ao decodificar JSON");
     let sorted = merge_sort(arr.clone());

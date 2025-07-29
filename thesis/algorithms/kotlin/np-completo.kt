@@ -17,7 +17,7 @@ fun knapsack(items: List<Item>, capacity: Int): Int {
 
 fun main(args: Array<String>) {
     val size = if (args.isNotEmpty()) args[0] else "small"
-    val path = "../data/$size/knapsack_${size}.json"
+    val path = "../datasets/$size/knapsack_${size}.json"
     val content = File(path).readText()
     val mapper = jacksonObjectMapper()
     val input: KnapsackInput = mapper.readValue(content)

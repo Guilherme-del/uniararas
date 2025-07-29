@@ -40,7 +40,7 @@ func main() {
     if len(os.Args) > 1 {
         size = os.Args[1]
     }
-    path := "../data/" + size + "/merge_sort_" + size + ".json"
+    path := "../datasets/" + size + "/merge_sort_" + size + ".json"
     data, err := ioutil.ReadFile(path)
     if err != nil {
         fmt.Println("Erro ao ler arquivo:", err)

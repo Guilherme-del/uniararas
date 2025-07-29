@@ -42,7 +42,7 @@ std::vector<int> read_json_array(const std::string& path) {
 
 int main(int argc, char* argv[]) {
     std::string size = argc > 1 ? argv[1] : "small";
-    std::string path = "../data/" + size + "/merge_sort_" + size + ".json";
+    std::string path = "../datasets/" + size + "/merge_sort_" + size + ".json";
     std::vector<int> data = read_json_array(path);
     mergeSort(data, 0, data.size() - 1);
     std::cout << "Ordenado " << data.size() << " elementos (" << size << ")" << std::endl;

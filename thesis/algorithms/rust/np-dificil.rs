@@ -13,7 +13,7 @@ fn simulate(code: &str) -> bool {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let size = args.get(1).unwrap_or(&"small".to_string());
-    let path = format!("../data/{}/halting_{}.json", size, size);
+    let path = format!("../datasets/{}/halting_{}.json", size, size);
     let data = fs::read_to_string(&path).expect("Erro ao ler arquivo");
     let programs: Vec<Program> = serde_json::from_str(&data).expect("Erro ao decodificar JSON");
 

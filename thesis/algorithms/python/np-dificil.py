@@ -8,7 +8,7 @@ def simulate_program(program):
         return False
 
 def main(size='small'):
-    with open(f'../data/{size}/halting_{size}.json', 'r') as f:
+    with open(f'../datasets/{size}/halting_{size}.json', 'r') as f:
         programs = json.load(f)
     halted = sum(1 for p in programs if simulate_program(p["program"]))
     print(f'{halted}/{len(programs)} programs halted in {size} dataset')

@@ -55,7 +55,7 @@ int read_knapsack(const char *path, Item **items, int *capacity) {
 int main(int argc, char *argv[]) {
     const char *size = (argc > 1) ? argv[1] : "small";
     char path[128];
-    snprintf(path, sizeof(path), "../data/%s/knapsack_%s.json", size, size);
+    snprintf(path, sizeof(path), "../datasets/%s/knapsack_%s.json", size, size);
     Item *items;
     int capacity, count = read_knapsack(path, &items, &capacity);
     if (count < 0) { printf("Erro ao ler o arquivo\n"); return 1; }

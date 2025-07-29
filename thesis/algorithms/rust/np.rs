@@ -30,7 +30,7 @@ fn is_satisfiable(clauses: &Vec<Vec<i32>>, num_vars: usize) -> bool {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let size = args.get(1).unwrap_or(&"small".to_string());
-    let path = format!("../data/{}/sat_{}.json", size, size);
+    let path = format!("../datasets/{}/sat_{}.json", size, size);
     let data = fs::read_to_string(&path).expect("Erro ao ler arquivo");
     let clauses: Vec<Vec<i32>> = serde_json::from_str(&data).expect("Erro ao decodificar JSON");
     let satisfiable = is_satisfiable(&clauses, 20);
