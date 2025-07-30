@@ -9,7 +9,8 @@
 bool evaluate_clause(const std::vector<int>& clause, const std::map<int, bool>& assignment) {
     for (int lit : clause) {
         int var = std::abs(lit);
-        bool val = assignment.at(var);
+        auto it = assignment.find(var);
+        bool val = (it != assignment.end()) ? it->second : false;
         if ((lit > 0 && val) || (lit < 0 && !val)) return true;
     }
     return false;
