@@ -30,7 +30,7 @@ fun merge(left: List<Int>, right: List<Int>): List<Int> {
 
 fun main(args: Array<String>) {
     val size = if (args.isNotEmpty()) args[0] else "small"
-    val path = "../datasets/$size/merge_sort_${size}.json"
+    val path = "datasets/$size/merge_sort.json"
     val content = File(path).readText()
     val mapper = jacksonObjectMapper()
     val arr: List<Int> = mapper.readValue(content)

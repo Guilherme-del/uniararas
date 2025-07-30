@@ -10,7 +10,7 @@ int simulate_program(const char *code) {
 int main(int argc, char *argv[]) {
     const char *size = (argc > 1) ? argv[1] : "small";
     char path[128];
-    snprintf(path, sizeof(path), "../datasets/%s/halting.json", size);
+    snprintf(path, sizeof(path), "datasets/%s/halting.json", size);
     FILE *f = fopen(path, "r");
     if (!f) { printf("Erro ao abrir %s\n", path); return 1; }
     fseek(f, 0, SEEK_END);

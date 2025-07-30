@@ -21,7 +21,7 @@ func main() {
     if len(os.Args) > 1 {
         size = os.Args[1]
     }
-    path := "../datasets/" + size + "/halting_" + size + ".json"
+    path := "datasets/" + size + "/halting.json"
 
     data, err := ioutil.ReadFile(path)
     if err != nil {

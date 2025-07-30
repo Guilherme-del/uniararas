@@ -15,7 +15,7 @@ def is_satisfiable(cnf, num_vars):
     return False
 
 def main(size='small'):
-    with open(f'../datasets/{size}/sat_{size}.json', 'r') as f:
+    with open(f'datasets/{size}/sat.json', 'r') as f:
         cnf = json.load(f)
     num_vars = 100  # Ajuste conforme necessário
     satisfiable = is_satisfiable(cnf, num_vars)

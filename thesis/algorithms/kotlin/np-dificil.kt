@@ -10,7 +10,7 @@ fun simulate(code: String): Boolean {
 
 fun main(args: Array<String>) {
     val size = if (args.isNotEmpty()) args[0] else "small"
-    val path = "../datasets/$size/halting_${size}.json"
+    val path = "datasets/$size/halting.json"
     val content = File(path).readText()
     val mapper = jacksonObjectMapper()
     val programs: List<Program> = mapper.readValue(content)

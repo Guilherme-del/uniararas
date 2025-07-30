@@ -62,7 +62,7 @@ std::vector<std::vector<int>> read_cnf(const std::string& path) {
 
 int main(int argc, char* argv[]) {
     std::string size = argc > 1 ? argv[1] : "small";
-    std::string path = "../datasets/" + size + "/sat_" + size + ".json";
+    std::string path = "datasets/" + size + "/sat.json";
     auto clauses = read_cnf(path);
     bool sat = is_satisfiable(clauses, 20);
     std::cout << "SAT (" << size << "): " << (sat ? "Satisfatível" : "Insatisfatível") << std::endl;

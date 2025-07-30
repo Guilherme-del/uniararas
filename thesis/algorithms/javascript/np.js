@@ -21,7 +21,7 @@ function isSatisfiable(clauses, numVars) {
 
 function main() {
     const size = process.argv[2] || 'small';
-    const path = `../datasets/${size}/sat_${size}.json`;
+    const path = `datasets/${size}/sat.json`;
     if (!fs.existsSync(path)) {
         console.error('Arquivo não encontrado.');
         return;

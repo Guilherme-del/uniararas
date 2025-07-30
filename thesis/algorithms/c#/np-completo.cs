@@ -26,7 +26,7 @@ class KnapsackProgram {
 
     static void Main(string[] args) {
         string size = args.Length > 0 ? args[0] : "small";
-        string path = $"../datasets/{size}/knapsack_{size}.json";
+        string path = $"datasets/{size}/knapsack.json";
 
         if (!File.Exists(path)) {
             Console.WriteLine("Arquivo não encontrado.");

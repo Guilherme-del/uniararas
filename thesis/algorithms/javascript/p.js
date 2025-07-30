@@ -19,7 +19,7 @@ function merge(left, right) {
 
 function main() {
     const size = process.argv[2] || 'small';
-    const path = `../datasets/${size}/merge_sort_${size}.json`;
+    const path = `datasets/${size}/merge_sort.json`;
     if (!fs.existsSync(path)) {
         console.error('Arquivo não encontrado.');
         return;

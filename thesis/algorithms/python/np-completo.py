@@ -10,7 +10,7 @@ def knapsack(items, capacity):
     return dp[capacity]
 
 def main(size='small'):
-    with open(f'../datasets/{size}/knapsack_{size}.json', 'r') as f:
+    with open(f'datasets/{size}/knapsack.json', 'r') as f:
         data = json.load(f)
     items = [(item["weight"], item["value"]) for item in data["items"]]
     capacity = data["capacity"]

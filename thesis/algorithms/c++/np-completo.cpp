@@ -40,7 +40,7 @@ std::pair<std::vector<Item>, int> read_knapsack(const std::string& path) {
 
 int main(int argc, char* argv[]) {
     std::string size = argc > 1 ? argv[1] : "small";
-    std::string path = "../datasets/" + size + "/knapsack_" + size + ".json";
+    std::string path = "datasets/" + size + "/knapsack.json";
     auto [items, capacity] = read_knapsack(path);
     int result = knapsack(items, capacity);
     std::cout << "Valor máximo para " << items.size() << " itens (" << size << "): " << result << std::endl;

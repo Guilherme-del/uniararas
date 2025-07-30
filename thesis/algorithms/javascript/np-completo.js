@@ -12,7 +12,7 @@ function knapsack(items, capacity) {
 
 function main() {
     const size = process.argv[2] || 'small';
-    const path = `../datasets/${size}/knapsack_${size}.json`;
+    const path = `datasets/${size}/knapsack.json`;
     if (!fs.existsSync(path)) {
         console.error('Arquivo não encontrado.');
         return;

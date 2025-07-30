@@ -24,7 +24,7 @@ def merge(left, right):
     return result
 
 def main(size='small'):
-    with open(f'../datasets/{size}/merge_sort_{size}.json', 'r') as f:
+    with open(f'datasets/{size}/merge_sort.json', 'r') as f:
         arr = json.load(f)
     sorted_arr = merge_sort(arr)
     print(f'Sorted {size} dataset with {len(arr)} elements.')
