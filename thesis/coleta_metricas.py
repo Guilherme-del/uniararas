@@ -151,9 +151,22 @@ result = {
     "especificacoes_sistema": specs
 }
 
+# 🗃️ Armazenamento consolidado
 os.makedirs("resultados", exist_ok=True)
-fname = f"{classe}_{linguagem}_{tamanho}_r{repeticao}.json"
-with open(os.path.join("resultados", fname), "w") as f:
-    json.dump(result, f, indent=2)
+output_file = os.path.join("resultados", "metricas.json")
 
-print("✅ Finalizado:", fname)
+# Lê os resultados existentes, se houver
+if os.path.exists(output_file):
+    with open(output_file, "r") as f:
+        all_results = json.load(f)
+else:
+    all_results = []
+
+# Adiciona o novo resultado
+all_results.append(result)
+
+# Salva todos os resultados atualizados
+with open(output_file, "w") as f:
+    json.dump(all_results, f, indent=2)
+
+print("✅ Finalizado e adicionado em: metricas.json")
