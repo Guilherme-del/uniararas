@@ -33,17 +33,14 @@ extensao = {
     "rust": "rs"
 }[linguagem.lower()]
 
-# 🔠 Ajusta nome do arquivo por linguagem
 nome_arquivo_base = arquivo_por_classe[classe]
 nome_arquivo = f"{nome_arquivo_base}.{extensao}"
 
-# Corrige nomes compostos em Java (ex: np-dificil → NpDificil.java)
 if linguagem.lower() == "java":
     nome_arquivo = ''.join(part.capitalize() for part in nome_arquivo_base.split('-')) + ".java"
 
 alg_path = os.path.join(base_dir, "algorithms", linguagem.lower(), nome_arquivo)
 
-# ⏺ Nome do dataset com base no padrão
 dataset_nome = dataset_por_classe[classe]
 dataset_path = os.path.join(base_dir, "datasets", tamanho, dataset_nome)
 
@@ -53,57 +50,42 @@ if not os.path.exists(dataset_path):
 
 cmd = ""
 
-# Linguagens que usam apenas o argumento "tamanho"
-usa_apenas_tamanho = {"c", "c++", "c#", "java", "kotlin", "rust"}
-
-# 🛠 Compilação e comandos por linguagem
 if linguagem == "c":
     bin_path = os.path.join(base_dir, "bin", f"{classe}_c_{tamanho}")
     os.system(f"gcc {alg_path} -o {bin_path}")
     cmd = f"{bin_path} {tamanho}"
-
 elif linguagem == "c++":
     bin_path = os.path.join(base_dir, "bin", f"{classe}_cpp_{tamanho}")
     os.system(f"g++ {alg_path} -o {bin_path}")
     cmd = f"{bin_path} {tamanho}"
-
 elif linguagem == "c#":
     exe_path = os.path.join(base_dir, "bin", f"{classe}_cs_{tamanho}.exe")
     os.system(f"mcs {alg_path} -out:{exe_path}")
     cmd = f"mono {exe_path} {tamanho}"
-
 elif linguagem == "java":
     os.system(f"javac {alg_path} -d {base_dir}/bin")
     class_name = os.path.splitext(os.path.basename(alg_path))[0]
     cmd = f"java -cp {base_dir}/bin {class_name} {tamanho}"
-
 elif linguagem == "kotlin":
     class_name = os.path.basename(alg_path).replace(".kt", "")
     os.system(f"kotlinc {alg_path} -include-runtime -d bin/{class_name}.jar")
     cmd = f"java -jar bin/{class_name}.jar {tamanho}"
-
 elif linguagem == "rust":
     out_bin = os.path.join(base_dir, "bin", f"{classe}_rust_{tamanho}")
     os.system(f"rustc {alg_path} -o {out_bin}")
     cmd = f"{out_bin} {tamanho}"
-
 elif linguagem == "go":
     cmd = f"go run {alg_path} {tamanho}"
-
 elif linguagem == "javascript":
     cmd = f"node {alg_path} {tamanho}"
-
 elif linguagem == "python":
     cmd = f"python3 {alg_path} {tamanho}"
-
 elif linguagem == "typescript":
     cmd = f"npx tsx {alg_path} {tamanho}"
-
 else:
     print(f"❌ Linguagem '{linguagem}' ainda não suportada.")
     sys.exit(1)
 
-# 📦 Especificações da máquina
 specs = {
     "sistema_operacional": platform.system(),
     "distro": distro.name(pretty=True),
@@ -115,28 +97,40 @@ specs = {
     "memoria_total_gb": round(psutil.virtual_memory().total / (1024 ** 3), 2)
 }
 
-# 🔹 Coleta de idle
 idle_cpu = psutil.cpu_percent(interval=1)
 idle_ram = psutil.virtual_memory().percent
 
-# ▶️ Executa o algoritmo
 start = time.time()
-proc = subprocess.Popen(cmd, shell=True)
+proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 pid = proc.pid
 
 cpu_list, mem_list = [], []
 
 try:
     while proc.poll() is None:
+        try:
+            p = psutil.Process(pid)
+            cpu_list.append(p.cpu_percent(interval=0.05))
+            mem_list.append(p.memory_info().rss / (1024 * 1024))  # MB
+        except Exception:
+            break  # Processo já morreu
+
+    # Fallback: tenta pegar uma última amostra após o processo terminar
+    try:
         p = psutil.Process(pid)
-        cpu_list.append(p.cpu_percent(interval=0.1))
-        mem_list.append(p.memory_info().rss / (1024 * 1024))  # MB
+        cpu_list.append(p.cpu_percent(interval=0.01))
+        mem_list.append(p.memory_info().rss / (1024 * 1024))
+    except Exception:
+        pass
 except Exception as e:
     print("Erro:", e)
 
+stdout, stderr = proc.communicate()
+stdout = stdout.decode(errors="replace")
+stderr = stderr.decode(errors="replace")
+
 end = time.time()
 
-# 📊 Resultado final
 result = {
     "classe": classe,
     "linguagem": linguagem,
@@ -148,24 +142,25 @@ result = {
     "cpu_max": round(max(cpu_list), 2) if cpu_list else 0,
     "ram_max": round(max(mem_list), 2) if mem_list else 0,
     "timestamp": datetime.now().isoformat(),
-    "especificacoes_sistema": specs
+    "especificacoes_sistema": specs,
+    "stdout": stdout,
+    "stderr": stderr
 }
 
-# 🗃️ Armazenamento consolidado
 os.makedirs("resultados", exist_ok=True)
 output_file = os.path.join("resultados", "metricas.json")
 
-# Lê os resultados existentes, se houver
-if os.path.exists(output_file):
+if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
     with open(output_file, "r") as f:
-        all_results = json.load(f)
+        try:
+            all_results = json.load(f)
+        except json.JSONDecodeError:
+            all_results = []
 else:
     all_results = []
 
-# Adiciona o novo resultado
 all_results.append(result)
 
-# Salva todos os resultados atualizados
 with open(output_file, "w") as f:
     json.dump(all_results, f, indent=2)
 
