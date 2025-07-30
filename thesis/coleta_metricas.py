@@ -33,32 +33,54 @@ extensao = {
 }[linguagem.lower()]
 
 alg_path = os.path.join(base_dir, "algorithms", linguagem.lower(), f"{arquivo_por_classe[classe]}.{extensao}")
-dataset_path = os.path.join(base_dir, "datasets", tamanho, dataset_por_classe[classe])
+
+# ⏺ Nome do dataset com base no padrão
+dataset_nome = dataset_por_classe[classe]
+dataset_path = os.path.join(base_dir, "datasets", tamanho, dataset_nome)
+
+if not os.path.exists(dataset_path):
+    print(f"❌ Dataset não encontrado: {dataset_path}")
+    sys.exit(1)
 
 cmd = ""
 
+# Linguagens que usam apenas o argumento "tamanho"
+usa_apenas_tamanho = {"c", "c++", "c#", "java", "kotlin", "rust"}
+
+# 🛠 Compilação e comandos por linguagem
 if linguagem == "c":
     bin_path = os.path.join(base_dir, "bin", f"{classe}_c_{tamanho}")
     os.system(f"gcc {alg_path} -o {bin_path}")
-    cmd = f"{bin_path} {dataset_path}"
+    cmd = f"{bin_path} {tamanho}"
 
 elif linguagem == "c++":
     bin_path = os.path.join(base_dir, "bin", f"{classe}_cpp_{tamanho}")
     os.system(f"g++ {alg_path} -o {bin_path}")
-    cmd = f"{bin_path} {dataset_path}"
+    cmd = f"{bin_path} {tamanho}"
 
 elif linguagem == "c#":
     exe_path = os.path.join(base_dir, "bin", f"{classe}_cs_{tamanho}.exe")
     os.system(f"mcs {alg_path} -out:{exe_path}")
-    cmd = f"mono {exe_path} {dataset_path}"
-
-elif linguagem == "go":
-    cmd = f"go run {alg_path} {dataset_path}"
+    cmd = f"mono {exe_path} {tamanho}"
 
 elif linguagem == "java":
     os.system(f"javac {alg_path} -d {base_dir}/bin")
     class_name = os.path.basename(alg_path).replace(".java", "")
-    cmd = f"java -cp {base_dir}/bin {class_name} {dataset_path}"
+    cmd = f"java -cp {base_dir}/bin {class_name} {tamanho}"
+
+elif linguagem == "kotlin":
+    class_name = os.path.basename(alg_path).replace(".kt", "")
+    os.system(f"kotlinc {alg_path} -include-runtime -d bin/{class_name}.jar")
+    cmd = f"java -jar bin/{class_name}.jar {tamanho}"
+
+elif linguagem == "rust":
+    out_bin = os.path.join(base_dir, "bin", f"{classe}_rust_{tamanho}")
+    os.system(f"rustc {alg_path} -o {out_bin}")
+    cmd = f"{out_bin} {tamanho}"
+
+# Linguagens que usam o caminho completo do JSON
+elif linguagem == "go":
+    cmd = f"go run {alg_path} {dataset_path}"
 
 elif linguagem == "javascript":
     cmd = f"node {alg_path} {dataset_path}"
@@ -68,16 +90,6 @@ elif linguagem == "python":
 
 elif linguagem == "typescript":
     cmd = f"npx tsx {alg_path} {dataset_path}"
-
-elif linguagem == "kotlin":
-    class_name = os.path.basename(alg_path).replace(".kt", "")
-    os.system(f"kotlinc {alg_path} -include-runtime -d bin/{class_name}.jar")
-    cmd = f"java -jar bin/{class_name}.jar {dataset_path}"
-
-elif linguagem == "rust":
-    out_bin = os.path.join(base_dir, "bin", f"{classe}_rust_{tamanho}")
-    os.system(f"rustc {alg_path} -o {out_bin}")
-    cmd = f"{out_bin} {dataset_path}"
 
 else:
     print(f"❌ Linguagem '{linguagem}' ainda não suportada.")

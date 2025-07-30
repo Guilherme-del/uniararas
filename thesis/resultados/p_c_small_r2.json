@@ -1,0 +1,22 @@
+{
+  "classe": "p",
+  "linguagem": "c",
+  "tamanho": "small",
+  "repeticao": 2,
+  "tempo_s": 0.1018,
+  "cpu_idle": 1.4,
+  "ram_idle": 30.2,
+  "cpu_avg": 0.0,
+  "ram_avg": 0.0,
+  "ram_max": 0.0,
+  "timestamp": "2025-07-29T21:24:24.151713",
+  "especificacoes_sistema": {
+    "sistema_operacional": "Linux",
+    "versao_os": "#71-Ubuntu SMP PREEMPT_DYNAMIC Tue Jul 22 16:52:38 UTC 2025",
+    "kernel": "6.8.0-71-generic",
+    "arquitetura": "x86_64",
+    "cpu_modelo": "x86_64",
+    "cpu_cores": 8,
+    "memoria_total_gb": 15.35
+  }
+}

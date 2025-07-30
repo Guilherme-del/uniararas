@@ -49,7 +49,8 @@ int read_array(const char *path, int **arr) {
 int main(int argc, char *argv[]) {
     const char *size = (argc > 1) ? argv[1] : "small";
     char path[128];
-    snprintf(path, sizeof(path), "../datasets/%s/merge_sort_%s.json", size, size);
+    printf("Ordenando %s elementos...\n", size);
+    snprintf(path, sizeof(path), "datasets/%s/merge_sort.json", size);
     int *arr;
     int len = read_array(path, &arr);
     if (len < 0) { printf("Erro ao ler arquivo JSON\n"); return 1; }

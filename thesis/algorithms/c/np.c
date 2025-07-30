@@ -37,7 +37,7 @@ bool is_satisfiable(int **clauses, int num_clauses, int num_vars) {
 int main(int argc, char *argv[]) {
     const char *size = (argc > 1) ? argv[1] : "small";
     char path[128];
-    snprintf(path, sizeof(path), "../datasets/%s/sat_%s.json", size, size);
+    snprintf(path, sizeof(path), "datasets/%s/sat.json", size);
     FILE *f = fopen(path, "r");
     if (!f) { printf("Erro ao abrir arquivo\n"); return 1; }
     fseek(f, 0, SEEK_END); long sizef = ftell(f); rewind(f);
