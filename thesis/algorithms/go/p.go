@@ -5,7 +5,6 @@ import (
     "fmt"
     "io/ioutil"
     "os"
-    "strconv"
 )
 
 func mergeSort(arr []int) []int {

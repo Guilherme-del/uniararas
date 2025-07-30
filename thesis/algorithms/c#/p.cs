@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text.Json;
 using System.Linq;
 
 class MergeSortProgram {
@@ -14,21 +13,23 @@ class MergeSortProgram {
     }
 
     static void Merge(int[] array, int left, int middle, int right) {
-        int[] leftArray = array[left..(middle + 1)];
-        int[] rightArray = array[(middle + 1)..(right + 1)];
+        int[] leftArray = new int[middle - left + 1];
+        int[] rightArray = new int[right - middle];
+
+        Array.Copy(array, left, leftArray, 0, leftArray.Length);
+        Array.Copy(array, middle + 1, rightArray, 0, rightArray.Length);
 
         int i = 0, j = 0, k = left;
-
-        while (i < leftArray.Length && j < rightArray.Length) {
-            if (leftArray[i] <= rightArray[j]) {
-                array[k++] = leftArray[i++];
-            } else {
-                array[k++] = rightArray[j++];
-            }
-        }
+        while (i < leftArray.Length && j < rightArray.Length)
+            array[k++] = (leftArray[i] <= rightArray[j]) ? leftArray[i++] : rightArray[j++];
 
         while (i < leftArray.Length) array[k++] = leftArray[i++];
         while (j < rightArray.Length) array[k++] = rightArray[j++];
+    }
+
+    static int[] ParseJsonArray(string json) {
+        string clean = json.Trim().TrimStart('[').TrimEnd(']');
+        return clean.Split(',').Select(s => int.Parse(s.Trim())).ToArray();
     }
 
     static void Main(string[] args) {
@@ -40,7 +41,10 @@ class MergeSortProgram {
             return;
         }
 
-        int[] array = JsonSerializer.Deserialize<int[]>(File.ReadAllText(path));
+        string json = File.ReadAllText(path);
+        int[] array = ParseJsonArray(json);
+
+        Console.WriteLine($"Ordenando {size} elementos...");
         MergeSort(array, 0, array.Length - 1);
         Console.WriteLine($"Ordenado {array.Length} elementos ({size})");
     }

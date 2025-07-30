@@ -81,7 +81,7 @@ elif linguagem == "rust":
 
 # Linguagens que usam o caminho completo do JSON
 elif linguagem == "go":
-    cmd = f"go run {alg_path} {dataset_path}"
+    cmd = f"go run {alg_path} {tamanho}"
 
 elif linguagem == "javascript":
     cmd = f"node {alg_path} {dataset_path}"
