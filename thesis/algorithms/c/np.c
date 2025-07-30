@@ -39,28 +39,45 @@ int main(int argc, char *argv[]) {
     char path[128];
     snprintf(path, sizeof(path), "datasets/%s/sat.json", size);
     FILE *f = fopen(path, "r");
-    if (!f) { printf("Erro ao abrir arquivo\n"); return 1; }
-    fseek(f, 0, SEEK_END); long sizef = ftell(f); rewind(f);
-    char *buffer = malloc(sizef + 1); fread(buffer, 1, sizef, f); fclose(f);
+    if (!f) {
+        printf("Erro ao abrir arquivo\n");
+        return 1;
+    }
+
+    fseek(f, 0, SEEK_END);
+    long sizef = ftell(f);
+    rewind(f);
+    char *buffer = malloc(sizef + 1);
+    fread(buffer, 1, sizef, f);
+    fclose(f);
     buffer[sizef] = '\0';
 
-    int **clauses = malloc(sizeof(int*) * 100000);
+    int **clauses = malloc(sizeof(int*) * 100000); // suporte até 100k cláusulas
     int count = 0;
-    char *tok = strtok(buffer, "[]\n,");
+
+    char *tok = strtok(buffer, "[\n,]");
     while (tok) {
-        int a = atoi(tok); tok = strtok(NULL, ",");
-        int b = atoi(tok); tok = strtok(NULL, ",");
-        int c = atoi(tok); tok = strtok(NULL, "]");
         int *clause = malloc(3 * sizeof(int));
-        clause[0] = a; clause[1] = b; clause[2] = c;
+
+        clause[0] = atoi(tok);
+        tok = strtok(NULL, "[\n,]");
+        if (!tok) { free(clause); break; }
+
+        clause[1] = atoi(tok);
+        tok = strtok(NULL, "[\n,]");
+        if (!tok) { free(clause); break; }
+
+        clause[2] = atoi(tok);
         clauses[count++] = clause;
-        tok = strtok(NULL, "[");
+
+        tok = strtok(NULL, "[\n,]");
     }
 
     int satisfiable = is_satisfiable(clauses, count, MAX_VARS);
     printf("SAT (%s): %s\n", size, satisfiable ? "Satisfatível" : "Insatisfatível");
 
     for (int i = 0; i < count; i++) free(clauses[i]);
-    free(clauses); free(buffer);
+    free(clauses);
+    free(buffer);
     return 0;
 }
