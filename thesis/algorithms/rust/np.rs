@@ -27,12 +27,24 @@ fn is_satisfiable(clauses: &Vec<Vec<i32>>, num_vars: usize) -> bool {
     false
 }
 
+fn parse_clauses(raw: &str) -> Vec<Vec<i32>> {
+    raw.trim_matches(&['[', ']'][..])
+        .split("],[")
+        .map(|s| {
+            s.split(',')
+                .filter_map(|n| n.trim().parse::<i32>().ok())
+                .collect::<Vec<i32>>()
+        })
+        .collect()
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let size = args.get(1).unwrap_or(&"small".to_string());
-    let path = format!("datasets/{}/sat.json", size);
+    let fallback = "small".to_string();
+    let size = args.get(1).unwrap_or(&fallback);
+    let path = format!("datasets/{}/sat.json", size); 
     let data = fs::read_to_string(&path).expect("Erro ao ler arquivo");
-    let clauses: Vec<Vec<i32>> = serde_json::from_str(&data).expect("Erro ao decodificar JSON");
+    let clauses = parse_clauses(&data);
     let satisfiable = is_satisfiable(&clauses, 20);
     println!("SAT ({}): {}", size, if satisfiable { "Satisfatível" } else { "Insatisfatível" });
 }

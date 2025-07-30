@@ -1,26 +1,34 @@
 import json
 import sys
+import os
 
 def evaluate_clause(clause, assignment):
-    return any((lit > 0 and assignment.get(abs(lit), False)) or 
-               (lit < 0 and not assignment.get(abs(lit), False)) 
-               for lit in clause)
-
-def is_satisfiable(cnf, num_vars):
-    from itertools import product
-    for bits in product([False, True], repeat=num_vars):
-        assignment = {i + 1: bits[i] for i in range(num_vars)}
-        if all(evaluate_clause(clause, assignment) for clause in cnf):
+    for lit in clause:
+        val = assignment.get(abs(lit), 0)
+        if (lit > 0 and val) or (lit < 0 and not val):
             return True
     return False
 
-def main(size='small'):
-    with open(f'datasets/{size}/sat.json', 'r') as f:
-        cnf = json.load(f)
-    num_vars = 100  # Ajuste conforme necessário
-    satisfiable = is_satisfiable(cnf, num_vars)
-    print(f'{size.capitalize()} SAT instance is satisfiable? {satisfiable}')
+def is_satisfiable(clauses, num_vars):
+    total = 1 << num_vars
+    for mask in range(total):
+        assignment = {i: (mask >> (i - 1)) & 1 for i in range(1, num_vars + 1)}
+        if all(evaluate_clause(clause, assignment) for clause in clauses):
+            return True
+    return False
+
+def main():
+    size = sys.argv[1] if len(sys.argv) > 1 else 'small'
+    path = f'datasets/{size}/sat.json'
+    if not os.path.exists(path):
+        print("Arquivo não encontrado.")
+        return
+
+    with open(path, 'r') as f:
+        clauses = json.load(f)
+
+    satisfiable = is_satisfiable(clauses, 20)
+    print(f"SAT ({size}): {'Satisfatível' if satisfiable else 'Insatisfatível'}")
 
 if __name__ == '__main__':
-    size = sys.argv[1] if len(sys.argv) > 1 else 'small'
-    main(size)
+    main()

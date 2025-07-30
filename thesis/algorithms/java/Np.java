@@ -1,11 +1,13 @@
 import java.io.*;
 import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-public class NP {
+public class Np {
     public static boolean evaluateClause(List<Integer> clause, Map<Integer, Boolean> assignment) {
         for (int lit : clause) {
             int var = Math.abs(lit);
-            boolean value = assignment.get(var);
+            boolean value = assignment.getOrDefault(var, false);
             if ((lit > 0 && value) || (lit < 0 && !value)) return true;
         }
         return false;
