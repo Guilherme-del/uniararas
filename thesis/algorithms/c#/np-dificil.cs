@@ -1,9 +1,8 @@
 using System;
 using System.IO;
-using System.Text.Json;
 using System.Collections.Generic;
 
-class HaltingSimulator {
+class Program {
     static bool Simulate(string code) {
         return code.Trim().ToUpper() == "HALT";
     }
@@ -17,15 +16,23 @@ class HaltingSimulator {
             return;
         }
 
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        List<Dictionary<string, string>> programs = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(File.ReadAllText(path), options);
+        string json = File.ReadAllText(path);
+        int halted = 0, total = 0;
 
-        int halted = 0;
-        foreach (var p in programs) {
-            if (p.ContainsKey("program") && Simulate(p["program"]))
-                halted++;
+        int idx = 0;
+        while ((idx = json.IndexOf("\"program\"", idx)) != -1) {
+            int start = json.IndexOf("\"", idx + 9);
+            int end = json.IndexOf("\"", start + 1);
+            if (start != -1 && end != -1) {
+                string code = json.Substring(start + 1, end - start - 1);
+                if (Simulate(code)) halted++;
+                total++;
+                idx = end;
+            } else {
+                break;
+            }
         }
 
-        Console.WriteLine($"{halted} de {programs.Count} programas halting ({size})");
+        Console.WriteLine($"{halted} de {total} programas halting ({size})");
     }
 }

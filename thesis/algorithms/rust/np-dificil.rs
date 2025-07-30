@@ -1,22 +1,30 @@
 use std::env;
 use std::fs;
 
-#[derive(serde::Deserialize)]
-struct Program {
-    program: String,
-}
-
-fn simulate(code: &str) -> bool {
-    code.trim().to_uppercase() == "HALT"
-}
-
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let size = args.get(1).unwrap_or(&"small".to_string());
+    let default_size = String::from("small");
+    let size = args.get(1).unwrap_or(&default_size);
     let path = format!("datasets/{}/halting.json", size);
-    let data = fs::read_to_string(&path).expect("Erro ao ler arquivo");
-    let programs: Vec<Program> = serde_json::from_str(&data).expect("Erro ao decodificar JSON");
 
-    let halted = programs.iter().filter(|p| simulate(&p.program)).count();
-    println!("{} de {} programas halting ({})", halted, programs.len(), size);
+    let data = fs::read_to_string(&path).expect("Erro ao ler arquivo");
+
+    // Remove colchetes e quebra em objetos individuais
+    let content = data.trim();
+    let content = content.trim_start_matches('[').trim_end_matches(']');
+    let entries = content.split("},").collect::<Vec<&str>>();
+
+    let mut halted = 0;
+    let mut total = 0;
+
+    for entry in entries {
+        if entry.contains("\"program\"") {
+            total += 1;
+            if entry.contains("HALT") {
+                halted += 1;
+            }
+        }
+    }
+
+    println!("{} de {} programas halting ({})", halted, total, size);
 }

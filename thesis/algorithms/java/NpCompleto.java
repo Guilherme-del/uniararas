@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 class Item {
     int weight;
@@ -10,7 +12,7 @@ class Item {
     }
 }
 
-public class Npcompleto {
+public class NpCompleto {
     public static int knapsack(List<Item> items, int capacity) {
         int[] dp = new int[capacity + 1];
         for (Item item : items) {

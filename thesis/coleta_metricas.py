@@ -33,10 +33,13 @@ extensao = {
     "rust": "rs"
 }[linguagem.lower()]
 
-# 🔠 Ajusta nome do arquivo .java com inicial maiúscula
-nome_arquivo = f"{arquivo_por_classe[classe]}.{extensao}"
+# 🔠 Ajusta nome do arquivo por linguagem
+nome_arquivo_base = arquivo_por_classe[classe]
+nome_arquivo = f"{nome_arquivo_base}.{extensao}"
+
+# Corrige nomes compostos em Java (ex: np-dificil → NpDificil.java)
 if linguagem.lower() == "java":
-    nome_arquivo = nome_arquivo[0].upper() + nome_arquivo[1:]
+    nome_arquivo = ''.join(part.capitalize() for part in nome_arquivo_base.split('-')) + ".java"
 
 alg_path = os.path.join(base_dir, "algorithms", linguagem.lower(), nome_arquivo)
 
@@ -84,7 +87,6 @@ elif linguagem == "rust":
     os.system(f"rustc {alg_path} -o {out_bin}")
     cmd = f"{out_bin} {tamanho}"
 
-# Linguagens que usam o caminho completo do JSON
 elif linguagem == "go":
     cmd = f"go run {alg_path} {tamanho}"
 
@@ -105,7 +107,7 @@ else:
 specs = {
     "sistema_operacional": platform.system(),
     "distro": distro.name(pretty=True),
-    "versao_os": distro.version(pretty=True),  # ← ex: "22.04.4 LTS"
+    "versao_os": distro.version(pretty=True),
     "kernel": platform.release(),
     "arquitetura": platform.machine(),
     "cpu_modelo": platform.processor(),
