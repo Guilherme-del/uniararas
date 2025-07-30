@@ -98,6 +98,7 @@ else:
 # 📦 Especificações da máquina
 specs = {
     "sistema_operacional": platform.system(),
+    "distro": distro.name(pretty=True),
     "versao_os": platform.version(),
     "kernel": platform.release(),
     "arquitetura": platform.machine(),
