@@ -143,8 +143,7 @@ result = {
     "tempo_s": round(end - start, 4),
     "cpu_idle": idle_cpu,
     "ram_idle": idle_ram,
-    "cpu_avg": round(sum(cpu_list) / len(cpu_list), 2) if cpu_list else 0,
-    "ram_avg": round(sum(mem_list) / len(mem_list), 2) if mem_list else 0,
+    "cpu_max": round(max(cpu_list), 2) if cpu_list else 0,
     "ram_max": round(max(mem_list), 2) if mem_list else 0,
     "timestamp": datetime.now().isoformat(),
     "especificacoes_sistema": specs
