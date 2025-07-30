@@ -1,0 +1,23 @@
+{
+  "classe": "p",
+  "linguagem": "typescript",
+  "tamanho": "medium",
+  "repeticao": 2,
+  "tempo_s": 0.7038,
+  "cpu_idle": 1.0,
+  "ram_idle": 25.6,
+  "cpu_avg": 0.0,
+  "ram_avg": 1.39,
+  "ram_max": 1.62,
+  "timestamp": "2025-07-30T00:05:35.471286",
+  "especificacoes_sistema": {
+    "sistema_operacional": "Linux",
+    "distro": "Ubuntu 24.04.2 LTS",
+    "versao_os": "24.04 (noble)",
+    "kernel": "6.8.0-71-generic",
+    "arquitetura": "x86_64",
+    "cpu_modelo": "x86_64",
+    "cpu_cores": 8,
+    "memoria_total_gb": 15.35
+  }
+}

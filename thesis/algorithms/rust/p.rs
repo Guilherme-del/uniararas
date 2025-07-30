@@ -1,7 +1,7 @@
 use std::env;
 use std::fs;
 
-fn merge_sort(mut arr: Vec<i32>) -> Vec<i32> {
+fn merge_sort(arr: Vec<i32>) -> Vec<i32> {
     if arr.len() <= 1 {
         return arr;
     }
@@ -28,12 +28,22 @@ fn merge(left: Vec<i32>, right: Vec<i32>) -> Vec<i32> {
     merged
 }
 
+fn parse_json_array(raw: &str) -> Vec<i32> {
+    raw.trim_matches(|c| c == '[' || c == ']')
+        .split(',')
+        .filter_map(|s| s.trim().parse::<i32>().ok())
+        .collect()
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let size = args.get(1).unwrap_or(&"small".to_string());
+    let fallback = "small".to_string();
+    let size = args.get(1).unwrap_or(&fallback);
+
     let path = format!("datasets/{}/merge_sort.json", size);
     let data = fs::read_to_string(&path).expect("Erro ao ler o arquivo");
-    let arr: Vec<i32> = serde_json::from_str(&data).expect("Erro ao decodificar JSON");
-    let sorted = merge_sort(arr.clone());
+
+    let arr: Vec<i32> = parse_json_array(&data);
+    let sorted = merge_sort(arr);
     println!("Ordenado {} elementos ({})", sorted.len(), size);
 }

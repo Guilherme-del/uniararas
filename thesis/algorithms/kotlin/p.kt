@@ -1,6 +1,4 @@
 import java.io.File
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 
 fun mergeSort(arr: List<Int>): List<Int> {
     if (arr.size <= 1) return arr
@@ -31,9 +29,14 @@ fun merge(left: List<Int>, right: List<Int>): List<Int> {
 fun main(args: Array<String>) {
     val size = if (args.isNotEmpty()) args[0] else "small"
     val path = "datasets/$size/merge_sort.json"
+
     val content = File(path).readText()
-    val mapper = jacksonObjectMapper()
-    val arr: List<Int> = mapper.readValue(content)
+        .replace("[", "")
+        .replace("]", "")
+        .trim()
+
+    val arr = if (content.isNotEmpty()) content.split(",").map { it.trim().toInt() } else listOf()
     val sorted = mergeSort(arr)
+
     println("Ordenado ${sorted.size} elementos ($size)")
 }

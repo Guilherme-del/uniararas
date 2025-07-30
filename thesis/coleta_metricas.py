@@ -89,13 +89,13 @@ elif linguagem == "go":
     cmd = f"go run {alg_path} {tamanho}"
 
 elif linguagem == "javascript":
-    cmd = f"node {alg_path} {dataset_path}"
+    cmd = f"node {alg_path} {tamanho}"
 
 elif linguagem == "python":
-    cmd = f"python3 {alg_path} {dataset_path}"
+    cmd = f"python3 {alg_path} {tamanho}"
 
 elif linguagem == "typescript":
-    cmd = f"npx tsx {alg_path} {dataset_path}"
+    cmd = f"npx tsx {alg_path} {tamanho}"
 
 else:
     print(f"❌ Linguagem '{linguagem}' ainda não suportada.")
