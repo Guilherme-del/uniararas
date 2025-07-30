@@ -1,5 +1,6 @@
 import os, psutil, time, subprocess, sys, json, platform
 from datetime import datetime
+import distro
 
 classe, linguagem, tamanho, repeticao = sys.argv[1:]
 
