@@ -10,7 +10,7 @@ class Item {
     }
 }
 
-public class NPCompleto {
+public class Npcompleto {
     public static int knapsack(List<Item> items, int capacity) {
         int[] dp = new int[capacity + 1];
         for (Item item : items) {

@@ -1,16 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 
 class KnapsackItem {
-    public int weight { get; set; }
-    public int value { get; set; }
-}
-
-class KnapsackData {
-    public int capacity { get; set; }
-    public List<KnapsackItem> items { get; set; }
+    public int weight;
+    public int value;
 }
 
 class KnapsackProgram {
@@ -33,8 +27,43 @@ class KnapsackProgram {
             return;
         }
 
-        KnapsackData data = JsonSerializer.Deserialize<KnapsackData>(File.ReadAllText(path));
-        int result = Knapsack(data.items, data.capacity);
-        Console.WriteLine($"Valor máximo para {data.items.Count} itens ({size}): {result}");
+        string json = File.ReadAllText(path);
+
+        // Obter capacidade
+        int capacity = 0;
+        int capIdx = json.IndexOf("\"capacity\"");
+        if (capIdx != -1) {
+            int start = json.IndexOf(":", capIdx) + 1;
+            int end = json.IndexOf(",", start);
+            string capStr = json.Substring(start, end - start).Trim();
+            int.TryParse(capStr, out capacity);
+        }
+
+        // Obter itens
+        List<KnapsackItem> items = new List<KnapsackItem>();
+        int idx = 0;
+        while ((idx = json.IndexOf("{\"weight\"", idx)) != -1) {
+            int wStart = json.IndexOf(":", idx) + 1;
+            int wEnd = json.IndexOf(",", wStart);
+            string wStr = json.Substring(wStart, wEnd - wStart).Trim();
+
+            int vStart = json.IndexOf(":", wEnd) + 1;
+            int vEnd = json.IndexOf("}", vStart);
+            string vStr = json.Substring(vStart, vEnd - vStart).Trim();
+
+            if (int.TryParse(wStr, out int weight) && int.TryParse(vStr, out int value)) {
+                items.Add(new KnapsackItem { weight = weight, value = value });
+            }
+
+            idx = vEnd + 1;
+        }
+
+        if (items.Count == 0) {
+            Console.WriteLine("Erro ao ler o arquivo ou nenhum item encontrado.");
+            return;
+        }
+
+        int result = Knapsack(items, capacity);
+        Console.WriteLine($"Valor máximo para {items.Count} itens (capacidade {capacity}, {size}): {result}");
     }
 }
