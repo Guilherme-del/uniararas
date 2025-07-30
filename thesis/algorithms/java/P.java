@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class P {
     public static void mergeSort(int[] arr, int l, int r) {
@@ -24,11 +26,15 @@ public class P {
     }
 
     public static int[] readJsonArray(String path) throws IOException {
-        String content = new String(Files.readAllBytes(new File(path).toPath()));
-        content = content.replace("[", "").replace("]", "").trim();
-        String[] parts = content.split(",");
-        return Arrays.stream(parts).mapToInt(Integer::parseInt).toArray();
+    String content = new String(Files.readAllBytes(Paths.get(path)));
+    content = content.replace("[", "").replace("]", "").trim();
+    String[] parts = content.split(",");
+    return Arrays.stream(parts)
+                 .map(String::trim)
+                 .mapToInt(Integer::parseInt)
+                 .toArray();
     }
+
 
     public static void main(String[] args) throws IOException {
         String size = args.length > 0 ? args[0] : "small";

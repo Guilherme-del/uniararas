@@ -33,7 +33,12 @@ extensao = {
     "rust": "rs"
 }[linguagem.lower()]
 
-alg_path = os.path.join(base_dir, "algorithms", linguagem.lower(), f"{arquivo_por_classe[classe]}.{extensao}")
+# 🔠 Ajusta nome do arquivo .java com inicial maiúscula
+nome_arquivo = f"{arquivo_por_classe[classe]}.{extensao}"
+if linguagem.lower() == "java":
+    nome_arquivo = nome_arquivo[0].upper() + nome_arquivo[1:]
+
+alg_path = os.path.join(base_dir, "algorithms", linguagem.lower(), nome_arquivo)
 
 # ⏺ Nome do dataset com base no padrão
 dataset_nome = dataset_por_classe[classe]
@@ -66,7 +71,7 @@ elif linguagem == "c#":
 
 elif linguagem == "java":
     os.system(f"javac {alg_path} -d {base_dir}/bin")
-    class_name = os.path.basename(alg_path).replace(".java", "")
+    class_name = os.path.splitext(os.path.basename(alg_path))[0]
     cmd = f"java -cp {base_dir}/bin {class_name} {tamanho}"
 
 elif linguagem == "kotlin":
@@ -100,7 +105,7 @@ else:
 specs = {
     "sistema_operacional": platform.system(),
     "distro": distro.name(pretty=True),
-    "versao_os": platform.version(),
+    "versao_os": distro.version(pretty=True),  # ← ex: "22.04.4 LTS"
     "kernel": platform.release(),
     "arquitetura": platform.machine(),
     "cpu_modelo": platform.processor(),
