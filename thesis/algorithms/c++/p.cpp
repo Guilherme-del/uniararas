@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 void merge(std::vector<int>& arr, int l, int m, int r) {
     std::vector<int> left(arr.begin() + l, arr.begin() + m + 1);
