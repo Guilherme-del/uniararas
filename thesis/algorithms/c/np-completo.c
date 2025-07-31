@@ -9,6 +9,10 @@ typedef struct {
 
 int knapsack(Item *items, int n, int capacity) {
     int *dp = calloc(capacity + 1, sizeof(int));
+    if (!dp) {
+        fprintf(stderr, "Erro ao alocar memória para o vetor dp!\n");
+        return -1;
+    }
     for (int i = 0; i < n; i++) {
         for (int w = capacity; w >= items[i].weight; w--) {
             int val = dp[w - items[i].weight] + items[i].value;
@@ -28,6 +32,10 @@ int read_knapsack(const char *path, Item **items, int *capacity) {
     long size = ftell(f);
     rewind(f);
     char *buffer = malloc(size + 1);
+    if (!buffer) {
+        fclose(f);
+        return -1;
+    }
     fread(buffer, 1, size, f);
     fclose(f);
     buffer[size] = '\0';
@@ -39,23 +47,38 @@ int read_knapsack(const char *path, Item **items, int *capacity) {
         return -1;
     }
 
-    // Inicializar array de itens
-    Item *temp = malloc(sizeof(Item) * 10000);  // Limite arbitrário
+    // Inicializar array de itens dinamicamente
+    int alloc = 10000;
+    Item *temp = malloc(sizeof(Item) * alloc);
+    if (!temp) {
+        free(buffer);
+        return -1;
+    }
     int count = 0;
     char *p = buffer;
 
-    // Encontrar pares weight/value
     while ((p = strstr(p, "\"weight\"")) != NULL) {
         int weight = 0, value = 0;
         char *value_ptr = strstr(p, "\"value\"");
         if (value_ptr &&
             sscanf(p, "\"weight\":%d", &weight) == 1 &&
             sscanf(value_ptr, "\"value\":%d", &value) == 1) {
+            // Realoca se necessário
+            if (count >= alloc) {
+                alloc *= 2;
+                Item *new_temp = realloc(temp, sizeof(Item) * alloc);
+                if (!new_temp) {
+                    free(temp);
+                    free(buffer);
+                    return -1;
+                }
+                temp = new_temp;
+            }
             temp[count].weight = weight;
             temp[count].value = value;
             count++;
         }
-        p++;  // Avança o ponteiro para evitar loop infinito
+        p++;  // Avança para evitar loop infinito
     }
 
     *items = temp;
@@ -77,6 +100,11 @@ int main(int argc, char *argv[]) {
     }
 
     int result = knapsack(items, count, capacity);
+    if (result < 0) {
+        printf("Erro ao calcular knapsack (memória insuficiente?).\n");
+        free(items);
+        return 2;
+    }
     printf("Valor máximo para %d itens (capacidade %d, %s): %d\n", count, capacity, size, result);
 
     free(items);
