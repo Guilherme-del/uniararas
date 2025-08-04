@@ -1,71 +1,66 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
 #include <cmath>
-#include <map>
+#include <vector>
+#include <sstream>
+#include <cstring>
 
-bool evaluate_clause(const std::vector<int>& clause, const std::map<int, bool>& assignment) {
-    for (int lit : clause) {
-        int var = std::abs(lit);
-        auto it = assignment.find(var);
-        bool val = (it != assignment.end()) ? it->second : false;
-        if ((lit > 0 && val) || (lit < 0 && !val)) return true;
-    }
-    return false;
-}
+#define MAX_NUMBERS 100000
 
-bool is_satisfiable(const std::vector<std::vector<int>>& clauses, int num_vars) {
-    int total = 1 << num_vars;
-    for (int mask = 0; mask < total; ++mask) {
-        std::map<int, bool> assignment;
-        for (int i = 0; i < num_vars; ++i)
-            assignment[i + 1] = (mask >> i) & 1;
-
-        bool all_true = true;
-        for (const auto& clause : clauses) {
-            if (!evaluate_clause(clause, assignment)) {
-                all_true = false;
-                break;
-            }
-        }
-        if (all_true) return true;
-    }
-    return false;
-}
-
-std::vector<std::vector<int>> read_cnf(const std::string& path) {
-    std::ifstream file(path);
-    std::string line, content;
-    while (getline(file, line)) content += line;
-
-    std::vector<std::vector<int>> clauses;
-    std::stringstream ss(content);
-    std::string token;
-    while (getline(ss, token, '[')) {
-        size_t end = token.find(']');
-        if (end != std::string::npos) {
-            std::string clause_str = token.substr(0, end);
-            std::stringstream css(clause_str);
-            std::string num;
-            std::vector<int> clause;
-            while (getline(css, num, ',')) {
-                if (!num.empty())
-                    clause.push_back(std::stoi(num));
-            }
-            if (!clause.empty())
-                clauses.push_back(clause);
+void fatorar(long long n) {
+    if (n < 2) return;
+    for (long long i = 2; i <= std::sqrt(n); i++) {
+        while (n % i == 0) {
+            n /= i;
         }
     }
-    return clauses;
 }
 
 int main(int argc, char* argv[]) {
-    std::string size = argc > 1 ? argv[1] : "small";
-    std::string path = "datasets/" + size + "/sat.json";
-    auto clauses = read_cnf(path);
-    bool sat = is_satisfiable(clauses, 20);
-    std::cout << "SAT (" << size << "): " << (sat ? "Satisfatível" : "Insatisfatível") << std::endl;
+    if (argc != 2) {
+        std::cerr << "Uso: " << argv[0] << " <small|medium|large>\n";
+        return 1;
+    }
+
+    std::string tamanho = argv[1];
+    std::string caminho = "datasets/" + tamanho + "/factoring.json";
+
+    std::ifstream file(caminho);
+    if (!file.is_open()) {
+        std::cerr << "Erro ao abrir o arquivo: " << caminho << "\n";
+        return 1;
+    }
+
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string json = buffer.str();
+
+    // Remove colchetes e espaços
+    size_t start = json.find('[');
+    size_t end = json.find(']');
+    if (start == std::string::npos || end == std::string::npos || end <= start) {
+        std::cerr << "Formato de JSON inválido.\n";
+        return 1;
+    }
+
+    std::string lista = json.substr(start + 1, end - start - 1);
+    std::stringstream ss(lista);
+    std::string token;
+    std::vector<long long> numeros;
+
+    while (getline(ss, token, ',')) {
+        try {
+            long long num = std::stoll(token);
+            numeros.push_back(num);
+        } catch (...) {
+            continue;
+        }
+    }
+
+    for (long long n : numeros) {
+        fatorar(n);
+    }
+
+    std::cout << "Fatorados " << numeros.size() << " números do dataset " << tamanho << ".\n";
     return 0;
 }

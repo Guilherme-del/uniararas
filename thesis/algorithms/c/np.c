@@ -1,96 +1,67 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include <math.h>
 
-#define MAX_VARS 1000
+#define MAX_NUMBERS 100000
 
-bool evaluate_clause(int *clause, int assignment[]) {
-    for (int i = 0; i < 3; i++) {
-        int lit = clause[i];
-        int var = abs(lit);
-        bool val = assignment[var];
-        if ((lit > 0 && val) || (lit < 0 && !val)) return true;
-    }
-    return false;
-}
-
-// Força bruta para pequenas instâncias!
-bool is_satisfiable(int **clauses, int num_clauses, int num_vars) {
-    if(num_vars > 22) return -1; // Sinaliza para não tentar
-
-    int total = 1 << num_vars;
-    int assignment[MAX_VARS + 1];
-    for (int mask = 0; mask < total; mask++) {
-        for (int i = 1; i <= num_vars; i++)
-            assignment[i] = (mask >> (i - 1)) & 1;
-        bool all_true = true;
-        for (int i = 0; i < num_clauses; i++) {
-            if (!evaluate_clause(clauses[i], assignment)) {
-                all_true = false;
-                break;
-            }
+// Função para fatorar e consumir os fatores (sem exibir todos)
+void fatorar(long long n) {
+    if (n < 2) return;
+    for (long long i = 2; i <= sqrt(n); i++) {
+        while (n % i == 0) {
+            n /= i;
         }
-        if (all_true) return true;
     }
-    return false;
 }
 
+// Função principal
 int main(int argc, char *argv[]) {
-    const char *size = (argc > 1) ? argv[1] : "small";
-    char path[128];
-    snprintf(path, sizeof(path), "datasets/%s/sat.json", size);
-    FILE *f = fopen(path, "r");
-    if (!f) {
-        printf("Erro ao abrir arquivo\n");
+    if (argc != 2) {
+        fprintf(stderr, "Uso: %s <small|medium|large>\n", argv[0]);
         return 1;
     }
 
-    fseek(f, 0, SEEK_END);
-    long sizef = ftell(f);
-    rewind(f);
-    char *buffer = malloc(sizef + 1);
-    fread(buffer, 1, sizef, f);
-    fclose(f);
-    buffer[sizef] = '\0';
+    char *tamanho = argv[1];
+    char caminho[256];
+    snprintf(caminho, sizeof(caminho), "datasets/%s/factoring.json", tamanho);
 
-    int **clauses = malloc(sizeof(int*) * 200000);
+    FILE *fp = fopen(caminho, "r");
+    if (!fp) {
+        fprintf(stderr, "Erro ao abrir o arquivo: %s\n", caminho);
+        return 1;
+    }
+
+    // Lê o arquivo inteiro para memória
+    fseek(fp, 0, SEEK_END);
+    long fsize = ftell(fp);
+    rewind(fp);
+
+    char *json_content = malloc(fsize + 1);
+    fread(json_content, 1, fsize, fp);
+    json_content[fsize] = '\0';
+    fclose(fp);
+
+    // Extrai números da lista JSON
+    long long numeros[MAX_NUMBERS];
     int count = 0;
-    int max_var = 0;
 
-    char *tok = strtok(buffer, "[\n,]");
-    while (tok) {
-        int *clause = malloc(3 * sizeof(int));
+    char *start = strchr(json_content, '[');
+    char *end = strchr(json_content, ']');
+    if (start && end && end > start) {
+        char *token = strtok(start + 1, ",");
+        while (token && count < MAX_NUMBERS) {
+            numeros[count++] = strtoll(token, NULL, 10);
+            token = strtok(NULL, ",");
+        }
+    }
+    free(json_content);
 
-        clause[0] = atoi(tok);
-        if (abs(clause[0]) > max_var) max_var = abs(clause[0]);
-        tok = strtok(NULL, "[\n,]");
-        if (!tok) { free(clause); break; }
-
-        clause[1] = atoi(tok);
-        if (abs(clause[1]) > max_var) max_var = abs(clause[1]);
-        tok = strtok(NULL, "[\n,]");
-        if (!tok) { free(clause); break; }
-
-        clause[2] = atoi(tok);
-        if (abs(clause[2]) > max_var) max_var = abs(clause[2]);
-        clauses[count++] = clause;
-
-        tok = strtok(NULL, "[\n,]");
+    // Fatora todos os números
+    for (int i = 0; i < count; i++) {
+        fatorar(numeros[i]);
     }
 
-    int result = is_satisfiable(clauses, count, max_var);
-    if (result == -1) {
-        printf("SAT (%s): Instância com %d variáveis é grande demais para força bruta em C. Use MiniSat ou outro solver real!\n", size, max_var);
-    } else if (result) {
-        printf("SAT (%s): Satisfatível\n", size);
-    } else {
-        printf("SAT (%s): Insatisfatível\n", size);
-    }
-
-    for (int i = 0; i < count; i++) free(clauses[i]);
-    free(clauses);
-    free(buffer);
+    printf("Fatorados %d números do dataset %s.\n", count, tamanho);
     return 0;
 }

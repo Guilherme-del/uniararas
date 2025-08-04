@@ -10,7 +10,7 @@ arquivo_por_classe = {
     "p": "p", "np": "np", "np-completo": "np-completo", "np-dificil": "np-dificil"
 }
 dataset_por_classe = {
-    "p": "merge_sort.json", "np": "sat.json", "np-completo": "knapsack.json", "np-dificil": "halting.json"
+    "p": "merge_sort.json", "np": "factoring.json", "np-completo": "knapsack.json", "np-dificil": "halting.json"
 }
 extensao = {
     "c": "c", "c++": "cpp", "c#": "cs", "go": "go", "java": "java", "javascript": "js",
@@ -36,7 +36,7 @@ if not os.path.exists(dataset_path):
 
 # Comandos de compilação e execução
 compilacoes = {
-    "c": ["gcc", alg_path, "-o", "bin/exe"],
+    "c": ["gcc", alg_path, "-o", "bin/exe", "-lm"],
     "c++": ["g++", alg_path, "-o", "bin/exe"],
     "c#": ["mcs", alg_path, "-out:bin/exe.exe"],
     "java": ["javac", alg_path, "-d", "bin"],
@@ -100,7 +100,7 @@ if ling in compilacoes:
             "stderr": comp_proc.stderr
         }
         os.makedirs("resultados", exist_ok=True)
-        output_file = os.path.join("resultados", "metricas.json")
+        output_file = os.path.join("resultados", "penis.json")
         if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
             with open(output_file, "r") as f:
                 all_results = json.load(f)

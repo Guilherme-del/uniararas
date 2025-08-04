@@ -1,34 +1,56 @@
 import * as fs from 'fs';
+import * as path from 'path';
 
-function evaluateClause(clause: number[], assignment: Record<number, boolean>): boolean {
-    return clause.some(lit => {
-        const val = assignment[Math.abs(lit)];
-        return (lit > 0 && val) || (lit < 0 && !val);
-    });
+function parseNumbers(filePath: string): number[] {
+  const content = fs.readFileSync(filePath, 'utf-8').trim();
+  const cleaned = content.replace('[', '').replace(']', '');
+  return cleaned
+    .split(',')
+    .map((s) => parseInt(s.trim()))
+    .filter((n) => !isNaN(n));
 }
 
-function isSatisfiable(clauses: number[][], numVars: number): boolean {
-    const total = 1 << numVars;
-    for (let mask = 0; mask < total; mask++) {
-        const assignment: Record<number, boolean> = {};
-        for (let i = 1; i <= numVars; i++) {
-            assignment[i] = (mask >> (i - 1)) & 1 ? true : false;
-        }
-        if (clauses.every(clause => evaluateClause(clause, assignment))) return true;
+function findFactors(n: number): [number, number] | null {
+  for (let i = 2; i <= Math.floor(Math.sqrt(n)); i++) {
+    if (n % i === 0) {
+      return [i, n / i];
     }
-    return false;
+  }
+  return null;
 }
 
 function main() {
-    const size = process.argv[2] || 'small';
-    const path = `datasets/${size}/sat.json`;
-    if (!fs.existsSync(path)) {
-        console.error('Arquivo não encontrado.');
-        return;
+  const args = process.argv.slice(2);
+  if (args.length < 1) {
+    console.log('Uso: tsx np.ts <tamanho>');
+    return;
+  }
+
+  const tamanho = args[0];
+  const filePath = path.join('datasets', tamanho, 'factoring.json');
+
+  if (!fs.existsSync(filePath)) {
+    console.error(`Arquivo não encontrado: ${filePath}`);
+    return;
+  }
+
+  try {
+    const numbers = parseNumbers(filePath);
+    let fatorados = 0;
+    let primos = 0;
+
+    for (const n of numbers) {
+      if (findFactors(n)) {
+        fatorados++;
+      } else {
+        primos++;
+      }
     }
-    const clauses: number[][] = JSON.parse(fs.readFileSync(path, 'utf-8'));
-    const satisfiable = isSatisfiable(clauses, 20);
-    console.log(`SAT (${size}): ${satisfiable ? "Satisfatível" : "Insatisfatível"}`);
+
+    console.log(`Fatorados: ${fatorados}`);
+  } catch (err) {
+    console.error(`Erro: ${(err as Error).message}`);
+  }
 }
 
 main();

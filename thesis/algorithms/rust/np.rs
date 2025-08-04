@@ -1,50 +1,57 @@
 use std::env;
 use std::fs;
+use std::path::Path;
 
-fn evaluate_clause(clause: &Vec<i32>, assignment: &std::collections::HashMap<i32, bool>) -> bool {
-    for &lit in clause {
-        let var = lit.abs();
-        if let Some(&val) = assignment.get(&var) {
-            if (lit > 0 && val) || (lit < 0 && !val) {
-                return true;
-            }
-        }
-    }
-    false
+fn parse_numbers(path: &str) -> Result<Vec<u64>, Box<dyn std::error::Error>> {
+    let content = fs::read_to_string(path)?;
+    let trimmed = content.trim().trim_start_matches('[').trim_end_matches(']');
+    let numbers = trimmed
+        .split(',')
+        .filter_map(|s| s.trim().parse::<u64>().ok())
+        .collect();
+    Ok(numbers)
 }
 
-fn is_satisfiable(clauses: &Vec<Vec<i32>>, num_vars: usize) -> bool {
-    let total = 1 << num_vars;
-    for mask in 0..total {
-        let mut assignment = std::collections::HashMap::new();
-        for i in 0..num_vars {
-            assignment.insert((i + 1) as i32, (mask >> i) & 1 == 1);
-        }
-        if clauses.iter().all(|clause| evaluate_clause(clause, &assignment)) {
-            return true;
+fn find_factors(n: u64) -> Option<(u64, u64)> {
+    for i in 2..=((n as f64).sqrt() as u64) {
+        if n % i == 0 {
+            return Some((i, n / i));
         }
     }
-    false
-}
-
-fn parse_clauses(raw: &str) -> Vec<Vec<i32>> {
-    raw.trim_matches(&['[', ']'][..])
-        .split("],[")
-        .map(|s| {
-            s.split(',')
-                .filter_map(|n| n.trim().parse::<i32>().ok())
-                .collect::<Vec<i32>>()
-        })
-        .collect()
+    None
 }
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let fallback = "small".to_string();
-    let size = args.get(1).unwrap_or(&fallback);
-    let path = format!("datasets/{}/sat.json", size); 
-    let data = fs::read_to_string(&path).expect("Erro ao ler arquivo");
-    let clauses = parse_clauses(&data);
-    let satisfiable = is_satisfiable(&clauses, 20);
-    println!("SAT ({}): {}", size, if satisfiable { "Satisfatível" } else { "Insatisfatível" });
+    if args.len() < 2 {
+        println!("Uso: np <tamanho>");
+        return;
+    }
+
+    let tamanho = &args[1];
+    let path = format!("datasets/{}/factoring.json", tamanho);
+
+    if !Path::new(&path).exists() {
+        eprintln!("Arquivo não encontrado: {}", path);
+        return;
+    }
+
+    match parse_numbers(&path) {
+        Ok(numbers) => {
+            let mut fatorados = 0;
+            let mut primos = 0;
+
+            for &n in &numbers {
+                match find_factors(n) {
+                    Some(_) => fatorados += 1,
+                    None => primos += 1,
+                }
+            }
+
+            println!("✅ Fatorados: {}", fatorados);
+        }
+        Err(e) => {
+            eprintln!("Erro ao ler o arquivo: {}", e);
+        }
+    }
 }

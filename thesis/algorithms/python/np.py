@@ -1,34 +1,44 @@
-import json
 import sys
-import os
 
-def evaluate_clause(clause, assignment):
-    for lit in clause:
-        val = assignment.get(abs(lit), 0)
-        if (lit > 0 and val) or (lit < 0 and not val):
-            return True
-    return False
+def parse_numbers(path):
+    with open(path, "r") as f:
+        content = f.read().strip()
+    content = content.replace('[', '').replace(']', '')
+    return [int(x.strip()) for x in content.split(',') if x.strip()]
 
-def is_satisfiable(clauses, num_vars):
-    total = 1 << num_vars
-    for mask in range(total):
-        assignment = {i: (mask >> (i - 1)) & 1 for i in range(1, num_vars + 1)}
-        if all(evaluate_clause(clause, assignment) for clause in clauses):
-            return True
-    return False
+def find_factors(n):
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return (i, n // i)
+    return None
 
 def main():
-    size = sys.argv[1] if len(sys.argv) > 1 else 'small'
-    path = f'datasets/{size}/sat.json'
-    if not os.path.exists(path):
-        print("Arquivo não encontrado.")
+    if len(sys.argv) < 2:
+        print("Uso: python3 np.py <tamanho>")
         return
 
-    with open(path, 'r') as f:
-        clauses = json.load(f)
+    tamanho = sys.argv[1]
+    path = f"datasets/{tamanho}/factoring.json"
 
-    satisfiable = is_satisfiable(clauses, 20)
-    print(f"SAT ({size}): {'Satisfatível' if satisfiable else 'Insatisfatível'}")
+    try:
+        numbers = parse_numbers(path)
 
-if __name__ == '__main__':
+        total = len(numbers)
+        fatorados = 0
+        primos = 0
+
+        for n in numbers:
+            result = find_factors(n)
+            if result:
+                fatorados += 1
+            else:
+                primos += 1
+
+        print(f"Fatorados: {fatorados}")
+
+
+    except Exception as e:
+        print(f"Erro: {e}")
+
+if __name__ == "__main__":
     main()
