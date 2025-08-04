@@ -39,7 +39,7 @@ compilacoes = {
     "c": ["gcc", alg_path, "-o", "bin/exe"],
     "c++": ["g++", alg_path, "-o", "bin/exe"],
     "c#": ["mcs", alg_path, "-out:bin/exe.exe"],
-    "java": ["javac", alg_path],
+    "java": ["javac", alg_path, "-d", "bin"],
     "kotlin": ["kotlinc", alg_path, "-include-runtime", "-d", "bin/main.jar"],
     "rust": ["rustc", alg_path, "-o", "bin/exe"]
 }
