@@ -89,10 +89,8 @@ if ling in compilacoes:
             "ram_before_mb": round(idle_ram, 2),
             "cpu_avg_during": 0.0,
             "cpu_max_during": 0.0,
-            "cpu_min_during": 0.0,
             "ram_avg_during_mb": 0.0,
             "ram_max_during_mb": 0.0,
-            "ram_min_during_mb": 0.0,
             "cpu_after": 0.0,
             "ram_after_mb": round(psutil.virtual_memory().used / (1024 ** 2), 2),
             "linhas_codigo": linhas_codigo,
@@ -154,11 +152,9 @@ ram_after = psutil.virtual_memory().used / (1024 ** 2)
 
 cpu_avg = round(sum(cpu_metrics)/len(cpu_metrics), 2) if cpu_metrics else 0.0
 cpu_max = round(max(cpu_metrics), 2) if cpu_metrics else 0.0
-cpu_min = round(min(cpu_metrics), 2) if cpu_metrics else 0.0
 
 ram_avg = round(sum(ram_metrics)/len(ram_metrics), 2) if ram_metrics else 0.0
 ram_max = round(max(ram_metrics), 2) if ram_metrics else 0.0
-ram_min = round(min(ram_metrics), 2) if ram_metrics else 0.0
 
 result = {
     "classe": classe,
@@ -170,10 +166,8 @@ result = {
     "ram_before_mb": round(idle_ram, 2),
     "cpu_avg_during": cpu_avg,
     "cpu_max_during": cpu_max,
-    "cpu_min_during": cpu_min,
     "ram_avg_during_mb": ram_avg,
     "ram_max_during_mb": ram_max,
-    "ram_min_during_mb": ram_min,
     "cpu_after": cpu_after,
     "ram_after_mb": round(ram_after, 2),
     "linhas_codigo": linhas_codigo,
