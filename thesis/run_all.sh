@@ -2,8 +2,8 @@
 
 cd "$(dirname "$0")"
 
-for classe in p np np-completo np-dificil; do
-  for linguagem in "c" "c++" "c#" "go" "java" "javascript" "python" "typescript" "kotlin" "rust"; do
+for classe in np-completo; do
+  for linguagem in "c" "c++" "c#" "java" "go" "rust" "typescript" "javascript" "kotlin" "python"; do
     for tamanho in small medium large; do
       for repeticao in {1..2}; do
         echo "🧪 Rodando $classe | $linguagem | $tamanho | Repetição $repeticao"
