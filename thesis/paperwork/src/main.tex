@@ -6,7 +6,7 @@
 \usepackage[brazil]{babel}
 \usepackage{enumerate,setspace,graphicx,amsmath,tikz,amsfonts,amssymb}
 \usepackage{indentfirst}
-\usepackage{lmodern}
+\usepackage{times}
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage[alf]{abntex2cite}
@@ -86,7 +86,7 @@ Neste trabalho, o foco recai sobre as classes de complexidade polinomial, fundam
     \[
     T_V(|x| + |y|) = O((|x| + |y|)^k)
     \]
-    Exemplo: Satisfatibilidade Booleana (SAT) \citeonline{garey1979}.
+    Exemplo: Fatoração de inteiros (Factoring) \citeonline{rivest1978}.
 
     \item \textbf{Classe NP-completo}: Engloba problemas para os quais qualquer problema em NP pode ser reduzido a eles em tempo polinomial. Para \( A \) ser NP-completo:
     \[
@@ -123,9 +123,9 @@ Os algoritmos utilizados para análise de desempenho são representativos das cl
 
 O algoritmo MergeSort é representativo da classe P e é amplamente utilizado devido à sua complexidade \( O(n \log n) \). Sua estrutura de divisão e conquista permite uma ordenação eficiente, servindo como benchmark para linguagens de programação compiladas e interpretadas.
 
-\subsubsection{Problemas de Otimização e Satisfatibilidade}
+\subsubsection{Problemas de Otimização e Fatoração}
 
-Problemas como o Knapsack (NP-completo) e o SAT (NP) são utilizados para avaliar a capacidade das linguagens em lidar com desafios de verificação e busca combinatória. Embora ambos sejam polinomiais em suas versões restritas neste estudo, a implementação de suas versões básicas permite comparar overheads entre linguagens.
+Problemas como o Knapsack (NP-completo) e o Factoring (NP) são utilizados para avaliar a capacidade das linguagens em lidar com desafios de verificação e busca combinatória.
 
 \subsubsection{Problemas Indecidíveis}
 
@@ -216,7 +216,7 @@ Para cada linguagem de programação e algoritmo, o procedimento experimental se
 
 Com base na literatura técnica \citeonline{cormen2022,sebesta2016} e na fundamentação teórica apresentada, antecipa-se que algoritmos classificados na Classe P, como o MergeSort, apresentem desempenho superior quando implementados em linguagens compiladas (por exemplo, C e Rust) em relação a linguagens interpretadas (como Python e JavaScript). Isso se deve principalmente à compilação nativa, que elimina a sobrecarga associada a interpretadores e máquinas virtuais, conforme discutido por \citeonline{sebesta2016}. Para entradas de tamanho médio e grande (\( n \geq 10^4 \)), estima-se que linguagens compiladas possam ser de três a cinco vezes mais rápidas do que linguagens interpretadas, graças a otimizações de tempo de compilação e execução mais eficiente. Além disso, espera-se que linguagens como C++ se beneficiem de técnicas de otimização estática, proporcionando resultados consistentes em termos de tempo de execução, especialmente para algoritmos como o Knapsack, cuja análise de complexidade e estrutura algorítmica são amplamente detalhadas por \citeonline{cormen2022}.
 
-Para problemas da Classe NP, como SAT, espera-se que linguagens com gerenciamento automático de memória e otimizações de execução just-in-time (JIT), como Java e Go, apresentem bom equilíbrio entre tempo de execução e consumo de memória. Em problemas NP-completos como Knapsack, o uso de recursos (tempo e memória) tende a crescer exponencialmente com o tamanho da entrada. Ainda assim, linguagens como C++ devem apresentar vantagem devido à eficiência de compilação e ao controle de memória manual, possibilitando otimizações específicas para entradas grandes.
+Para problemas da Classe NP, como Factoring, espera-se que linguagens com gerenciamento automático de memória e otimizações de execução just-in-time (JIT), como Java e Go, apresentem bom equilíbrio entre tempo de execução e consumo de memória. Em problemas NP-completos como Knapsack, o uso de recursos (tempo e memória) tende a crescer exponencialmente com o tamanho da entrada. Ainda assim, linguagens como C++ devem apresentar vantagem devido à eficiência de compilação e ao controle de memória manual, possibilitando otimizações específicas para entradas grandes.
 
 Em problemas NP-difíceis e indecidíveis como o Problema da Parada (restrito), prevê-se que o impacto da linguagem seja menos significativo em termos absolutos, uma vez que a complexidade teórica domina o crescimento do tempo de execução. Entretanto, linguagens como Rust e C ainda devem ter vantagens por apresentarem menor overhead de execução e gerenciamento de recursos mais direto.
 
