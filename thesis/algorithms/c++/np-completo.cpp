@@ -3,22 +3,37 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 struct Item {
     int weight;
     int value;
 };
 
+// Algoritmo guloso: ordena por valor/peso e inclui até bater o limite
 int knapsack(const std::vector<Item>& items, int capacity) {
-    std::vector<int> dp(capacity + 1, 0);
-    for (const auto& item : items) {
-        for (int w = capacity; w >= item.weight; --w) {
-            dp[w] = std::max(dp[w], dp[w - item.weight] + item.value);
+    std::vector<Item> sorted = items;
+
+    std::sort(sorted.begin(), sorted.end(), [](const Item& a, const Item& b) {
+        double ra = (double)a.value / a.weight;
+        double rb = (double)b.value / b.weight;
+        return ra > rb;
+    });
+
+    int totalValue = 0;
+    int currentWeight = 0;
+
+    for (const auto& item : sorted) {
+        if (currentWeight + item.weight <= capacity) {
+            currentWeight += item.weight;
+            totalValue += item.value;
         }
     }
-    return dp[capacity];
+
+    return totalValue;
 }
 
+// Leitura simplificada do JSON
 std::pair<std::vector<Item>, int> read_knapsack(const std::string& path) {
     std::ifstream file(path);
     std::string line, content;
@@ -41,8 +56,14 @@ std::pair<std::vector<Item>, int> read_knapsack(const std::string& path) {
 int main(int argc, char* argv[]) {
     std::string size = argc > 1 ? argv[1] : "small";
     std::string path = "datasets/" + size + "/knapsack.json";
+
     auto [items, capacity] = read_knapsack(path);
+
     int result = knapsack(items, capacity);
-    std::cout << "Valor máximo para " << items.size() << " itens (" << size << "): " << result << std::endl;
+
+    std::cout << "Valor aproximado (greedy) para " << items.size()
+              << " itens (capacidade " << capacity << ", " << size << "): "
+              << result << std::endl;
+
     return 0;
 }

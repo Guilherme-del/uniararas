@@ -7,23 +7,31 @@ typedef struct {
     int value;
 } Item;
 
-int knapsack(Item *items, int n, int capacity) {
-    int *dp = calloc(capacity + 1, sizeof(int));
-    if (!dp) {
-        fprintf(stderr, "Erro ao alocar memória para o vetor dp!\n");
-        return -1;
-    }
-    for (int i = 0; i < n; i++) {
-        for (int w = capacity; w >= items[i].weight; w--) {
-            int val = dp[w - items[i].weight] + items[i].value;
-            if (val > dp[w]) dp[w] = val;
-        }
-    }
-    int result = dp[capacity];
-    free(dp);
-    return result;
+// Função de comparação para qsort (valor/peso decrescente)
+int compare(const void *a, const void *b) {
+    double r1 = (double)((Item *)b)->value / ((Item *)b)->weight;
+    double r2 = (double)((Item *)a)->value / ((Item *)a)->weight;
+    return (r1 > r2) - (r1 < r2);
 }
 
+// Algoritmo guloso para knapsack
+int knapsack(Item *items, int n, int capacity) {
+    qsort(items, n, sizeof(Item), compare);  // Ordena os itens por valor/peso
+
+    int totalValue = 0;
+    int currentWeight = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (currentWeight + items[i].weight <= capacity) {
+            currentWeight += items[i].weight;
+            totalValue += items[i].value;
+        }
+    }
+
+    return totalValue;
+}
+
+// Função para ler arquivo JSON simplificado
 int read_knapsack(const char *path, Item **items, int *capacity) {
     FILE *f = fopen(path, "r");
     if (!f) return -1;
@@ -54,6 +62,7 @@ int read_knapsack(const char *path, Item **items, int *capacity) {
         free(buffer);
         return -1;
     }
+
     int count = 0;
     char *p = buffer;
 
@@ -63,7 +72,6 @@ int read_knapsack(const char *path, Item **items, int *capacity) {
         if (value_ptr &&
             sscanf(p, "\"weight\":%d", &weight) == 1 &&
             sscanf(value_ptr, "\"value\":%d", &value) == 1) {
-            // Realoca se necessário
             if (count >= alloc) {
                 alloc *= 2;
                 Item *new_temp = realloc(temp, sizeof(Item) * alloc);
@@ -78,7 +86,7 @@ int read_knapsack(const char *path, Item **items, int *capacity) {
             temp[count].value = value;
             count++;
         }
-        p++;  // Avança para evitar loop infinito
+        p++;  // Evita loop infinito
     }
 
     *items = temp;
@@ -105,7 +113,8 @@ int main(int argc, char *argv[]) {
         free(items);
         return 2;
     }
-    printf("Valor máximo para %d itens (capacidade %d, %s): %d\n", count, capacity, size, result);
+
+    printf("Valor aproximado (greedy) para %d itens (capacidade %d, %s): %d\n", count, capacity, size, result);
 
     free(items);
     return 0;

@@ -3,13 +3,20 @@ import java.io.File
 data class Item(val weight: Int, val value: Int)
 
 fun knapsack(items: List<Item>, capacity: Int): Int {
-    val dp = IntArray(capacity + 1)
-    for (item in items) {
-        for (w in capacity downTo item.weight) {
-            dp[w] = maxOf(dp[w], dp[w - item.weight] + item.value)
+    // Ordena por valor/peso decrescente
+    val sorted = items.sortedByDescending { it.value.toDouble() / it.weight }
+
+    var totalValue = 0
+    var currentWeight = 0
+
+    for (item in sorted) {
+        if (currentWeight + item.weight <= capacity) {
+            currentWeight += item.weight
+            totalValue += item.value
         }
     }
-    return dp[capacity]
+
+    return totalValue
 }
 
 fun parseKnapsackJson(path: String): Pair<Int, List<Item>> {
@@ -41,5 +48,5 @@ fun main(args: Array<String>) {
     }
 
     val result = knapsack(items, capacity)
-    println("Valor máximo para ${items.size} itens (capacidade $capacity, $size): $result")
+    println("Valor aproximado (greedy) para ${items.size} itens (capacidade $capacity, $size): $result")
 }

@@ -8,14 +8,25 @@ class KnapsackItem {
 }
 
 class KnapsackProgram {
+    // Algoritmo guloso: ordena por valor/peso e adiciona enquanto possível
     static int Knapsack(List<KnapsackItem> items, int capacity) {
-        int[] dp = new int[capacity + 1];
+        items.Sort((a, b) => {
+            double ra = (double)b.value / b.weight;
+            double rb = (double)a.value / a.weight;
+            return ra.CompareTo(rb);
+        });
+
+        int totalValue = 0;
+        int currentWeight = 0;
+
         foreach (var item in items) {
-            for (int w = capacity; w >= item.weight; w--) {
-                dp[w] = Math.Max(dp[w], dp[w - item.weight] + item.value);
+            if (currentWeight + item.weight <= capacity) {
+                currentWeight += item.weight;
+                totalValue += item.value;
             }
         }
-        return dp[capacity];
+
+        return totalValue;
     }
 
     static void Main(string[] args) {
@@ -64,6 +75,6 @@ class KnapsackProgram {
         }
 
         int result = Knapsack(items, capacity);
-        Console.WriteLine($"Valor máximo para {items.Count} itens (capacidade {capacity}, {size}): {result}");
+        Console.WriteLine($"Valor aproximado (greedy) para {items.Count} itens (capacidade {capacity}, {size}): {result}");
     }
 }

@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 
 class Item {
     int weight;
@@ -13,14 +12,24 @@ class Item {
 }
 
 public class NpCompleto {
+    // Algoritmo guloso: ordena por valor/peso e adiciona enquanto possível
     public static int knapsack(List<Item> items, int capacity) {
-        int[] dp = new int[capacity + 1];
+        items.sort((a, b) -> Double.compare(
+            (double)b.value / b.weight,
+            (double)a.value / a.weight
+        ));
+
+        int totalValue = 0;
+        int currentWeight = 0;
+
         for (Item item : items) {
-            for (int w = capacity; w >= item.weight; w--) {
-                dp[w] = Math.max(dp[w], dp[w - item.weight] + item.value);
+            if (currentWeight + item.weight <= capacity) {
+                currentWeight += item.weight;
+                totalValue += item.value;
             }
         }
-        return dp[capacity];
+
+        return totalValue;
     }
 
     public static List<Item> readItems(String path, int[] capacityOut) throws IOException {
@@ -45,6 +54,7 @@ public class NpCompleto {
         int[] capacity = new int[1];
         List<Item> items = readItems(path, capacity);
         int result = knapsack(items, capacity[0]);
-        System.out.println("Valor máximo para " + items.size() + " itens (" + size + "): " + result);
+        System.out.println("Valor aproximado (greedy) para " + items.size() +
+                           " itens (capacidade " + capacity[0] + ", " + size + "): " + result);
     }
 }

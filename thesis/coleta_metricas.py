@@ -100,7 +100,7 @@ if ling in compilacoes:
             "stderr": comp_proc.stderr
         }
         os.makedirs("resultados", exist_ok=True)
-        output_file = os.path.join("resultados", "penis.json")
+        output_file = os.path.join("resultados", "erro.json")
         if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
             with open(output_file, "r") as f:
                 all_results = json.load(f)

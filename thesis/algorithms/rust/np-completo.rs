@@ -1,7 +1,7 @@
 use std::env;
 use std::fs;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)] // <- necessário para permitir .to_vec()
 struct Item {
     weight: usize,
     value: usize,
@@ -16,7 +16,7 @@ fn parse_knapsack_json(path: &str) -> (usize, Vec<Item>) {
     let cap_end = content[cap_start..].find(',').unwrap_or(10) + cap_start;
     let capacity: usize = content[cap_start..cap_end].trim().parse().unwrap();
 
-    // Extrair itens com regex básica de string
+    // Extrair itens
     let mut items = Vec::new();
     let mut remaining = content.as_str();
     while let Some(weight_idx) = remaining.find("\"weight\"") {
@@ -31,21 +31,33 @@ fn parse_knapsack_json(path: &str) -> (usize, Vec<Item>) {
         let value: usize = remaining[v_start..v_end].trim().parse().unwrap();
 
         items.push(Item { weight, value });
-
         remaining = &remaining[v_end..];
     }
 
     (capacity, items)
 }
 
+// Versão gulosa (greedy): ordena por valor/peso e preenche até o limite
 fn knapsack(items: &[Item], capacity: usize) -> usize {
-    let mut dp = vec![0; capacity + 1];
-    for item in items {
-        for w in (item.weight..=capacity).rev() {
-            dp[w] = dp[w].max(dp[w - item.weight] + item.value);
+    let mut sorted = items.to_vec(); // <- exige Clone
+
+    sorted.sort_by(|a, b| {
+        let r1 = b.value as f64 / b.weight as f64;
+        let r2 = a.value as f64 / a.weight as f64;
+        r1.partial_cmp(&r2).unwrap()
+    });
+
+    let mut total_value = 0;
+    let mut current_weight = 0;
+
+    for item in sorted {
+        if current_weight + item.weight <= capacity {
+            current_weight += item.weight;
+            total_value += item.value;
         }
     }
-    dp[capacity]
+
+    total_value
 }
 
 fn main() {
@@ -61,7 +73,7 @@ fn main() {
 
     let result = knapsack(&items, capacity);
     println!(
-        "Valor máximo para {} itens (capacidade {}, {}): {}",
+        "Valor aproximado (greedy) para {} itens (capacidade {}, {}): {}",
         items.len(),
         capacity,
         size,

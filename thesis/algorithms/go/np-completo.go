@@ -5,6 +5,7 @@ import (
     "fmt"
     "io/ioutil"
     "os"
+    "sort"
 )
 
 type Item struct {
@@ -17,16 +18,25 @@ type KnapsackInput struct {
     Items    []Item `json:"items"`
 }
 
+// Algoritmo guloso: ordena por valor/peso e adiciona enquanto possível
 func knapsack(items []Item, capacity int) int {
-    dp := make([]int, capacity+1)
+    // Ordena por valor/peso decrescente
+    sort.Slice(items, func(i, j int) bool {
+        return float64(items[i].Value)/float64(items[i].Weight) >
+            float64(items[j].Value)/float64(items[j].Weight)
+    })
+
+    totalValue := 0
+    currentWeight := 0
+
     for _, item := range items {
-        for w := capacity; w >= item.Weight; w-- {
-            if val := dp[w-item.Weight] + item.Value; val > dp[w] {
-                dp[w] = val
-            }
+        if currentWeight+item.Weight <= capacity {
+            currentWeight += item.Weight
+            totalValue += item.Value
         }
     }
-    return dp[capacity]
+
+    return totalValue
 }
 
 func main() {
@@ -49,5 +59,6 @@ func main() {
     }
 
     result := knapsack(input.Items, input.Capacity)
-    fmt.Printf("Valor máximo para %d itens (%s): %d\n", len(input.Items), size, result)
+    fmt.Printf("Valor aproximado (greedy) para %d itens (capacidade %d, %s): %d\n",
+        len(input.Items), input.Capacity, size, result)
 }
