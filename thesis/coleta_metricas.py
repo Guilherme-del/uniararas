@@ -14,13 +14,12 @@ classe, linguagem, tamanho, repeticao = sys.argv[1:]
 ling = linguagem.lower()
 
 # ===================== Variantes (np-completo) =====================
-# Define algoritmo_variant via variável de ambiente (não quebra os 4 args)
 algoritmo_variant = os.environ.get("ALGO_VARIANT", "").strip().lower()
 if classe == "np-completo":
     if algoritmo_variant not in {"exato", "guloso"}:
         algoritmo_variant = "exato"  # default seguro
 else:
-    algoritmo_variant = ""  # vazio para as outras classes
+    algoritmo_variant = "exato"  # não aplicável, mas mantém consistência
 
 def _is_large_bucket(name: str) -> bool:
     s = str(name).strip().lower()
@@ -30,6 +29,20 @@ def _is_large_bucket(name: str) -> bool:
 if classe == "np-completo" and algoritmo_variant == "exato" and _is_large_bucket(tamanho):
     print("⏭️  Skip: NP-completo (exato) não roda em 'large' por política de testes.")
     sys.exit(0)
+
+# ===================== Mapeamentos de problema/algoritmo =====================
+problema_por_classe = {
+    "p": "mergesort",
+    "np": "factoring",
+    "np-completo": "knapsack",
+    "np-dificil": "halting",
+}
+if classe == "np-completo":
+    problema_padrao = problema_por_classe["np-completo"]
+    algoritmo_padrao = algoritmo_variant or "exato"
+else:
+    problema_padrao = problema_por_classe.get(classe)
+    algoritmo_padrao = "exato"
 
 # ===================== Const / Paths =====================
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -62,26 +75,19 @@ if ling not in ext_map:
 extensao = ext_map[ling]
 nome_arquivo_base = arquivo_por_classe[classe]
 
-# Se for NP-completo, escolha base pelo algoritmo_variant
-if classe == "np-completo" and algoritmo_variant:
-    nome_arquivo_base = f"{nome_arquivo_base}_{algoritmo_variant}"
-
-# Classe Java precisa ser nomeada corretamente
+# ===================== Definição de nomes =====================
 nome_classe_java = None
 if ling == "java":
     if classe == "np-completo" and algoritmo_variant:
-        if algoritmo_variant == "exato":
-            nome_classe_java = "NpCompletoExato"
-        elif algoritmo_variant == "guloso":
-            nome_classe_java = "NpCompletoGuloso"
-        else:
-            nome_classe_java = "NpCompleto"
+        nome_classe_java = "NpCompletoExato" if algoritmo_variant == "exato" else "NpCompletoGuloso"
         nome_arquivo = f"{nome_classe_java}.java"
     else:
-        # exemplo: p -> P.java, np -> Np.java, np-dificil -> NpDificil.java
+        # ex.: "np-dificil" -> "NpDificil.java"
         nome_classe_java = ''.join(part.capitalize() for part in nome_arquivo_base.replace('-', ' ').split())
         nome_arquivo = f"{nome_classe_java}.java"
 else:
+    if classe == "np-completo" and algoritmo_variant:
+        nome_arquivo_base = f"{nome_arquivo_base}_{algoritmo_variant}"  # np-completo_exato/guloso.<ext>
     nome_arquivo = f"{nome_arquivo_base}.{extensao}"
 
 alg_path = os.path.join(base_dir, "algorithms", ling, nome_arquivo)
@@ -197,8 +203,8 @@ def persist_compile_error_and_exit(stdout_msg: str, stderr_msg: str):
     linhas_codigo = sum(1 for _ in open(alg_path, 'r', encoding="utf-8", errors="ignore"))
     result = {
         "classe": classe,
-        "problema": "knapsack" if classe == "np-completo" else None,
-        "algoritmo": algoritmo_variant or None,
+        "problema": problema_padrao,
+        "algoritmo": algoritmo_padrao,
         "linguagem": linguagem,
         "tamanho": tamanho,
         "repeticao": int(repeticao),
@@ -275,7 +281,7 @@ with open(alg_path, 'r', encoding="utf-8", errors="ignore") as code_file:
 
 metrics = []    # (cpu_total_pct, ram_max_mb)
 SAMPLE_INTERVAL = 0.1
-TIMEOUT_SEC     = int(os.environ.get("TIMEOUT_SEC", "180"))
+TIMEOUT_SEC     = int(os.environ.get("TIMEOUT_SEC", "580"))
 timeout_hit = False
 exit_code = None
 
@@ -364,34 +370,27 @@ ram_after = psutil.virtual_memory().used / (1024 ** 2)
 
 result = {
     "classe": classe,
-    "problema": "knapsack" if classe == "np-completo" else None,
-    "algoritmo": algoritmo_variant or None,   # "exato"|"guloso"|None
+    "problema": problema_padrao,
+    "algoritmo": algoritmo_padrao,
     "linguagem": linguagem,
     "tamanho": tamanho,
     "repeticao": int(repeticao),
-
     "tempo_s": round(end - start, 6),
-
     "cpu_before": idle_cpu,
     "ram_before_mb": round(idle_ram, 2),
-
     "cpu_avg_during": cpu_avg,
     "cpu_max_during": cpu_max,
     "cpu_avg_during_norm": cpu_avg_norm,
     "cpu_max_during_norm": cpu_max_norm,
     "ram_avg_during_mb": ram_avg,
     "ram_max_during_mb": ram_max,
-
     "cpu_after": cpu_after,
     "ram_after_mb": round(ram_after, 2),
-
     "linhas_codigo": linhas_codigo,
     "timestamp": datetime.now().isoformat(),
     "especificacoes_sistema": specs,
-
     "stdout": stdout.decode(errors="replace"),
     "stderr": stderr.decode(errors="replace"),
-
     "exit_code": exit_code if exit_code is not None else -1,
     "timeout_s": TIMEOUT_SEC if timeout_hit else 0,
     "samples": len(metrics),
