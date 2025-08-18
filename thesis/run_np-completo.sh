@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 # ---------- knobs ----------
-export TIMEOUT_SEC="${TIMEOUT_SEC:-180}"   # tempo limite por execução (s)
+export TIMEOUT_SEC="${TIMEOUT_SEC:-980}"   # tempo limite por execução (s)
 LOG="${LOG:-run.log}"
 
 # ---------- helpers ----------

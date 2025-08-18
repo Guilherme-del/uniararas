@@ -69,8 +69,18 @@ if classe == "np-completo" and algoritmo_variant:
 # Classe Java precisa ser nomeada corretamente
 nome_classe_java = None
 if ling == "java":
-    nome_classe_java = ''.join(part.capitalize() for part in nome_arquivo_base.replace('-', ' ').split())
-    nome_arquivo = f"{nome_classe_java}.java"
+    if classe == "np-completo" and algoritmo_variant:
+        if algoritmo_variant == "exato":
+            nome_classe_java = "NpCompletoExato"
+        elif algoritmo_variant == "guloso":
+            nome_classe_java = "NpCompletoGuloso"
+        else:
+            nome_classe_java = "NpCompleto"
+        nome_arquivo = f"{nome_classe_java}.java"
+    else:
+        # exemplo: p -> P.java, np -> Np.java, np-dificil -> NpDificil.java
+        nome_classe_java = ''.join(part.capitalize() for part in nome_arquivo_base.replace('-', ' ').split())
+        nome_arquivo = f"{nome_classe_java}.java"
 else:
     nome_arquivo = f"{nome_arquivo_base}.{extensao}"
 
