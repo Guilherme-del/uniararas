@@ -11,7 +11,7 @@ class Item {
     }
 }
 
-public class NpCompleto {
+public class NpCompletoGuloso {
     // Algoritmo guloso: ordena por valor/peso e adiciona enquanto possível
     public static int knapsack(List<Item> items, int capacity) {
         items.sort((a, b) -> Double.compare(
