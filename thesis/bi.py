@@ -15,20 +15,62 @@ SIZE_ORDER_ALIASES = {
     "pequeno": 1, "medio": 2, "grande": 3
 }
 
-# Paleta vibrante e bem distinta
 COLORS_VIBRANT = [
-    "#007bff",  # blue
-    "#ff3b30",  # red
-    "#34c759",  # green
-    "#ff9500",  # orange
-    "#af52de",  # purple
-    "#32ade6",  # cyan
-    "#ff2d55",  # magenta/pink
-    "#ffcc00",  # yellow
+    "#377EB8",  # blue
+    "#E41A1C",  # red
+    "#4DAF4A",  # green
+    "#984EA3",  # purple
+    "#FF7F00",  # orange
+    "#FFFF33",  # yellow
+    "#A65628",  # brown
+    "#F781BF",  # pink/magenta
+    "#999999",  # gray
+    "#66C2A5",  # teal
+    "#FC8D62",  # salmon
+    "#8DA0CB",  # periwinkle
+    "#E78AC3",  # rose
+    "#A6D854",  # lime
 ]
 
 EXACT_NAMES = {"exato","exact","ótimo","otimo","optimal","dp","backtracking","branch_and_bound","knapsack_exato"}
 APPROX_NAMES = {"guloso","greedy","heuristica","heurística","approx","aproximado","knapsack_guloso"}
+
+def _hex_to_rgb(hex_color: str):
+    hex_color = hex_color.lstrip("#")
+    return tuple(int(hex_color[i:i+2], 16)/255.0 for i in (0, 2, 4))
+
+def _relative_luminance(rgb):
+    # W3C luminance
+    def f(u): 
+        return u/12.92 if u <= 0.04045 else ((u+0.055)/1.055)**2.4
+    r, g, b = map(f, rgb)
+    return 0.2126*r + 0.7152*g + 0.0722*b
+
+def _text_color_for_bg(hex_color: str) -> str:
+    # texto preto em fundos claros; branco em fundos escuros
+    lum = _relative_luminance(_hex_to_rgb(hex_color))
+    return "#000000" if lum > 0.6 else "#FFFFFF"
+
+# Abreviações curtas para o cabeçalho (não mexe na legenda do gráfico)
+HEADER_SHORT = {
+    "javascript": "JS",
+    "typescript": "TS",
+    "csharp": "C#",
+    "c#": "C#",
+    "cpp": "C++",
+    "c++": "C++",
+    "golang": "Go",
+    "python": "Py",
+}
+
+def _header_label(lang: str) -> str:
+    s = str(lang)
+    key = s.strip().lower()
+    if key in HEADER_SHORT:
+        return HEADER_SHORT[key]
+    # se ainda for longo, encurta
+    return s if len(s) <= 9 else s[:9]
+
 
 def parse_k_suffix(x: str):
     """Converte '1k' -> 1000, '10k'->10000; números puros viram int; fallbacks mantêm string."""
@@ -67,16 +109,16 @@ def savefig_with_table(path):
     plt.clf()
 
 def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, ylabel: str, filename: str, xlabel="Tamanho do dataset"):
-    """Linhas com barras de erro + tabela (cabeçalho 2 níveis):
-       - Cabeçalho de linguagem forma um bloco contínuo de cor (sem “risco” interno)
-       - Subcabeçalho: 'M'/'DP' se muitas linguagens; senão 'Média'/'Desvio-padrão'
-       Também salva:
-         1) {filename}_tabela.csv       (igual à tabela exibida)
-         2) {filename}_tabela_dados.csv (<linguagem>_mean / <linguagem>_std)
+    """Gráfico de linhas com barras de erro + tabela (2 níveis no cabeçalho).
+       - Linguagem aparece UMA vez (faixa contínua de cor cobrindo M/DP)
+       - Cabeçalho usa abreviações (ex.: JS/TS) para evitar transbordo
+       - Cores muito distintas; texto preto/branco conforme contraste
+       - Salva CSVs: *_tabela.csv (visível) e *_tabela_dados.csv (numérico)
     """
     if mean_df is None or mean_df.empty:
         return
 
+    # Ordena índice de tamanhos
     mean_df = ensure_monotonic_size_index(mean_df)
     std_df = std_df.reindex(mean_df.index) if (std_df is not None and not std_df.empty) else None
 
@@ -84,9 +126,9 @@ def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, yl
     color_map = {col: COLORS_VIBRANT[i % len(COLORS_VIBRANT)] for i, col in enumerate(cols)}
     n_lang = len(cols)
 
-    # -------- FIGURA (mais alta e larga, sem achatar o plot) --------
+    # ===== FIGURA (mais alta e larga, preservando o plot) =====
     n_rows = len(mean_df.index)
-    base_plot_h = 8.8
+    base_plot_h = 9.2
     extra_per_row = 0.35
     fig_h = base_plot_h + extra_per_row * max(0, n_rows - 1)
 
@@ -94,14 +136,14 @@ def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, yl
     ax = plt.gca()
     x = np.arange(len(mean_df.index))
 
-    # -------- PLOT --------
+    # ===== PLOT =====
     for col in cols:
         y = mean_df[col].values
         yerr = std_df[col].values if (std_df is not None and col in std_df.columns) else None
         c = color_map[col]
         plt.errorbar(
             x, y, yerr=yerr,
-            fmt='-o', markersize=5, linewidth=1.8,
+            fmt='-o', markersize=5, linewidth=1.9,
             color=c, ecolor=c, elinewidth=1, capsize=4,
             markeredgecolor="#ffffff", markeredgewidth=0.6,
             label=str(col)
@@ -114,13 +156,14 @@ def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, yl
     plt.grid(True, axis='y', alpha=0.25, linewidth=0.8)
     plt.legend(title="Séries", ncol=2)
 
-    # -------- TABELA --------
+    # ===== TABELA =====
+    # subcabeçalho curto se muitas linguagens
     sub_mean, sub_std = ("M", "DP") if n_lang >= 6 else ("Média", "Desvio-padrão")
 
     top_header = ["Tamanho"] + [c for c in cols for _ in (0, 1)]
     sub_header = [""] + [sub_mean, sub_std] * n_lang
 
-    # dados da tabela
+    # dados
     table_rows = []
     for idx in mean_df.index:
         row_vals = []
@@ -133,16 +176,17 @@ def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, yl
             ])
         table_rows.append([str(idx)] + row_vals)
 
-    # CSV 1: igual à tabela que aparece na figura
+    # CSV 1: “visível” (igual à tabela)
     table_df_csv = pd.DataFrame(
         data=[[r for r in row[1:]] for row in table_rows],
         index=[row[0] for row in table_rows],
-        columns=[f"{c} – {sub_mean}" if i % 2 == 0 else f"{c} – {sub_std}" for c in cols for i in (0, 1)],
+        columns=[f"{c} – {sub_mean}" if i % 2 == 0 else f"{c} – {sub_std}"
+                 for c in cols for i in (0, 1)],
     )
     table_df_csv.index.name = "Tamanho"
     table_df_csv.to_csv(os.path.join(OUT_DIR, f"{filename}_tabela.csv"))
 
-    # CSV 2: dados numéricos separados
+    # CSV 2: numérico separado
     dados = pd.DataFrame(index=mean_df.index)
     for c in cols:
         dados[f"{c}_mean"] = mean_df[c].round(6)
@@ -150,17 +194,18 @@ def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, yl
             dados[f"{c}_std"] = std_df[c].round(6)
     dados.to_csv(os.path.join(OUT_DIR, f"{filename}_tabela_dados.csv"))
 
+    # junta linhas (2 cabeçalhos + dados)
     all_rows = [top_header, sub_header] + table_rows
 
-    # Largura de colunas (mais espaço para "Tamanho")
+    # Larguras de coluna: dá mais espaço para “Tamanho”
     ncols_total = 1 + 2 * n_lang
     w0 = 0.16
     w_each = (1.0 - w0) / (ncols_total - 1)
     col_widths = [w0] + [w_each] * (ncols_total - 1)
 
-    # Área da tabela (sem roubar altura demais do plot)
-    tbl_h = min(0.44, 0.16 + 0.05 * n_rows)
-    tbl_y = -tbl_h - 0.18
+    # Área da tabela (não roubar altura do plot)
+    tbl_h = min(0.40, 0.14 + 0.05 * n_rows)
+    tbl_y = -tbl_h - 0.16
 
     table = plt.table(
         cellText=all_rows,
@@ -173,33 +218,35 @@ def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, yl
     table.set_fontsize(10)
     table.scale(1.0, 1.18)
 
-    # Cabeçalho "Tamanho"
+    # Cabeçalho “Tamanho”
     table[(0, 0)].set_facecolor("#f0f0f0")
     table[(0, 0)].set_text_props(weight="bold")
 
-    # Altura das duas linhas de cabeçalho um pouco maior
+    # Altura dos 2 cabeçalhos
     for j in range(ncols_total):
         table[(0, j)].set_height(table[(0, j)].get_height() * 1.45)
         table[(1, j)].set_height(table[(1, j)].get_height() * 1.15)
 
-    # Cabeçalho por linguagem: bloco contínuo sem risco interno
+    # Cabeçalho por linguagem: bloco contínuo; nome abreviado; texto com cor de contraste
     for k, lang in enumerate(cols):
         j_left = 1 + 2 * k
         j_right = j_left + 1
-        color = color_map[lang]
+        bg = color_map[lang]
+        txt = _text_color_for_bg(bg)
+        label = _header_label(lang)
 
         left_cell = table[(0, j_left)]
         right_cell = table[(0, j_right)]
 
-        # pinta ambas as células e também suas bordas com a MESMA cor
+        # pinta ambas as células e suas bordas com a MESMA cor
         for cell in (left_cell, right_cell):
-            cell.set_facecolor(color)
-            cell.set_edgecolor(color)   # <- borda da cor do bloco (some a linha interna)
+            cell.set_facecolor(bg)
+            cell.set_edgecolor(bg)  # borda interna desaparece
 
-        # nome só na esquerda (visível e centralizado)
+        # nome da linguagem (abreviado) só na esquerda
         t = left_cell.get_text()
-        t.set_text(str(lang))
-        t.set_color("white")
+        t.set_text(label)
+        t.set_color(txt)
         t.set_weight("bold")
         t.set_ha("center")
         t.set_va("center")
@@ -207,10 +254,10 @@ def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, yl
         # direita sem texto
         right_cell.get_text().set_text("")
 
-    # Reforça linha separadora PRETA entre (linha de linguagens) e (linha M/DP)
-    # Pega y do topo da linha 1 (subcabeçalho) = fundo da linha 0
+    # linha separadora preta entre linguagens e subcabeçalho
     y_sep = table[(1, 0)].get_y() + table[(1, 0)].get_height()
-    ax.add_line(plt.Line2D([0, 1], [y_sep, y_sep], transform=ax.transAxes, color="black", linewidth=0.8, zorder=5))
+    ax.add_line(plt.Line2D([0, 1], [y_sep, y_sep], transform=ax.transAxes,
+                            color="black", linewidth=0.8, zorder=5))
 
     # Bordas padrão no subcabeçalho e dados
     for (row, col), cell in table.get_celld().items():
@@ -218,7 +265,7 @@ def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, yl
             cell.set_linewidth(0.6)
 
     # Mais área para o plot
-    plt.subplots_adjust(left=0.08, right=0.98, top=0.88, bottom=0.50)
+    plt.subplots_adjust(left=0.08, right=0.98, top=0.88, bottom=0.48)
     plt.savefig(os.path.join(OUT_DIR, f"{filename}.png"), dpi=120, bbox_inches='tight', pad_inches=1.2)
     plt.clf()
 
