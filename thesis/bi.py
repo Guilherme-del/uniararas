@@ -15,6 +15,18 @@ SIZE_ORDER_ALIASES = {
     "pequeno": 1, "medio": 2, "grande": 3
 }
 
+# Paleta vibrante e bem distinta
+COLORS_VIBRANT = [
+    "#007bff",  # blue
+    "#ff3b30",  # red
+    "#34c759",  # green
+    "#ff9500",  # orange
+    "#af52de",  # purple
+    "#32ade6",  # cyan
+    "#ff2d55",  # magenta/pink
+    "#ffcc00",  # yellow
+]
+
 EXACT_NAMES = {"exato","exact","ótimo","otimo","optimal","dp","backtracking","branch_and_bound","knapsack_exato"}
 APPROX_NAMES = {"guloso","greedy","heuristica","heurística","approx","aproximado","knapsack_guloso"}
 
@@ -43,30 +55,95 @@ def ensure_monotonic_size_index(df):
     ordered = sorted(df.index.unique(), key=size_sort_key)
     return df.reindex(ordered)
 
-def savefig(path):
+def savefig_simple(path):
+    # para gráficos sem tabela
     plt.tight_layout()
     plt.savefig(path, dpi=120)
     plt.clf()
 
+def savefig_with_table(path):
+    # para gráficos com tabela (evita corte)
+    plt.savefig(path, dpi=120, bbox_inches='tight', pad_inches=0.6)
+    plt.clf()
+
 def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, ylabel: str, filename: str, xlabel="Tamanho do dataset"):
-    """Plota linhas com barras de erro (uma figura por gráfico)."""
     if mean_df.empty:
         return
-    mean_df = ensure_monotonic_size_index(mean_df)
-    std_df = std_df.reindex(mean_df.index)
 
+    mean_df = ensure_monotonic_size_index(mean_df)
+    std_df = std_df.reindex(mean_df.index) if std_df is not None else None
+
+    # cores
+    cols = list(mean_df.columns)
+    color_map = {col: COLORS_VIBRANT[i % len(COLORS_VIBRANT)] for i, col in enumerate(cols)}
+
+    # ---- tamanho dinâmico da figura ----
+    n_rows = len(mean_df.index)
+    base_plot_h = 6.0
+    extra_per_row = 0.35
+    fig_h = base_plot_h + extra_per_row * max(0, n_rows - 1)
+
+    plt.figure(figsize=(12, fig_h))
     x = np.arange(len(mean_df.index))
-    plt.figure(figsize=(10, 6))
-    for col in mean_df.columns:
+
+    # plota séries
+    for col in cols:
         y = mean_df[col].values
-        yerr = std_df[col].values if col in std_df.columns else None
-        plt.errorbar(x, y, yerr=yerr, capsize=4, label=str(col))
+        yerr = std_df[col].values if (std_df is not None and col in std_df.columns) else None
+        c = color_map[col]
+        plt.errorbar(
+            x, y, yerr=yerr,
+            fmt='-o', markersize=5, linewidth=1.8,
+            color=c, ecolor=c, elinewidth=1, capsize=4,
+            markeredgecolor="#ffffff", markeredgewidth=0.6,
+            label=str(col)
+        )
+
     plt.title(title)
     plt.ylabel(ylabel)
     plt.xlabel(xlabel)
     plt.xticks(x, [str(v) for v in mean_df.index], rotation=0)
-    plt.legend()
-    savefig(os.path.join(OUT_DIR, f"{filename}.png"))
+    plt.grid(True, axis='y', alpha=0.25, linewidth=0.8)
+    plt.legend(title="Séries", ncol=2)
+
+    # ---- tabela com valores ± desvio ----
+    if std_df is not None and not std_df.empty:
+        table_df = mean_df.round(2).astype(str) + " ± " + std_df.fillna(0.0).round(2).astype(str)
+    else:
+        table_df = mean_df.round(2)
+
+    csv_path = os.path.join(OUT_DIR, f"{filename}_tabela.csv")
+    table_df.to_csv(csv_path)
+
+    header = ["Tamanho"] + [str(c) for c in table_df.columns]
+    rows = [[str(idx)] + [str(table_df.loc[idx, c]) for c in table_df.columns] for idx in table_df.index]
+    header_colors = ["#f0f0f0"] + [color_map[c] for c in table_df.columns]
+
+    # muito mais espaço entre gráfico e tabela
+    tbl_h = min(0.55, 0.18 + 0.05 * n_rows)
+    tbl_y = -tbl_h - 0.25   # empurra bem para baixo
+
+    table = plt.table(
+        cellText=rows,
+        colLabels=header,
+        cellLoc='center',
+        colColours=header_colors,
+        loc='bottom',
+        bbox=[0.0, tbl_y, 1.0, tbl_h],
+    )
+    table.auto_set_font_size(False)
+    table.set_fontsize(9)
+    table.scale(1.0, 1.15)
+
+    for (_, cell) in table.get_celld().items():
+        cell.set_linewidth(0.6)
+
+    # margem inferior bem maior
+    plt.subplots_adjust(left=0.08, right=0.98, top=0.88, bottom=0.55)
+
+    plt.savefig(os.path.join(OUT_DIR, f"{filename}.png"), dpi=120, bbox_inches='tight', pad_inches=1.2)
+    plt.clf()
+
 
 def group_keys(df: pd.DataFrame, base=("linguagem","tamanho")):
     keys = [k for k in base if k in df.columns]
@@ -201,7 +278,7 @@ if "linhas_codigo" in df.columns:
     plt.xlabel("Linguagem")
     for c in ax.containers:
         ax.bar_label(c, fmt="%.0f", fontsize=8)
-    savefig(os.path.join(OUT_DIR, "linhas_codigo_por_linguagem.png"))
+    savefig_simple(os.path.join(OUT_DIR, "linhas_codigo_por_linguagem.png"))
 
     if "classe" in df.columns:
         loc_lang_cls = df.groupby(["linguagem","classe"])["linhas_codigo"].mean().unstack().fillna(0)
@@ -212,7 +289,7 @@ if "linhas_codigo" in df.columns:
         plt.xticks(rotation=45)
         for c in ax.containers:
             ax.bar_label(c, fmt="%.0f", fontsize=8)
-        savefig(os.path.join(OUT_DIR, "linhas_codigo_linguagem_classe.png"))
+        savefig_simple(os.path.join(OUT_DIR, "linhas_codigo_linguagem_classe.png"))
 
 # ===================== Knapsack: exato vs guloso (tempo/CPU/RAM) nos menores datasets =====================
 
