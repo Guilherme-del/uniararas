@@ -67,26 +67,34 @@ def savefig_with_table(path):
     plt.clf()
 
 def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, ylabel: str, filename: str, xlabel="Tamanho do dataset"):
-    if mean_df.empty:
+    """Linhas com barras de erro + tabela (cabeçalho 2 níveis):
+       - Cabeçalho de linguagem forma um bloco contínuo de cor (sem “risco” interno)
+       - Subcabeçalho: 'M'/'DP' se muitas linguagens; senão 'Média'/'Desvio-padrão'
+       Também salva:
+         1) {filename}_tabela.csv       (igual à tabela exibida)
+         2) {filename}_tabela_dados.csv (<linguagem>_mean / <linguagem>_std)
+    """
+    if mean_df is None or mean_df.empty:
         return
 
     mean_df = ensure_monotonic_size_index(mean_df)
-    std_df = std_df.reindex(mean_df.index) if std_df is not None else None
+    std_df = std_df.reindex(mean_df.index) if (std_df is not None and not std_df.empty) else None
 
-    # cores
     cols = list(mean_df.columns)
     color_map = {col: COLORS_VIBRANT[i % len(COLORS_VIBRANT)] for i, col in enumerate(cols)}
+    n_lang = len(cols)
 
-    # ---- tamanho dinâmico da figura ----
+    # -------- FIGURA (mais alta e larga, sem achatar o plot) --------
     n_rows = len(mean_df.index)
-    base_plot_h = 6.0
+    base_plot_h = 8.8
     extra_per_row = 0.35
     fig_h = base_plot_h + extra_per_row * max(0, n_rows - 1)
 
-    plt.figure(figsize=(12, fig_h))
+    plt.figure(figsize=(16, fig_h))
+    ax = plt.gca()
     x = np.arange(len(mean_df.index))
 
-    # plota séries
+    # -------- PLOT --------
     for col in cols:
         y = mean_df[col].values
         yerr = std_df[col].values if (std_df is not None and col in std_df.columns) else None
@@ -106,41 +114,111 @@ def plot_error_lines(mean_df: pd.DataFrame, std_df: pd.DataFrame, title: str, yl
     plt.grid(True, axis='y', alpha=0.25, linewidth=0.8)
     plt.legend(title="Séries", ncol=2)
 
-    # ---- tabela com valores ± desvio ----
-    if std_df is not None and not std_df.empty:
-        table_df = mean_df.round(2).astype(str) + " ± " + std_df.fillna(0.0).round(2).astype(str)
-    else:
-        table_df = mean_df.round(2)
+    # -------- TABELA --------
+    sub_mean, sub_std = ("M", "DP") if n_lang >= 6 else ("Média", "Desvio-padrão")
 
-    csv_path = os.path.join(OUT_DIR, f"{filename}_tabela.csv")
-    table_df.to_csv(csv_path)
+    top_header = ["Tamanho"] + [c for c in cols for _ in (0, 1)]
+    sub_header = [""] + [sub_mean, sub_std] * n_lang
 
-    header = ["Tamanho"] + [str(c) for c in table_df.columns]
-    rows = [[str(idx)] + [str(table_df.loc[idx, c]) for c in table_df.columns] for idx in table_df.index]
-    header_colors = ["#f0f0f0"] + [color_map[c] for c in table_df.columns]
+    # dados da tabela
+    table_rows = []
+    for idx in mean_df.index:
+        row_vals = []
+        for c in cols:
+            m = mean_df.loc[idx, c]
+            s = std_df.loc[idx, c] if (std_df is not None and c in std_df.columns) else np.nan
+            row_vals.extend([
+                "" if (m is None or (isinstance(m, float) and np.isnan(m))) else f"{m:.2f}",
+                "" if (s is None or (isinstance(s, float) and np.isnan(s))) else f"{s:.2f}",
+            ])
+        table_rows.append([str(idx)] + row_vals)
 
-    # muito mais espaço entre gráfico e tabela
-    tbl_h = min(0.55, 0.18 + 0.05 * n_rows)
-    tbl_y = -tbl_h - 0.25   # empurra bem para baixo
+    # CSV 1: igual à tabela que aparece na figura
+    table_df_csv = pd.DataFrame(
+        data=[[r for r in row[1:]] for row in table_rows],
+        index=[row[0] for row in table_rows],
+        columns=[f"{c} – {sub_mean}" if i % 2 == 0 else f"{c} – {sub_std}" for c in cols for i in (0, 1)],
+    )
+    table_df_csv.index.name = "Tamanho"
+    table_df_csv.to_csv(os.path.join(OUT_DIR, f"{filename}_tabela.csv"))
+
+    # CSV 2: dados numéricos separados
+    dados = pd.DataFrame(index=mean_df.index)
+    for c in cols:
+        dados[f"{c}_mean"] = mean_df[c].round(6)
+        if std_df is not None and c in std_df.columns:
+            dados[f"{c}_std"] = std_df[c].round(6)
+    dados.to_csv(os.path.join(OUT_DIR, f"{filename}_tabela_dados.csv"))
+
+    all_rows = [top_header, sub_header] + table_rows
+
+    # Largura de colunas (mais espaço para "Tamanho")
+    ncols_total = 1 + 2 * n_lang
+    w0 = 0.16
+    w_each = (1.0 - w0) / (ncols_total - 1)
+    col_widths = [w0] + [w_each] * (ncols_total - 1)
+
+    # Área da tabela (sem roubar altura demais do plot)
+    tbl_h = min(0.44, 0.16 + 0.05 * n_rows)
+    tbl_y = -tbl_h - 0.18
 
     table = plt.table(
-        cellText=rows,
-        colLabels=header,
-        cellLoc='center',
-        colColours=header_colors,
-        loc='bottom',
+        cellText=all_rows,
+        cellLoc="center",
+        loc="bottom",
         bbox=[0.0, tbl_y, 1.0, tbl_h],
+        colWidths=col_widths,
     )
     table.auto_set_font_size(False)
-    table.set_fontsize(9)
-    table.scale(1.0, 1.15)
+    table.set_fontsize(10)
+    table.scale(1.0, 1.18)
 
-    for (_, cell) in table.get_celld().items():
-        cell.set_linewidth(0.6)
+    # Cabeçalho "Tamanho"
+    table[(0, 0)].set_facecolor("#f0f0f0")
+    table[(0, 0)].set_text_props(weight="bold")
 
-    # margem inferior bem maior
-    plt.subplots_adjust(left=0.08, right=0.98, top=0.88, bottom=0.55)
+    # Altura das duas linhas de cabeçalho um pouco maior
+    for j in range(ncols_total):
+        table[(0, j)].set_height(table[(0, j)].get_height() * 1.45)
+        table[(1, j)].set_height(table[(1, j)].get_height() * 1.15)
 
+    # Cabeçalho por linguagem: bloco contínuo sem risco interno
+    for k, lang in enumerate(cols):
+        j_left = 1 + 2 * k
+        j_right = j_left + 1
+        color = color_map[lang]
+
+        left_cell = table[(0, j_left)]
+        right_cell = table[(0, j_right)]
+
+        # pinta ambas as células e também suas bordas com a MESMA cor
+        for cell in (left_cell, right_cell):
+            cell.set_facecolor(color)
+            cell.set_edgecolor(color)   # <- borda da cor do bloco (some a linha interna)
+
+        # nome só na esquerda (visível e centralizado)
+        t = left_cell.get_text()
+        t.set_text(str(lang))
+        t.set_color("white")
+        t.set_weight("bold")
+        t.set_ha("center")
+        t.set_va("center")
+
+        # direita sem texto
+        right_cell.get_text().set_text("")
+
+    # Reforça linha separadora PRETA entre (linha de linguagens) e (linha M/DP)
+    # Pega y do topo da linha 1 (subcabeçalho) = fundo da linha 0
+    y_sep = table[(1, 0)].get_y() + table[(1, 0)].get_height()
+    ax.add_line(plt.Line2D([0, 1], [y_sep, y_sep], transform=ax.transAxes, color="black", linewidth=0.8, zorder=5))
+
+    # Bordas padrão no subcabeçalho e dados
+    for (row, col), cell in table.get_celld().items():
+        if row >= 1:
+            cell.set_linewidth(0.6)
+
+    # Mais área para o plot
+    plt.subplots_adjust(left=0.08, right=0.98, top=0.88, bottom=0.50)
     plt.savefig(os.path.join(OUT_DIR, f"{filename}.png"), dpi=120, bbox_inches='tight', pad_inches=1.2)
     plt.clf()
 
