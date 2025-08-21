@@ -109,10 +109,20 @@ agg.to_csv(os.path.join(OUT_DIR, "resumo_agg.csv"), index=False)
 def pivot_mean_std(agg: pd.DataFrame, value_prefix: str, index_col="tamanho", column_col="linguagem", extra_filters=None):
     sub = agg.copy()
     if extra_filters:
-        for k,v in extra_filters.items():
-            sub = sub[sub[k]==v]
-    m = sub.pivot(index=index_col, columns=column_col, values=f"{value_prefix}_mean")
-    s = sub.pivot(index=index_col, columns=column_col, values=f"{value_prefix}_std")
+        for k, v in extra_filters.items():
+            sub = sub[sub[k] == v]
+
+    # 👇 garante unicidade agregando por (index_col, column_col)
+    cols_keep = [index_col, column_col, f"{value_prefix}_mean", f"{value_prefix}_std"]
+    sub = (sub[cols_keep]
+           .groupby([index_col, column_col], as_index=False)
+           .agg({f"{value_prefix}_mean": "mean",  # média das médias
+                 f"{value_prefix}_std": "mean"})) # média dos desvios (ok p/ visual)
+
+    # pivot seguro
+    m = sub.pivot_table(index=index_col, columns=column_col, values=f"{value_prefix}_mean", aggfunc="mean")
+    s = sub.pivot_table(index=index_col, columns=column_col, values=f"{value_prefix}_std",  aggfunc="mean")
+
     m = m.fillna(0)
     s = s.fillna(0)
     return m, s
@@ -136,17 +146,45 @@ if "ram_avg_during_mb_mean" in agg.columns:
 def plot_per_group(agg: pd.DataFrame, value_prefix: str, group_col: str, title_prefix: str, fname_prefix: str):
     if group_col not in agg.columns:
         return
+
+    ylabel_map = {"tempo_s": "Tempo (s)", "cpu_avg_during": "CPU média (%)", "ram_avg_during_mb": "RAM (MB)"}
+    ylabel = ylabel_map.get(value_prefix, value_prefix)
+
     for g in sorted(agg[group_col].dropna().unique()):
-        sub = agg[agg[group_col]==g]
-        if sub.empty: 
+        sub = agg[agg[group_col] == g]
+        if sub.empty:
             continue
-        m = sub.pivot(index="tamanho", columns="linguagem" if group_col!="linguagem" else "algoritmo" if "algoritmo" in sub.columns else "classe", values=f"{value_prefix}_mean")
-        s = sub.pivot(index="tamanho", columns=m.columns.name, values=f"{value_prefix}_std")
-        if m is None or m.empty: 
+
+        # Eixo X será tamanho; as séries (colunas) variam conforme o group_col
+        if group_col != "linguagem" and "linguagem" in sub.columns:
+            series_col = "linguagem"
+        elif group_col != "algoritmo" and "algoritmo" in sub.columns:
+            series_col = "algoritmo"
+        elif group_col != "classe" and "classe" in sub.columns:
+            series_col = "classe"
+        else:
+            # fallback: tudo em uma série única
+            series_col = group_col
+
+        # Agrega por (tamanho, series_col) p/ garantir unicidade
+        needed = ["tamanho", series_col, f"{value_prefix}_mean", f"{value_prefix}_std"]
+        needed = [c for c in needed if c in sub.columns]
+        if len(needed) < 3:
             continue
+
+        sub2 = (sub[needed]
+                .groupby(["tamanho", series_col], as_index=False)
+                .agg({f"{value_prefix}_mean": "mean", f"{value_prefix}_std": "mean"}))
+
+        m = sub2.pivot_table(index="tamanho", columns=series_col, values=f"{value_prefix}_mean", aggfunc="mean")
+        s = sub2.pivot_table(index="tamanho", columns=series_col, values=f"{value_prefix}_std",  aggfunc="mean")
+
+        if m is None or m.empty:
+            continue
+
         title = f"{title_prefix} – {group_col}: {g}"
         fname = f"{fname_prefix}_{group_col}_{str(g)}"
-        plot_error_lines(m, s, title, ylabel={"tempo_s":"Tempo (s)","cpu_avg_during":"CPU média (%)","ram_avg_during_mb":"RAM (MB)"}[value_prefix], filename=fname)
+        plot_error_lines(m, s, title, ylabel=ylabel, filename=fname)
 
 # Por linguagem: como RAM e Tempo escalam com tamanho
 plot_per_group(agg, "tempo_s", "linguagem", "Tempo × Tamanho", "tempo_vs_tamanho")
