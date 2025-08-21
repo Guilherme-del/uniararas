@@ -26,7 +26,7 @@ need_npx=$(have npx && echo 1 || echo 0)  # para tsx
 echo "== Run started at $(date) ==" | tee -a "$LOG"
 echo "TIMEOUT_SEC=${TIMEOUT_SEC} USE_DOTNET=${USE_DOTNET}" | tee -a "$LOG"
 
-classes=(np-dificil)
+classes=(p np "np-completo" "np-dificil")
 linguagens=(c "c++" "c#" java go rust typescript javascript kotlin python)
 tamanhos=(small medium large)
 
