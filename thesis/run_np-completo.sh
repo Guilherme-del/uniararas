@@ -27,8 +27,8 @@ echo "== Run started at $(date) ==" | tee -a "$LOG"
 echo "TIMEOUT_SEC=${TIMEOUT_SEC} USE_DOTNET=${USE_DOTNET}" | tee -a "$LOG"
 
 classes=(np-completo)
-linguagens=(c "c++" "c#" java go rust typescript javascript kotlin python)
-tamanhos=(small medium large)
+linguagens=(python "c++" "c#" java go rust typescript javascript kotlin python)
+tamanhos=(medium large)
 
 for classe in "${classes[@]}"; do
   for linguagem in "${linguagens[@]}"; do
