@@ -97,21 +97,31 @@ if "algoritmo" in df.columns:
 HAS_CPU_NORM = "cpu_avg_during_norm" in df.columns
 HAS_RAM      = "ram_avg_during_mb" in df.columns
 
-# ===================== Agregações base =====================
-agg_spec = {"tempo_s": ["mean", "std", "count"]}
-if HAS_CPU_NORM:
-    agg_spec["cpu_avg_during_norm"] = ["mean", "std", "count"]
-if HAS_RAM:
-    agg_spec["ram_avg_during_mb"] = ["mean", "std", "count"]
+# Aliases para heurístico/guloso
+GREEDY_ALIASES = {
+    "guloso", "greedy",
+    "heuristica", "heurístico", "heuristico",
+    "aproximacao", "aproximação", "approx", "heuristic"
+}
 
-group_cols = [c for c in ["linguagem", "tamanho"] if c in df.columns]
-agg = (df.groupby(group_cols, as_index=False).agg(agg_spec))
-# achata MultiIndex
-agg.columns = ["_".join([c for c in col if c]) if isinstance(col, tuple) else col
-               for col in agg.columns.to_list()]
-agg.to_csv(os.path.join(OUT_DIR, "resumo_agg.csv"), index=False)
+# ===================== Filtro global para gráficos gerais (Opção A) =====================
+# Excluir COMPLETAMENTE NP-Completo dos gráficos gerais (tempo/cpu/ram)
+df_general = df[df["classe"].str.lower() != "np-completo"].copy()
 
-# ===================== Helpers de plot com tabela =====================
+# ===================== Helpers de agregação/plot =====================
+def build_agg(dataframe: pd.DataFrame):
+    agg_spec = {"tempo_s": ["mean", "std", "count"]}
+    if HAS_CPU_NORM:
+        agg_spec["cpu_avg_during_norm"] = ["mean", "std", "count"]
+    if HAS_RAM:
+        agg_spec["ram_avg_during_mb"] = ["mean", "std", "count"]
+    group_cols = [c for c in ["linguagem", "tamanho"] if c in dataframe.columns]
+    agg_df = (dataframe.groupby(group_cols, as_index=False).agg(agg_spec))
+    # achata MultiIndex
+    agg_df.columns = ["_".join([c for c in col if c]) if isinstance(col, tuple) else col
+                      for col in agg_df.columns.to_list()]
+    return agg_df
+
 def pivot_mean_std(agg_df, value_prefix, index_col="tamanho", column_col="linguagem"):
     mean_col = f"{value_prefix}_mean"
     std_col  = f"{value_prefix}_std"
@@ -167,11 +177,11 @@ def plot_lines_with_table(mean_df, std_df, title, ylabel, filename):
     table_df.index.name = "Tamanho"
     table_df.to_csv(os.path.join(OUT_DIR, f"{filename}_tabela.csv"))
 
-    # ===== Tabela embaixo (sem repetir a linguagem: “colspan” simulado) =====
+    # ===== Tabela embaixo =====
     langs = list(mean_df.columns)
     top = ["Tamanho"]
     for c in langs:
-        top += [f"{short_label(c)}", ""]  # nome da linguagem só na 1ª célula do par (M, DP)
+        top += [f"{short_label(c)}", ""]
     sub = [""] + ["M", "DP"] * len(langs)
 
     body = []
@@ -204,115 +214,191 @@ def plot_lines_with_table(mean_df, std_df, title, ylabel, filename):
 
     savefig(os.path.join(OUT_DIR, f"{filename}.png"), tight=True)
 
-# ===================== Gráficos principais (todas as linguagens) =====================
-m, s = pivot_mean_std(agg, "tempo_s")
-plot_lines_with_table(m, s, "Tempo de Execução × Tamanho (todas as linguagens)", "Tempo (s)", "tempo_vs_tamanho_all")
+# ===================== Agregações (GERAIS, sem NP-Completo) =====================
+agg_general = build_agg(df_general)
 
-if HAS_CPU_NORM and "cpu_avg_during_norm_mean" in agg.columns:
-    m, s = pivot_mean_std(agg, "cpu_avg_during_norm")
-    plot_lines_with_table(m, s, "CPU média normalizada × Tamanho (todas as linguagens)", "CPU média normalizada (%)", "cpu_vs_tamanho_all")
+# 1) TEMPO – geral (sem NP-Completo)
+m, s = pivot_mean_std(agg_general, "tempo_s")
+plot_lines_with_table(
+    m, s,
+    "Tempo médio de execução × Tamanho do dataset (GERAL, sem NP-Completo)",
+    "Tempo (s)",
+    "tempo_vs_tamanho_all"
+)
 
-if HAS_RAM and "ram_avg_during_mb_mean" in agg.columns:
-    m, s = pivot_mean_std(agg, "ram_avg_during_mb")
-    plot_lines_with_table(m, s, "RAM média × Tamanho (todas as linguagens)", "RAM (MB)", "ram_vs_tamanho_all")
+# 2) CPU – geral (sem NP-Completo)
+if HAS_CPU_NORM and "cpu_avg_during_norm_mean" in agg_general.columns:
+    m, s = pivot_mean_std(agg_general, "cpu_avg_during_norm")
+    plot_lines_with_table(
+        m, s,
+        "CPU média normalizada × Tamanho do dataset (GERAL, sem NP-Completo)",
+        "CPU média normalizada (%)",
+        "cpu_vs_tamanho_all"
+    )
 
-# ===================== Por linguagem (arquivos separados) =====================
-def plot_per_language(agg_df, value_prefix, title_prefix, ylab, fname_prefix):
-    if "linguagem" not in agg_df.columns:
-        return
-    for lang in sorted(agg_df["linguagem"].unique()):
-        sub = agg_df[agg_df["linguagem"] == lang]
-        mean_col = f"{value_prefix}_mean"
-        std_col  = f"{value_prefix}_std"
-        if sub.empty or mean_col not in sub.columns or std_col not in sub.columns:
-            continue
-        m = sub.pivot_table(index="tamanho", columns="linguagem", values=mean_col, aggfunc="mean")
-        s = sub.pivot_table(index="tamanho", columns="linguagem", values=std_col,  aggfunc="mean")
-        m = ensure_size_index(m); s = s.reindex(m.index)
-        title = f"{title_prefix} – {lang}"
-        fname  = f"{fname_prefix}_{lang}"
-        plot_lines_with_table(m, s, title, ylab, fname)
+# 3) RAM – geral (sem NP-Completo)
+if HAS_RAM and "ram_avg_during_mb_mean" in agg_general.columns:
+    m, s = pivot_mean_std(agg_general, "ram_avg_during_mb")
+    plot_lines_with_table(
+        m, s,
+        "RAM média × Tamanho do dataset (GERAL, sem NP-Completo)",
+        "RAM (MB)",
+        "ram_vs_tamanho_all"
+    )
 
-plot_per_language(agg, "tempo_s", "Tempo × Tamanho", "Tempo (s)", "tempo_vs_tamanho")
-if HAS_CPU_NORM:
-    plot_per_language(agg, "cpu_avg_during_norm", "CPU normalizada × Tamanho", "CPU média normalizada (%)", "cpu_vs_tamanho")
-if HAS_RAM:
-    plot_per_language(agg, "ram_avg_during_mb", "RAM × Tamanho", "RAM (MB)", "ram_vs_tamanho")
+# ===================== 4) Qualidade – NP-Completo (tempo) =====================
+def is_small_or_medium_size(val: str) -> bool:
+    s = str(val).strip().lower()
+    if s in {"small", "pequeno", "medium", "medio"}:
+        return True
+    n = parse_k_suffix(s)
+    if n is not None:
+        return n <= 10_000
+    if s in {"10^3", "10³"}:
+        return True
+    if s in {"10^4", "10⁴"}:
+        return True
+    return False
 
-# ===================== Linhas de código =====================
-if "linhas_codigo" in df.columns:
-    # por linguagem
-    loc_lang = df.groupby("linguagem")["linhas_codigo"].mean().sort_values()
-    loc_lang.to_csv(os.path.join(OUT_DIR, "linhas_codigo_media_por_linguagem.csv"))
-    ax = loc_lang.plot(kind="bar", figsize=(10,6), title="Média de linhas de código por linguagem")
-    plt.ylabel("Linhas de código")
+if {"classe", "algoritmo_norm", "tamanho", "tempo_s"}.issubset(df.columns):
+    # Apenas NP-Completo e {exato, heurístico}
+    base = df[(df["classe"].str.lower() == "np-completo") &
+              (df["algoritmo_norm"].isin({"exato"} | GREEDY_ALIASES))].copy()
+
+    if not base.empty:
+        # small/medium para todos + large SOMENTE p/ heurístico
+        mask_sm = base["tamanho"].apply(is_small_or_medium_size)
+        mask_large = base["tamanho"].astype(str).str.lower().isin({"large", "grande"}) | (
+            base["tamanho"].apply(parse_k_suffix).fillna(-1) > 10_000
+        )
+        is_greedy = base["algoritmo_norm"].isin(GREEDY_ALIASES)
+        knap = base[mask_sm | (is_greedy & mask_large)].copy()
+
+        # agrega por tamanho × algoritmo (tempo)
+        qual_t = (knap.groupby(["tamanho", "algoritmo_norm"], as_index=False)
+                        .agg(tempo_s_mean=("tempo_s", "mean"),
+                             tempo_s_std=("tempo_s", "std"),
+                             n=("tempo_s", "count")))
+        # ordena tamanhos e salva
+        qual_t["__ord_tam__"] = qual_t["tamanho"].apply(size_sort_key)
+        qual_t = qual_t.sort_values(["__ord_tam__", "algoritmo_norm"]).drop(columns="__ord_tam__")
+
+        # ---- Pivot (Exato vs Heurístico) ----
+        pm = qual_t.pivot_table(index="tamanho", columns="algoritmo_norm",
+                                values="tempo_s_mean", aggfunc="mean")
+        ps = qual_t.pivot_table(index="tamanho", columns="algoritmo_norm",
+                                values="tempo_s_std", aggfunc="mean")
+
+        # reindex ordenado e alinhar
+        idx_sizes = sorted(pm.index.unique(), key=size_sort_key)
+        pm = pm.reindex(idx_sizes)
+        ps = ps.reindex(idx_sizes)
+
+        # localizar colunas
+        cols = {c.lower(): c for c in pm.columns}
+        c_exato = cols.get("exato")
+        c_heur = None
+        for alias in GREEDY_ALIASES:
+            if alias in cols:
+                c_heur = cols[alias]; break
+
+        # salvar CSVs
+        qual_t.to_csv(os.path.join(OUT_DIR, "qualidade_npcompleto_sm+heur_large_tempo_raw.csv"), index=False)
+        pm.to_csv(os.path.join(OUT_DIR, "qualidade_npcompleto_sm+heur_large_tempo_mean_pivot.csv"))
+        if ps is not None:
+            ps.to_csv(os.path.join(OUT_DIR, "qualidade_npcompleto_sm+heur_large_tempo_std_pivot.csv"))
+
+        # speedup (large ficará NaN no exato)
+        if c_exato is not None and c_heur is not None:
+            spd = pd.DataFrame({
+                "tamanho": [str(i) for i in pm.index],
+                "tempo_exato_mean": pm.get(c_exato),
+                "tempo_heur_mean":  pm.get(c_heur),
+            })
+            spd["speedup_exato_div_heur"] = spd["tempo_exato_mean"] / spd["tempo_heur_mean"]
+            spd["ganho_percent"] = (spd["tempo_exato_mean"] - spd["tempo_heur_mean"]) / spd["tempo_exato_mean"] * 100.0
+            spd.to_csv(os.path.join(OUT_DIR, "npcompleto_sm+heur_large_speedup.csv"), index=False)
+
+        # ---- Plot (linhas) – Exato vs Heurístico (tempo) ----
+        def plot_quality_time(mean_df: pd.DataFrame, std_df: pd.DataFrame,
+                              title: str, ylabel: str, filename: str):
+            if mean_df is None or mean_df.empty:
+                return
+            x = np.arange(len(mean_df.index))
+            plt.figure(figsize=(16, 8))
+            colors = {c: COLORS_VIBRANT[i % len(COLORS_VIBRANT)] for i, c in enumerate(mean_df.columns)}
+            for col in mean_df.columns:
+                y = mean_df[col].values.astype(float)
+                yerr = std_df[col].values.astype(float) if (std_df is not None and col in std_df.columns) else None
+                plt.errorbar(x, y, yerr=yerr, fmt='-o', linewidth=1.8, markersize=5,
+                             color=colors[col], ecolor=colors[col], capsize=4, label=str(col))
+            plt.title(title)
+            plt.xlabel("Tamanho (small/medium + large só heurístico)")
+            plt.ylabel(ylabel)
+            plt.xticks(x, [str(v) for v in mean_df.index])
+            plt.grid(True, axis='y', alpha=0.25)
+            plt.legend(ncol=2, title="Algoritmo", loc="upper left",
+                       bbox_to_anchor=(1.02, 1.0), borderaxespad=0.0)
+
+            # Tabela embaixo (M/DP), exibindo "Indet." quando NaN
+            series = list(mean_df.columns)
+            top = ["Tamanho"]
+            for c in series:
+                top += [str(c), ""]
+            sub = [""] + ["M", "DP"] * len(series)
+
+            body = []
+            for idx in mean_df.index:
+                row = [str(idx)]
+                for c in series:
+                    mval = mean_df.loc[idx, c]
+                    sval = std_df.loc[idx, c] if std_df is not None and c in std_df.columns else np.nan
+                    mtxt = "Indet." if (pd.isna(mval)) else f"{mval:.2f}"
+                    stxt = ""       if (pd.isna(sval)) else f"{sval:.2f}"
+                    row += [mtxt, stxt]
+                body.append(row)
+
+            ncols = 1 + 2 * len(series)
+            w0 = 0.22
+            w_each = (1.0 - w0) / (ncols - 1)
+            colw = [w0] + [w_each] * (ncols - 1)
+
+            tbl = plt.table(
+                cellText=[top, sub] + body,
+                cellLoc="center",
+                colWidths=colw,
+                loc="bottom",
+                bbox=[0.0, TABLE_Y0, 1.0, TABLE_H],
+            )
+            tbl.auto_set_font_size(False)
+            tbl.set_fontsize(10)
+            tbl.scale(1.0, 1.18)
+
+            plt.subplots_adjust(left=0.08, right=0.98, top=0.88, bottom=BOTTOM0)
+            savefig(os.path.join(OUT_DIR, f"{filename}.png"), tight=True)
+
+        ps_aligned = ps.reindex(index=pm.index, columns=pm.columns) if ps is not None else None
+        plot_quality_time(
+            pm, ps_aligned,
+            "NP-Completo – Tempo: Exato (small/medium; large indeterminado) vs Heurístico (small/medium/large)",
+            "Tempo (s)",
+            "qualidade_npcompleto_sm+heur_large_tempo"
+        )
+else:
+    print("⚠️ Qualidade (NP-Completo): verifique 'classe', 'algoritmo_norm', 'tamanho', 'tempo_s'.")
+
+# ===================== 5) Linhas de código por linguagem × algoritmo =====================
+if "linhas_codigo" in df.columns and {"linguagem", "algoritmo"}.issubset(df.columns):
+    loc_lang_alg = (df.groupby(["linguagem","algoritmo"])["linhas_codigo"]
+                      .mean().unstack().fillna(0).sort_index())
+    loc_lang_alg.to_csv(os.path.join(OUT_DIR, "linhas_codigo_linguagem_algoritmo.csv"))
+    ax = loc_lang_alg.plot(kind="bar", figsize=(12,6),
+                           title="Linhas de código por linguagem × algoritmo (média)")
+    plt.ylabel("Linhas de código (média)")
     plt.xlabel("Linguagem")
+    plt.xticks(rotation=45)
     for cont in ax.containers:
         ax.bar_label(cont, fmt="%.0f", fontsize=8)
-    savefig(os.path.join(OUT_DIR, "linhas_codigo_por_linguagem.png"))
-
-    # por linguagem × classe
-    if "classe" in df.columns:
-        loc_lang_cls = df.groupby(["linguagem","classe"])["linhas_codigo"].mean().unstack().fillna(0)
-        loc_lang_cls.to_csv(os.path.join(OUT_DIR, "linhas_codigo_linguagem_classe.csv"))
-        ax = loc_lang_cls.plot(kind="bar", figsize=(12,6), title="Média de linhas de código por linguagem e classe")
-        plt.ylabel("Linhas de código")
-        plt.xlabel("Linguagem")
-        plt.xticks(rotation=45)
-        for cont in ax.containers:
-            ax.bar_label(cont, fmt="%.0f", fontsize=8)
-        savefig(os.path.join(OUT_DIR, "linhas_codigo_linguagem_classe.png"))
-
-# ===================== Tempo por classe polinomial =====================
-if "classe" in df.columns:
-    tempo_classe = df.groupby("classe")["tempo_s"].mean().sort_values()
-    tempo_classe.to_csv(os.path.join(OUT_DIR, "tempo_medio_por_classe.csv"))
-    ax = tempo_classe.plot(kind="bar", figsize=(8,5), title="Tempo médio por classe de complexidade")
-    plt.ylabel("Tempo (s)")
-    plt.xlabel("Classe")
-    for cont in ax.containers:
-        ax.bar_label(cont, fmt="%.3f", fontsize=8)
-    savefig(os.path.join(OUT_DIR, "tempo_medio_por_classe.png"))
-
-# ===================== Knapsack (NP-Completo): Exato vs Guloso =====================
-if "classe" in df.columns and "algoritmo_norm" in df.columns:
-    knap = df[(df["classe"].str.lower() == "np-completo") &
-              (df["algoritmo_norm"].isin(["exato", "guloso"]))].copy()
-    if not knap.empty and "tamanho" in knap.columns:
-        sizes = sorted(knap["tamanho"].unique(), key=size_sort_key)
-        focus_sizes = sizes[:2] if len(sizes) >= 2 else sizes
-        knap2 = knap[knap["tamanho"].isin(focus_sizes)].copy()
-
-        spec = {"tempo_s": ["mean","std","count"]}
-        if HAS_CPU_NORM: spec["cpu_avg_during_norm"] = ["mean","std","count"]
-        if HAS_RAM:      spec["ram_avg_during_mb"]   = ["mean","std","count"]
-
-        aggk = (knap2
-                .groupby(["linguagem","tamanho","algoritmo_norm"], as_index=False)
-                .agg(spec))
-        aggk.columns = ["_".join([c for c in col if c]) if isinstance(col, tuple) else col
-                        for col in aggk.columns.to_list()]
-        aggk.to_csv(os.path.join(OUT_DIR, "knapsack_exato_vs_guloso.csv"), index=False)
-
-        def piv(sub, prefix):
-            m = sub.pivot(index="tamanho", columns="algoritmo_norm", values=f"{prefix}_mean").fillna(0)
-            s = sub.pivot(index="tamanho", columns="algoritmo_norm", values=f"{prefix}_std").fillna(0)
-            m = ensure_size_index(m); s = s.reindex(m.index)
-            return m, s
-
-        for lang in sorted(aggk["linguagem"].unique()):
-            sub = aggk[aggk["linguagem"] == lang]
-            if sub.empty: continue
-
-            m, s = piv(sub, "tempo_s")
-            plot_lines_with_table(m, s, f"Knapsack – Tempo – {lang}", "Tempo (s)", f"knapsack_tempo_{lang}")
-
-            if HAS_CPU_NORM and "cpu_avg_during_norm_mean" in sub.columns:
-                m, s = piv(sub, "cpu_avg_during_norm")
-                plot_lines_with_table(m, s, f"Knapsack – CPU (norm) – {lang}", "CPU média normalizada (%)", f"knapsack_cpu_{lang}")
-
-            if HAS_RAM and "ram_avg_during_mb_mean" in sub.columns:
-                m, s = piv(sub, "ram_avg_during_mb")
-                plot_lines_with_table(m, s, f"Knapsack – RAM – {lang}", "RAM (MB)", f"knapsack_ram_{lang}")
+    savefig(os.path.join(OUT_DIR, "linhas_codigo_linguagem_algoritmo.png"))
 
 print("✅ BI concluído. Saída em:", OUT_DIR)
