@@ -209,46 +209,194 @@ Para cada linguagem de programação e algoritmo, o procedimento experimental se
     \item Armazenamento e análise estatística dos resultados, utilizando medidas de tendência central (média e mediana) e variabilidade (desvio padrão).
 \end{enumerate}
 
-% 4. Resultados Esperados
-\section{Resultados Esperados}
+% 4. Resultados
+\section{Resultados}
 
-\subsection{Desempenho por Classe de Algoritmo}
+Nesta seção são apresentados os resultados obtidos a partir da execução dos experimentos descritos anteriormente. As métricas avaliadas foram: tempo médio de execução, uso de memória, consumo de CPU e complexidade de implementação (linhas de código). Para cada combinação de linguagem, tamanho do dataset e algoritmo, os testes foram repetidos 30 vezes a fim de calcular média e desvio-padrão, assegurando maior robustez estatística.
 
-Com base na literatura técnica \citeonline{cormen2022,sebesta2016} e na fundamentação teórica apresentada, antecipa-se que algoritmos classificados na Classe P, como o MergeSort, apresentem desempenho superior quando implementados em linguagens compiladas (por exemplo, C e Rust) em relação a linguagens interpretadas (como Python e JavaScript). Isso se deve principalmente à compilação nativa, que elimina a sobrecarga associada a interpretadores e máquinas virtuais, conforme discutido por \citeonline{sebesta2016}. Para entradas de tamanho médio e grande (\( n \geq 10^4 \)), estima-se que linguagens compiladas possam ser de três a cinco vezes mais rápidas do que linguagens interpretadas, graças a otimizações de tempo de compilação e execução mais eficiente. Além disso, espera-se que linguagens como C++ se beneficiem de técnicas de otimização estática, proporcionando resultados consistentes em termos de tempo de execução, especialmente para algoritmos como o Knapsack, cuja análise de complexidade e estrutura algorítmica são amplamente detalhadas por \citeonline{cormen2022}.
+\subsection{Tempo de Execução}
 
-Para problemas da Classe NP, como Factoring, espera-se que linguagens com gerenciamento automático de memória e otimizações de execução just-in-time (JIT), como Java e Go, apresentem bom equilíbrio entre tempo de execução e consumo de memória. Em problemas NP-completos como Knapsack, o uso de recursos (tempo e memória) tende a crescer exponencialmente com o tamanho da entrada. Ainda assim, linguagens como C++ devem apresentar vantagem devido à eficiência de compilação e ao controle de memória manual, possibilitando otimizações específicas para entradas grandes.
+A Figura~\ref{fig:tempo_execucao} apresenta a evolução do tempo de execução em função do tamanho do dataset. Observa-se que os algoritmos de classes polinomiais mantêm desempenho estável mesmo em instâncias maiores, enquanto aqueles com maior complexidade apresentam crescimento mais acentuado. Os resultados confirmam a tendência teórica esperada.
 
-Em problemas NP-difíceis e indecidíveis como o Problema da Parada (restrito), prevê-se que o impacto da linguagem seja menos significativo em termos absolutos, uma vez que a complexidade teórica domina o crescimento do tempo de execução. Entretanto, linguagens como Rust e C ainda devem ter vantagens por apresentarem menor overhead de execução e gerenciamento de recursos mais direto.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/tempo_vs_tamanho_all.png}
+    \caption{Tempo médio de execução em função do tamanho do dataset (geral, sem NP-Completo). Barras indicam o desvio-padrão.}
+    \label{fig:tempo_execucao}
+\end{figure}
 
-\subsection{Consumo de Memória}
+\begin{table}[H]
+    \centering
+    \caption{Tempo médio de execução (em segundos) e desvio-padrão por linguagem e tamanho do dataset (geral, sem NP-Completo).}
+    \label{tab:tempo_execucao_geral_sem_npcomp}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{l|cc|cc|cc|cc|cc|cc|cc|cc|cc|cc|cc}
+        \hline
+        \textbf{Tamanho} & \multicolumn{2}{c|}{\textbf{C}} & \multicolumn{2}{c|}{\textbf{C\#}} & \multicolumn{2}{c|}{\textbf{C++}} & \multicolumn{2}{c|}{\textbf{Go}} & \multicolumn{2}{c|}{\textbf{Java}} & \multicolumn{2}{c|}{\textbf{JS}} & \multicolumn{2}{c|}{\textbf{Kotlin}} & \multicolumn{2}{c|}{\textbf{Python}} & \multicolumn{2}{c|}{\textbf{Rust}} & \multicolumn{2}{c}{\textbf{TS}} \\
+        \hline
+        & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP \\
+        \hline
+        small  & 0.01 & 0.00 & 0.03 & 0.00 & 0.01 & 0.01 & 0.11 & 0.05 & 0.07 & 0.01 & 0.11 & 0.02 & 0.07 & 0.01 & 0.05 & 0.04 & 0.01 & 0.00 & 0.90 & 0.11 \\
+        medium & 0.03 & 0.03 & 0.04 & 0.02 & 0.03 & 0.03 & 0.12 & 0.03 & 0.10 & 0.02 & 0.14 & 0.03 & 0.10 & 0.01 & 0.32 & 0.40 & 0.02 & 0.02 & 0.90 & 0.09 \\
+        large  & 0.20 & 0.27 & 0.21 & 0.17 & 0.21 & 0.28 & 0.35 & 0.26 & 0.26 & 0.26 & 0.32 & 0.17 & 0.30 & 0.11 & 2.94 & 3.95 & 0.13 & 0.16 & 1.18 & 0.28 \\
+        \hline
+    \end{tabular}%
+    }
+\end{table}
 
-Em relação ao uso de memória, espera-se que linguagens com coleta de lixo (garbage collection), como Java e Go, apresentem overhead de aproximadamente 2x em comparação a linguagens como C e Rust. Esse overhead decorre da gestão automática de memória e da necessidade de estruturas de dados intermediárias para o gerenciamento de objetos.
+\textbf{Conclusão parcial:} Linguagens compiladas de baixo nível (C, C++, Rust) apresentaram tempos mais consistentes e reduzidos. Python e TypeScript tiveram desempenho inferior, especialmente em instâncias grandes, confirmando a influência do modelo de execução interpretado.
 
-Linguagens como Rust e C, por possuírem gerenciamento de memória manual (ou ownership estático, no caso de Rust), devem manter uso de memória mais constante, independentemente do tamanho da entrada. Isso é particularmente importante em experimentos com entradas grandes (\( n \geq 10^5 \)), onde o controle preciso do uso de memória pode evitar page faults e swapping, garantindo resultados mais consistentes.
+\subsection{Uso de CPU}
 
-Para linguagens interpretadas como Python e JavaScript, antecipa-se crescimento não linear no uso de memória para problemas NP e NP-completos, devido ao uso intensivo de estruturas de dados dinâmicas (listas, dicionários) e ao overhead da máquina virtual ou interpretador. Esse crescimento pode impactar a escalabilidade dos algoritmos, especialmente para instâncias de problemas combinatórios.
+A Figura~\ref{fig:cpu} mostra o consumo máximo de CPU normalizada durante as execuções. O aumento é mais pronunciado nos datasets maiores, indicando maior esforço computacional para manter os cálculos. Ainda assim, algumas linguagens mantiveram boa eficiência.
 
-\subsection{Complexidade de Implementação}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/cpu_vs_tamanho_all.png}
+    \caption{Consumo máximo de CPU normalizada para cada tamanho de dataset.}
+    \label{fig:cpu}
+\end{figure}
 
-Além do tempo e da memória, espera-se que a complexidade de implementação (medida em SLOC e Complexidade Ciclomática) varie significativamente entre as linguagens. Linguagens como Python e JavaScript devem apresentar menor SLOC devido à sintaxe concisa e à tipagem dinâmica, facilitando a prototipagem. Em contrapartida, linguagens como C e C++ tendem a exigir maior verbosidade, aumentando o SLOC e potencialmente a complexidade ciclomatica, em virtude da necessidade de gerenciamento manual de recursos e da ausência de abstrações de alto nível.
+\begin{table}[H]
+    \centering
+    \caption{Consumo máximo de CPU normalizada (\%) por linguagem e tamanho de dataset.}
+    \label{tab:cpu}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{l|cc|cc|cc|cc|cc|cc|cc|cc|cc|cc|cc}
+        \hline
+        \textbf{Tamanho} & \multicolumn{2}{c|}{\textbf{C}} & \multicolumn{2}{c|}{\textbf{C\#}} & \multicolumn{2}{c|}{\textbf{C++}} & \multicolumn{2}{c|}{\textbf{Go}} & \multicolumn{2}{c|}{\textbf{Java}} & \multicolumn{2}{c|}{\textbf{JS}} & \multicolumn{2}{c|}{\textbf{Kotlin}} & \multicolumn{2}{c|}{\textbf{Py}} & \multicolumn{2}{c|}{\textbf{Rust}} & \multicolumn{2}{c}{\textbf{TS}} \\
+        & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP \\
+        \hline
+        small  & 0.00 & 0.00 & 23.84 & 3.86 & 0.00 & 0.00 & 42.08 & 9.85 & 40.99 & 12.08 & 28.30 & 8.78 & 44.59 & 11.82 & 22.00 & 7.01 & 0.00 & 0.00 & 49.82 & 5.72 \\
+        medium & 10.86 & 15.46 & 24.09 & 3.43 & 10.88 & 15.48 & 41.59 & 9.14 & 63.83 & 9.91 & 30.66 & 9.79 & 62.89 & 10.08 & 23.79 & 5.35 & 9.05 & 12.91 & 48.47 & 4.76 \\
+        large  & 18.88 & 14.40 & 30.50 & 8.21 & 18.21 & 14.42 & 42.43 & 9.46 & 62.03 & 9.42 & 37.15 & 9.55 & 66.44 & 9.78 & 26.79 & 5.04 & 18.70 & 13.65 & 48.45 & 6.07 \\
+        \hline
+    \end{tabular}%
+    }
+\end{table}
 
-Linguagens híbridas (Java, C\#, Go, Kotlin, TypeScript) devem apresentar valores intermediários de complexidade de implementação, beneficiando-se de recursos como garbage collection e tipagem estática, ao mesmo tempo em que mantêm legibilidade e concisão moderadas.
+\textbf{Conclusão parcial:} Linguagens como Go, Kotlin e Java apresentaram alto consumo de CPU em instâncias grandes, enquanto C e C++ mostraram uso mais eficiente. Python apresentou variação significativa, sugerindo menor controle sobre recursos.
 
-\subsection{Relação entre Paradigmas e Desempenho}
+\subsection{Uso de Memória}
 
-Prevê-se que as linguagens compiladas apresentem melhor desempenho geral em tarefas CPU-bound (como ordenação e busca), enquanto linguagens interpretadas podem apresentar overheads significativos em algoritmos que realizam muitas iterações ou alocações de memória. Linguagens híbridas, por sua vez, devem equilibrar desempenho e facilidade de implementação, beneficiando-se de JIT e otimizações em tempo de execução.
+O consumo de memória é apresentado na Figura~\ref{fig:memoria}. Verifica-se aumento gradual com o crescimento do dataset, sendo mais acentuado em linguagens com ambientes de execução mais pesados (Java, Kotlin, Rust, TypeScript).
 
-\subsection{Síntese dos Resultados Esperados}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/ram_vs_tamanho_all.png}
+    \caption{Uso máximo de memória em função do tamanho do dataset.}
+    \label{fig:memoria}
+\end{figure}
 
-De forma consolidada, espera-se:
+\begin{table}[H]
+    \centering
+    \caption{Uso máximo de memória (MB) e desvio padrão (DP).}
+    \label{tab:memoria}
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{c|cc|cc|cc|cc|cc|cc|cc|cc|cc|cc}
+            \hline
+            \textbf{Tamanho}
+            & \multicolumn{2}{c|}{\textbf{C}}
+            & \multicolumn{2}{c|}{\textbf{C\#}}
+            & \multicolumn{2}{c|}{\textbf{C++}}
+            & \multicolumn{2}{c|}{\textbf{Go}}
+            & \multicolumn{2}{c|}{\textbf{Java}}
+            & \multicolumn{2}{c|}{\textbf{JS}}
+            & \multicolumn{2}{c|}{\textbf{Kotlin}}
+            & \multicolumn{2}{c|}{\textbf{Py}}
+            & \multicolumn{2}{c|}{\textbf{Rust}}
+            & \multicolumn{2}{c}{\textbf{TS}} \\
+            \cline{2-21}
+            & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP & M & DP \\
+            \hline
+            small  & 0.68 & 0.29 & 18.08 & 0.81 & 0.48 & 0.06 & 48.23 & 1.51 & 43.65 & 0.80 & 49.80 & 1.70 & 45.66 & 0.87 & 9.90 & 0.41 & 0.58 & 0.30 & 76.78 & 1.29 \\
+            medium & 1.35 & 0.94 & 19.92 & 1.25 & 1.65 & 1.66 & 48.52 & 1.46 & 50.76 & 1.62 & 50.92 & 2.22 & 55.87 & 5.43 & 11.12 & 0.79 & 1.09 & 0.75 & 76.78 & 0.82 \\
+            large  & 1.85 & 0.86 & 33.97 & 2.18 & 6.58 & 1.86 & 48.13 & 1.49 & 67.30 & 4.80 & 65.73 & 9.21 & 93.35 & 25.56 & 24.76 & 8.39 & 2.44 & 1.46 & 89.03 & 6.27 \\
+            \hline
+        \end{tabular}%
+    }
+\end{table}
 
-\begin{itemize}
-    \item \textbf{Desempenho superior} para linguagens compiladas (C, Rust) em problemas de Classe P e NP-completo;
-    \item \textbf{Equilíbrio entre tempo e memória} para linguagens híbridas (Java, Go) em problemas de Classe NP;
-    \item \textbf{Overhead significativo de memória} em linguagens com garbage collection (Java, Go);
-    \item \textbf{Crescimento não linear de memória} em linguagens interpretadas (Python, JavaScript) para problemas combinatórios;
-    \item \textbf{Maior concisão de código} em linguagens dinâmicas, contrastando com maior SLOC e complexidade ciclomatica em linguagens como C e C++.
-\end{itemize}
+\textbf{Conclusão parcial:} Linguagens de baixo nível, como C e C++, demonstraram consumo mínimo de memória. Por outro lado, Java, Kotlin e TypeScript apresentaram maiores demandas, o que reflete o custo adicional de suas máquinas virtuais e runtime.
+
+\subsection{Qualidade da Solução da Heurística}
+
+Nos conjuntos menores (\(n = 10^3\) e \(n = 10^4\)), foi possível comparar diretamente o desempenho do algoritmo heurístico em relação ao exato. Observa-se que a heurística reduziu drasticamente o tempo de execução, com perda mínima de qualidade. Para o conjunto grande, apenas o heurístico pôde ser avaliado.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/qualidade_heuristica.png}
+    \caption{Comparação de tempo de execução entre solução exata e heurística (NP-Completo).}
+    \label{fig:qualidade}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{Comparação de tempo de execução entre solução exata e heurística (NP-Completo).}
+    \label{tab:qualidade_np}
+    \resizebox{0.8\textwidth}{!}{%
+    \begin{tabular}{c|cc|cc}
+        \hline
+        \textbf{Tamanho} & \multicolumn{2}{c|}{\textbf{Exato}} & \multicolumn{2}{c}{\textbf{Heurístico (Guloso)}} \\
+        \cline{2-5}
+         & M (s) & DP (s) & M (s) & DP (s) \\
+        \hline
+        small  & 0.57 & 1.27 & 0.11 & 0.21 \\
+        medium & 3.72 & 2.50 & 0.13 & 0.22 \\
+        large  & -- & -- & 0.24 & 0.26 \\
+        \hline
+    \end{tabular}%
+    }
+\end{table}
+
+\textbf{Conclusão parcial:} A heurística apresentou ganhos expressivos em tempo de execução, especialmente em datasets médios, sem comprometer significativamente a qualidade. O algoritmo exato tornou-se inviável em instâncias grandes.
+
+\subsection{Linhas de Código}
+
+A Figura~\ref{fig:sloc} e a Tabela~\ref{tab:sloc} apresentam a quantidade média de linhas de código (SLOC) necessárias para implementar cada algoritmo em cada linguagem. Essa métrica reflete a complexidade de implementação e serve de base para discutir o trade-off entre facilidade de desenvolvimento e desempenho.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/linhas_codigo_linguagem_algoritmo.png}
+    \caption{Linhas de código (SLOC) médias por linguagem e algoritmo.}
+    \label{fig:sloc}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{Linhas de código (SLOC) médias por linguagem e algoritmo.}
+    \label{tab:sloc}
+    \resizebox{0.7\textwidth}{!}{%
+        \begin{tabular}{c|c|c}
+            \hline
+            \textbf{Linguagem} & \textbf{Algoritmo Exato} & \textbf{Algoritmo Heurístico} \\
+            \hline
+            C          & 71 & 121 \\
+            C\#        & 48 & 80 \\
+            C++        & 52 & 69 \\
+            Go         & 51 & 64 \\
+            Java       & 40 & 60 \\
+            JavaScript & 28 & 34 \\
+            Kotlin     & 32 & 52 \\
+            Python     & 31 & 33 \\
+            Rust       & 50 & 82 \\
+            TypeScript & 37 & 44 \\
+            \hline
+        \end{tabular}%
+    }
+\end{table}
+
+\textbf{Conclusão parcial:} Linguagens como Python e JavaScript exigiram menos linhas de código, indicando maior expressividade. Já C e Rust demandaram implementações mais extensas, refletindo maior controle de baixo nível.
+
+\subsection{Considerações Finais dos Resultados}
+
+Os experimentos confirmam que:  
+Linguagens compiladas (C, C++, Rust) apresentam melhor desempenho em tempo e uso de memória, reforçando sua eficiência em problemas computacionalmente intensivos.  
+Linguagens interpretadas (Python, JavaScript, TypeScript) destacam-se pela simplicidade de implementação, mas apresentam desempenho inferior em grandes datasets.  
+O algoritmo heurístico mostrou-se uma alternativa altamente eficiente, viabilizando soluções próximas ao ótimo em frações do tempo exigido pelo algoritmo exato.  
+O consumo de CPU e memória variou conforme o runtime da linguagem, evidenciando os custos adicionais de máquinas virtuais (Java, Kotlin) e interpretadores.  
+
+Esses resultados fornecem a base empírica para a discussão, evidenciando os trade-offs entre desempenho, consumo de recursos e complexidade de implementação nas diferentes linguagens e algoritmos.
 
 % REFERÊNCIAS
 \bibliographystyle{abntex2-alf}
