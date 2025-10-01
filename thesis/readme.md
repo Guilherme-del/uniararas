@@ -66,7 +66,7 @@ python3 bi.py
 Os gráficos serão gerados como arquivos **CSV + imagens** dentro da pasta:
 
 ```
-graficos/
+bi/
 ```
 
 - Cada métrica terá um arquivo CSV correspondente.  
@@ -80,7 +80,7 @@ graficos/
 .
 ├── algorithms/         # Implementações em diferentes linguagens
 ├── resultados/         # Saída dos experimentos (metricas.json)
-├── graficos/           # CSVs e PNGs dos gráficos gerados
+├── bi/           # CSVs e PNGs dos gráficos gerados
 ├── run_all.sh          # Script de execução completa dos experimentos
 ├── coleta_metricas.py  # Script para rodar um experimento individual
 ├── bi.py               # Script de BI para gerar gráficos
