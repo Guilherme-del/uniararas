@@ -103,6 +103,6 @@ graficos/
 
 3. Ver os resultados:  
    - Arquivo de métricas: `resultados/metricas.json`  
-   - Gráficos e CSVs: pasta `graficos/`
+   - Gráficos e CSVs: pasta `bi/`
 
 ---
