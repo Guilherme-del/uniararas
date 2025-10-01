@@ -125,7 +125,7 @@ run_case() {
 echo "== Run started at $(date) ==" | tee -a "$LOG"
 echo "TIMEOUT_SEC=${TIMEOUT_SEC} USE_DOTNET=${USE_DOTNET} SAMPLE_INTERVAL=${SAMPLE_INTERVAL} MONITOR_MIN_S=${MONITOR_MIN_S:-}" | tee -a "$LOG"
 
-classes=("np-dificil")   # adicione np, np-completo, np-dificil conforme necessário
+classes=("p np np-completo np-dificil")
 linguagens=(c "c++" "c#" java go rust typescript javascript kotlin python)
 tamanhos=(small medium large)
 
