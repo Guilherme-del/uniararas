@@ -560,35 +560,52 @@ if {"classe", "algoritmo_norm", "tamanho", "tempo_s"}.issubset(df.columns):
 else:
     print("⚠️ Qualidade (NP-Completo): verifique 'classe', 'algoritmo_norm', 'tamanho', 'tempo_s'.")
 
-# ===================== 5) Linhas de código por linguagem × algoritmo =====================
-if "linhas_codigo" in df.columns and {"linguagem", "algoritmo"}.issubset(df.columns):
-    loc_lang_alg = (df.groupby(["linguagem","algoritmo"])["linhas_codigo"]
-                    .mean().unstack().fillna(0).sort_index())
-    loc_lang_alg.to_csv(os.path.join(OUT_DIR, "linhas_codigo_linguagem_algoritmo.csv"))
+# ===================== 5) Linhas de código por linguagem (média geral) =====================
+if "linhas_codigo" in df.columns and "linguagem" in df.columns:
+    # Agrupa apenas por linguagem, ignorando o algoritmo
+    loc_lang = df.groupby("linguagem")["linhas_codigo"].agg(['mean', 'std', 'count']).round(2)
+    loc_lang.to_csv(os.path.join(OUT_DIR, "linhas_codigo_linguagem.csv"))
     
-    # TAMANHO ORIGINAL para gráfico de barras (não usar o tamanho gigante)
-    plt.figure(figsize=(12, 6))  # Tamanho original padrão
+    # Prepara dados para o gráfico de barras
+    languages = loc_lang.index.tolist()
+    means = loc_lang['mean'].values
+    stds = loc_lang['std'].values
     
-    ax = loc_lang_alg.plot(kind="bar", title="")
+    # TAMANHO ORIGINAL para gráfico de barras
+    plt.figure(figsize=(12, 6))
+    
+    # Gráfico de barras SEM as linhas de erro (removido yerr=stds)
+    bars = plt.bar(languages, means, capsize=5, 
+                   color=COLORS_VIBRANT[:len(languages)], 
+                   edgecolor='black', linewidth=1.5, alpha=0.8)
+    
     plt.ylabel("Linhas de código (média)", fontsize=14, fontweight='bold')
     plt.xlabel("Linguagem", fontsize=14, fontweight='bold')
-    plt.xticks(rotation=45, fontsize=12)
+    plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
-    plt.legend(fontsize=12)
     
-    # Configurar grid PRETO para o gráfico de barras
+    # Adicionar valores nas barras (mais limpo, sem as linhas pretas)
+    for bar, mean_val in zip(bars, means):
+        plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 5,  # Pequeno espaço acima da barra
+                f'{mean_val:.0f}', ha='center', va='bottom', fontsize=11, fontweight='bold')
+    
+    # Configurar grid PRETO apenas horizontal
     plt.grid(True, axis='y', alpha=0.3, linestyle='-', linewidth=1.0, color='black')
-    
-    # Melhorar barras
-    for cont in ax.containers:
-        ax.bar_label(cont, fmt="%.0f", fontsize=10, fontweight='bold', padding=3)
+    plt.grid(False, axis='x')  # Remove grid vertical
     
     # Melhorar aparência
+    ax = plt.gca()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_linewidth(1.0)
     ax.spines['bottom'].set_linewidth(1.0)
     ax.set_facecolor('#f8f9fa')
     
-    savefig(os.path.join(OUT_DIR, "linhas_codigo_linguagem_algoritmo.png"))
+    # Ajustar limites do eixo Y para dar espaço para os números
+    y_max = max(means) * 1.15  # 15% de margem no topo
+    plt.ylim(0, y_max)
+    
+    savefig(os.path.join(OUT_DIR, "linhas_codigo_linguagem.png"))
+    
+    print(f"✅ Gráfico de linhas de código por linguagem criado ({len(languages)} linguagens)")
     
