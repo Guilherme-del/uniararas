@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
+from matplotlib import colors as mcolors
 
 # ===================== Config fixo =====================
 OUT_DIR = "./bi"
@@ -220,100 +221,100 @@ def _table_to_png(mean_df, std_df, filename_base, index_name="Tamanho"):
     plt.savefig(os.path.join(OUT_DIR, f"{filename_base}_table.png"), dpi=PLOT_STYLE['dpi'], bbox_inches="tight")
     plt.close(fig_tab)
 
+from matplotlib import colors as mcolors
+
 def plot_bars_with_table(mean_df, std_df, title, ylabel, filename, is_time_plot=False):
-    """Gera gráfico de barras agrupadas (sem título) e tabela separada."""
+    """Gera gráfico de barras agrupadas com eixo Y altamente detalhado e sem números sobre as barras."""
     if mean_df is None or mean_df.empty:
         return
-    
-    # Configurações de estilo
-    if is_time_plot:
-        style = TIME_PLOT_STYLE
-    else:
-        style = PLOT_STYLE
-    
+
+    style = TIME_PLOT_STYLE if is_time_plot else PLOT_STYLE
     plt.figure(figsize=style['fig_size'])
-    
+
     colors = {c: COLORS_VIBRANT[i % len(COLORS_VIBRANT)] for i, c in enumerate(mean_df.columns)}
-    
-    # Configurar posições das barras
+
     n_groups = len(mean_df.index)
     n_bars = len(mean_df.columns)
-    bar_width = 0.8 / n_bars  # Largura dinâmica baseada no número de barras
-    
-    x_positions = np.arange(n_groups)
-    
-    # Plotar barras para cada linguagem
+
+    # Aumentar espaçamento horizontal
+    bar_width = 0.45 / max(n_bars, 1)
+    internal_spacing_factor = 2.0
+    group_spacing = 2.0
+
+    x_positions = np.arange(n_groups) * group_spacing
+
+    # ============================
+    # BARRAS
+    # ============================
     for i, col in enumerate(mean_df.columns):
-        bar_pos = x_positions + i * bar_width - (n_bars * bar_width) / 2 + bar_width / 2
-        y_values = mean_df[col].values
-        y_errors = std_df[col].values if (std_df is not None and col in std_df.columns) else None
-        
+        offset = (i - (n_bars - 1) / 2) * (bar_width * internal_spacing_factor)
+        bar_pos = x_positions + offset
         plt.bar(
-            bar_pos, 
-            y_values,
+            bar_pos,
+            mean_df[col].values,
             width=bar_width,
             color=colors[col],
-            edgecolor='black',
-            linewidth=2,
-            alpha=0.8,
+            edgecolor='none',
+            linewidth=0,
+            alpha=0.9,
             label=str(col),
-            yerr=y_errors,
-            capsize=5,
-            error_kw={'elinewidth': 2, 'capthick': 2}
         )
-        
-        # Adicionar valores nas barras se o espaço permitir
-        max_val = mean_df.max().max()
-        if max_val > 0:  # Só adiciona texto se não for zero
-            for j, v in enumerate(y_values):
-                if v > max_val * 0.05:  # Só mostra texto se for significativo
-                    plt.text(bar_pos[j], v + max_val * 0.01, f'{v:.3f}', 
-                            ha='center', va='bottom', fontsize=style['font_size_ticks']-4,
-                            fontweight='bold')
 
-    # Configurações do gráfico
+    # ============================
+    # EIXOS E ESCALA
+    # ============================
     plt.xlabel("Tamanho do dataset", fontsize=style['font_size_labels'], fontweight='bold')
     plt.ylabel(ylabel, fontsize=style['font_size_labels'], fontweight='bold')
-    
-    # Configurar eixo X
     plt.xticks(x_positions, [str(v) for v in mean_df.index], fontsize=style['font_size_ticks'])
-    plt.xlim(x_positions[0] - 0.5, x_positions[-1] + 0.5)
-    
-    # Configurar eixo Y com mais espaço
-    y_min = mean_df.min().min()
-    y_max = mean_df.max().max()
-    margin = (y_max - y_min) * 0.3
-    plt.ylim(max(0, y_min - margin), y_max + margin)
-    
-    # Grid mais sutil
-    plt.grid(True, axis='y', alpha=0.2, linestyle='-', linewidth=1.0, color='black')
+    plt.xlim(x_positions[0] - group_spacing / 2.3, x_positions[-1] + group_spacing / 2.3)
+
+    # Escala Y detalhada
+    y_min, y_max = mean_df.min().min(), mean_df.max().max()
+    plt.ylim(max(0, y_min - (y_max - y_min) * 0.1), y_max * 1.15)
+
+    # Até 20 ticks principais e menores ativados
+    major_ticks = np.linspace(0, y_max * 1.1, 20)
+    plt.yticks(major_ticks, fontsize=style['font_size_ticks'])
+
+    # Adicionar ticks menores (dividem em 5 partes entre cada major tick)
+    plt.minorticks_on()
+    # usamos cor RGBA para simular transparência
+    minor_color = mcolors.to_rgba('gray', alpha=0.5)
+    plt.tick_params(axis='y', which='minor', length=4, color=minor_color)
+
+    # Grades principais e menores
+    plt.grid(True, axis='y', which='major', alpha=0.3, linestyle='-', linewidth=1.0, color='black')
+    plt.grid(True, axis='y', which='minor', alpha=0.15, linestyle=':', linewidth=0.8)
     plt.grid(False, axis='x')
-    
-    # Legenda
-    legend = plt.legend(
-        ncol=LEGEND_NCOL, 
-        title="Linguagens", 
-        loc="upper left", 
-        bbox_to_anchor=(1.02, 1.0), 
+
+    # ============================
+    # LEGENDA
+    # ============================
+    plt.legend(
+        ncol=LEGEND_NCOL,
+        title="Linguagens",
+        loc="upper left",
+        bbox_to_anchor=(1.02, 1.0),
         borderaxespad=0.0,
         fontsize=style['font_size_legend'],
         title_fontsize=style['font_size_legend'],
         framealpha=0.95,
         frameon=True,
-        edgecolor='black'
+        edgecolor='none'
     )
-    
-    # Melhorar aparência
+
+    # ============================
+    # ESTILO FINAL
+    # ============================
     ax = plt.gca()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_linewidth(2.0)
     ax.spines['bottom'].set_linewidth(2.0)
     ax.set_facecolor('#f8f9fa')
-    
+
+    plt.tight_layout(pad=3.0)
     savefig(os.path.join(OUT_DIR, f"{filename}_barras.png"), tight=True)
-    
-    # Tabela separada
     _table_to_png(mean_df, std_df, filename_base=f"{filename}_barras", index_name="Tamanho")
 
 def plot_heatmap_with_table(mean_df, std_df, title, ylabel, filename):
@@ -375,7 +376,7 @@ def plot_dot_plot_with_table(mean_df, std_df, title, ylabel, filename):
             x_positions, y_values,
             s=200,  # Tamanho dos pontos
             color=colors[col],
-            edgecolor='black',
+            edgecolor= None,
             linewidth=2,
             alpha=0.8,
             label=str(col),
@@ -551,7 +552,7 @@ def plot_scatter_metrics(df, x_metric, y_metric, filename):
             label=lang,
             alpha=0.7,
             s=100,
-            edgecolors='black',
+            edgecolors=None,
             linewidth=1
         )
     
@@ -881,8 +882,8 @@ if {"classe", "algoritmo_norm", "tamanho", "tempo_s"}.issubset(df.columns):
                     y_values,
                     width=bar_width,
                     color=colors[col],
-                    edgecolor='black',
-                    linewidth=2,
+                    edgecolor='none',  # REMOVIDA A LINHA PRETA
+                    linewidth=0,       # Garantir que não há linha
                     alpha=0.8,
                     label=str(col),
                     yerr=y_errors,
@@ -897,15 +898,16 @@ if {"classe", "algoritmo_norm", "tamanho", "tempo_s"}.issubset(df.columns):
                         if not np.isnan(v) and v > max_val * 0.05:
                             plt.text(bar_pos[j], v + max_val * 0.01, f'{v:.3f}', 
                                     ha='center', va='bottom', fontsize=16,
-                                    fontweight='bold')
+                                    fontweight='bold',
+                                    bbox=dict(boxstyle="round,pad=0.2", facecolor='white', alpha=0.8, edgecolor='none'))
 
             # Configurações do gráfico
             plt.xlabel("Tamanho (small/medium + large só heurístico)", fontsize=20, fontweight='bold')
             plt.ylabel(ylabel, fontsize=20, fontweight='bold')
             
-            # Configurar eixo X
+            # Configurar eixo X com mais espaçamento
             plt.xticks(x_positions, [str(v) for v in mean_df.index], fontsize=18)
-            plt.xlim(x_positions[0] - 0.5, x_positions[-1] + 0.5)
+            plt.xlim(x_positions[0] - 0.6, x_positions[-1] + 0.6)
             
             # Configurar eixo Y com mais espaço
             y_min = mean_df.min().min()
@@ -926,7 +928,8 @@ if {"classe", "algoritmo_norm", "tamanho", "tempo_s"}.issubset(df.columns):
                 borderaxespad=0.0,
                 fontsize=18,
                 title_fontsize=18,
-                framealpha=0.9
+                framealpha=0.9,
+                edgecolor='none'  # Remover borda da legenda
             )
             
             # Melhorar aparência
@@ -936,6 +939,9 @@ if {"classe", "algoritmo_norm", "tamanho", "tempo_s"}.issubset(df.columns):
             ax.spines['left'].set_linewidth(2.0)
             ax.spines['bottom'].set_linewidth(2.0)
             ax.set_facecolor('#f8f9fa')
+            
+            # Aumentar espaçamento geral
+            plt.tight_layout(pad=3.0)
             
             savefig(os.path.join(OUT_DIR, f"{filename}_barras.png"), tight=True)
             
@@ -982,7 +988,7 @@ if "linhas_codigo" in df.columns and "linguagem" in df.columns:
     # Gráfico de barras SEM as linhas de erro (removido yerr=stds)
     bars = plt.bar(languages, means, capsize=5, 
                    color=COLORS_VIBRANT[:len(languages)], 
-                   edgecolor='black', linewidth=1.5, alpha=0.8)
+                   edgecolor='none', linewidth=0, alpha=0.8)  # REMOVIDA LINHA PRETA
     
     plt.ylabel("Linhas de código (média)", fontsize=14, fontweight='bold')
     plt.xlabel("Linguagem", fontsize=14, fontweight='bold')
@@ -1009,6 +1015,9 @@ if "linhas_codigo" in df.columns and "linguagem" in df.columns:
     # Ajustar limites do eixo Y para dar espaço para os números
     y_max = max(means) * 1.15  # 15% de margem no topo
     plt.ylim(0, y_max)
+    
+    # Aumentar espaçamento
+    plt.tight_layout(pad=2.0)
     
     savefig(os.path.join(OUT_DIR, "linhas_codigo_linguagem.png"))
     
