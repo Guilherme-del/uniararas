@@ -783,6 +783,261 @@ if HAS_CPU_MAX_NORM and HAS_RAM_PEAK:
     plot_scatter_metrics(df_general, 'cpu_max_during_norm', 'ram_peak_mb', 'cpu_vs_ram')
     print("✅ Scatter plot CPU vs RAM criado")
 
+# ===================== GRÁFICO: Tempo vs Linhas de Código (COM LEGENDA) =====================
+def plot_tempo_vs_linhas_codigo_com_legenda(df, filename="tempo_vs_linhas_codigo_legenda"):
+    """Gráfico de dispersão com legenda organizada"""
+    
+    # Calcular médias por linguagem
+    agg_lang = df.groupby("linguagem").agg({
+        "tempo_s": "mean",
+        "linhas_codigo": "mean",
+        "linguagem": "count"
+    }).rename(columns={"linguagem": "n_execucoes"}).round(4)
+    
+    if agg_lang.empty:
+        print("⚠️ Dados insuficientes para tempo vs linhas de código")
+        return
+    
+    # Configurações do gráfico
+    plt.figure(figsize=(16, 10))
+    
+    # Criar scatter plot COM LEGENDA
+    for i, (lang, row) in enumerate(agg_lang.iterrows()):
+        plt.scatter(
+            row["linhas_codigo"],
+            row["tempo_s"],
+            s=row["n_execucoes"] * 80,  # Tamanho proporcional ao número de execuções
+            color=COLORS_VIBRANT[i % len(COLORS_VIBRANT)],
+            alpha=0.7,
+            edgecolors='white',
+            linewidth=2,
+            label=lang,  # AGORA USA LEGENDA
+            zorder=5
+        )
+    
+    # Linha de tendência
+    if len(agg_lang) > 1:
+        x_vals = agg_lang["linhas_codigo"].values
+        y_vals = agg_lang["tempo_s"].values
+        
+        # Remover NaNs
+        mask = ~(np.isnan(x_vals) | np.isnan(y_vals))
+        x_vals = x_vals[mask]
+        y_vals = y_vals[mask]
+        
+        if len(x_vals) > 1:
+            z = np.polyfit(x_vals, y_vals, 1)
+            p = np.poly1d(z)
+            x_range = np.linspace(x_vals.min(), x_vals.max(), 100)
+            plt.plot(x_range, p(x_range), "k--", alpha=0.8, linewidth=2, 
+                    label='Linha de tendência')
+            
+            # Calcular correlação
+            corr = np.corrcoef(x_vals, y_vals)[0,1]
+            
+            # Adicionar R² no gráfico
+            plt.text(0.05, 0.95, f'R² = {corr**2:.3f}', 
+                    transform=plt.gca().transAxes, fontsize=14,
+                    bbox=dict(boxstyle="round", facecolor='white', alpha=0.8))
+    
+    # Configurações do gráfico
+    plt.xlabel("Média de Linhas de Código", fontsize=16, fontweight='bold')
+    plt.ylabel("Tempo Médio de Execução (s)", fontsize=16, fontweight='bold')
+    plt.title("Relação: Tempo de Execução vs Linhas de Código por Linguagem", 
+              fontsize=18, fontweight='bold', pad=20)
+    
+    # Grid estilizado
+    plt.grid(True, alpha=0.3, linestyle='-', linewidth=0.5)
+    
+    # LEGENDA ORGANIZADA (fora do gráfico)
+    legend = plt.legend(
+        title="Linguagens",
+        title_fontsize=14,
+        fontsize=12,
+        loc='upper left',
+        bbox_to_anchor=(1.02, 1.0),
+        borderaxespad=0.0,
+        framealpha=0.95,
+        frameon=True,
+        edgecolor='none',
+        ncol=1  # Uma coluna para legenda mais limpa
+    )
+    
+    # Melhorar aparência
+    ax = plt.gca()
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_linewidth(1.5)
+    ax.spines['bottom'].set_linewidth(1.5)
+    ax.set_facecolor('#f8f9fa')
+    
+    # Ajustar limites para dar espaço
+    x_margin = (agg_lang["linhas_codigo"].max() - agg_lang["linhas_codigo"].min()) * 0.1
+    y_margin = (agg_lang["tempo_s"].max() - agg_lang["tempo_s"].min()) * 0.1
+    
+    plt.xlim(agg_lang["linhas_codigo"].min() - x_margin, 
+             agg_lang["linhas_codigo"].max() + x_margin)
+    plt.ylim(max(0, agg_lang["tempo_s"].min() - y_margin), 
+             agg_lang["tempo_s"].max() + y_margin)
+    
+    plt.tight_layout()
+    savefig(os.path.join(OUT_DIR, f"{filename}.png"), tight=True)
+    
+    # Salvar dados em CSV
+    agg_lang.to_csv(os.path.join(OUT_DIR, f"{filename}_dados.csv"))
+    
+    print(f"✅ Gráfico com legenda criado: {filename}.png")
+
+# ===================== GRÁFICO: Versão Compacta =====================
+def plot_tempo_vs_linhas_codigo_compacto(df, filename="tempo_vs_linhas_codigo_compacto"):
+    """Versão mais compacta e limpa"""
+    
+    agg_lang = df.groupby("linguagem").agg({
+        "tempo_s": "mean",
+        "linhas_codigo": "mean",
+        "linguagem": "count"
+    }).rename(columns={"linguagem": "n_execucoes"}).round(4)
+    
+    if agg_lang.empty:
+        return
+    
+    plt.figure(figsize=(14, 8))
+    
+    # Plot simples com cores distintas
+    for i, (lang, row) in enumerate(agg_lang.iterrows()):
+        plt.scatter(
+            row["linhas_codigo"],
+            row["tempo_s"],
+            s=150,  # Tamanho fixo
+            color=COLORS_VIBRANT[i % len(COLORS_VIBRANT)],
+            alpha=0.8,
+            edgecolors='black',
+            linewidth=1.5,
+            label=f"{lang}",  # Inclui número de execuções
+            zorder=5
+        )
+    
+    # Linha de tendência discreta
+    if len(agg_lang) > 1:
+        x_vals = agg_lang["linhas_codigo"].values
+        y_vals = agg_lang["tempo_s"].values
+        mask = ~(np.isnan(x_vals) | np.isnan(y_vals))
+        x_vals = x_vals[mask]
+        y_vals = y_vals[mask]
+        
+        if len(x_vals) > 1:
+            z = np.polyfit(x_vals, y_vals, 1)
+            p = np.poly1d(z)
+            x_range = np.linspace(x_vals.min(), x_vals.max(), 100)
+            plt.plot(x_range, p(x_range), "gray", alpha=0.6, linewidth=2, 
+                    linestyle=':', label='Tendência linear')
+    
+    plt.xlabel("Média de Linhas de Código", fontsize=14, fontweight='bold')
+    plt.ylabel("Tempo Médio (s)", fontsize=14, fontweight='bold')
+    plt.title("Tempo vs Complexidade de Código por Linguagem", fontsize=16, fontweight='bold')
+    
+    plt.grid(True, alpha=0.2)
+    
+    # Legenda compacta
+    plt.legend(
+        fontsize=11,
+        framealpha=0.9,
+        loc='best'  # Posição automática
+    )
+    
+    plt.tight_layout()
+    savefig(os.path.join(OUT_DIR, f"{filename}.png"), tight=True)
+
+# ===================== ATUALIZAR A CHAMADA DOS GRÁFICOS =====================
+
+print("📊 Gerando gráficos de tempo vs linhas de código COM LEGENDA...")
+
+if "linhas_codigo" in df_general.columns and "tempo_s" in df_general.columns:
+    
+    # Gráfico principal com legenda organizada
+    plot_tempo_vs_linhas_codigo_com_legenda(df_general)
+    
+    # Versão compacta
+    plot_tempo_vs_linhas_codigo_compacto(df_general)
+    
+    # ===================== GRÁFICO: Por classe com legenda =====================
+    if "classe" in df_general.columns:
+        plt.figure(figsize=(16, 10))
+        
+        # Obter cores únicas para cada classe
+        classes = df_general["classe"].unique()
+        class_colors = {classe: COLORS_VIBRANT[i % len(COLORS_VIBRANT)] 
+                       for i, classe in enumerate(classes)}
+        
+        # Obter marcadores únicos para cada linguagem
+        linguagens = df_general["linguagem"].unique()
+        markers = ['o', 's', '^', 'D', 'v', '<', '>', 'p', '*', 'h', 'X']
+        
+        for i, lang in enumerate(linguagens):
+            df_lang = df_general[df_general["linguagem"] == lang]
+            agg_lang = df_lang.groupby("classe").agg({
+                "tempo_s": "mean",
+                "linhas_codigo": "mean"
+            }).reset_index()
+            
+            marker = markers[i % len(markers)]
+            
+            for _, row in agg_lang.iterrows():
+                plt.scatter(
+                    row["linhas_codigo"],
+                    row["tempo_s"],
+                    s=120,
+                    color=class_colors[row["classe"]],
+                    marker=marker,
+                    alpha=0.8,
+                    edgecolors='black',
+                    linewidth=1,
+                    label=lang if _ == 0 else ""  # Evitar duplicatas na legenda
+                )
+        
+        # Criar legendas customizadas
+        from matplotlib.lines import Line2D
+        
+        # Legenda para linguagens (marcadores)
+        legend_elements_lang = [
+            Line2D([0], [0], marker=markers[i % len(markers)], color='w', 
+                  markerfacecolor='gray', markersize=10, label=lang)
+            for i, lang in enumerate(linguagens)
+        ]
+        
+        # Legenda para classes (cores)
+        legend_elements_class = [
+            Line2D([0], [0], marker='s', color='w', 
+                  markerfacecolor=class_colors[classe], markersize=10, label=classe)
+            for classe in classes
+        ]
+        
+        # Primeira legenda (linguagens)
+        legend1 = plt.legend(handles=legend_elements_lang, 
+                           title="Linguagens",
+                           loc='upper left', 
+                           bbox_to_anchor=(1.02, 1.0))
+        
+        # Segunda legenda (classes)
+        plt.gca().add_artist(legend1)
+        plt.legend(handles=legend_elements_class, 
+                 title="Classes",
+                 loc='upper left', 
+                 bbox_to_anchor=(1.02, 0.7))
+        
+        plt.xlabel("Média de Linhas de Código", fontsize=14, fontweight='bold')
+        plt.ylabel("Tempo Médio de Execução (s)", fontsize=14, fontweight='bold')
+        plt.title("Tempo vs Linhas de Código por Linguagem e Classe", 
+                  fontsize=16, fontweight='bold')
+        plt.grid(True, alpha=0.3)
+        
+        plt.tight_layout()
+        savefig(os.path.join(OUT_DIR, "tempo_vs_linhas_codigo_legenda_classes.png"), tight=True)
+        print("✅ Gráfico por classe com legenda criado")
+    
+else:
+    print("⚠️ Colunas 'linhas_codigo' ou 'tempo_s' não encontradas")
+
 # ===================== 4) Qualidade – NP-Completo (tempo) =====================
 def is_small_or_medium_size(val: str) -> bool:
     s = str(val).strip().lower()
