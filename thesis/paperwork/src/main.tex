@@ -15,7 +15,7 @@
 \usepackage{enumerate,setspace,graphicx,amsmath,tikz,amsfonts,amssymb}
 \usepackage{color}
 \usepackage{hyperref}
-\usepackage[alf]{abntex2cite}
+\usepackage[alf, abnt-etal-text=emph]{abntex2cite}
 \usepackage{url}
 \usepackage{float}
 \usepackage[skip=10pt]{caption}
@@ -53,7 +53,6 @@
 
 % --- Macro para palavras/termos em inglês ---
 \newcommand{\eng}[1]{\textit{#1}}
-
 % --- Citação direta longa (NBR 10520): recuo 4 cm, fonte menor, espaço simples, sem aspas ---
 \newenvironment{citacao}%
   {\begin{list}{}{\setlength{\leftmargin}{4cm}\setlength{\rightmargin}{0cm}}
@@ -71,7 +70,7 @@
 \vspace{6pt}
 
 Guilherme Cavenaghi (Fundação Hermínio Ometto) \texttt{guilherme.cavenaghi@alunos.fho.edu.br}\\
-Orientador: Renato Luciano Cagnin (Fundação Hermínio Ometto) \texttt{renato\_cagnin@fho.edu.br}
+Renato Luciano Cagnin (Fundação Hermínio Ometto) \texttt{renato\_cagnin@fho.edu.br}
 
 % ------------------
 % Resumo e Palavras-chave
@@ -109,9 +108,9 @@ Esta seção apresenta os fundamentos que orientam a análise comparativa realiz
 A teoria da complexidade computacional tem como objetivo classificar problemas de acordo com os recursos necessários para resolvê-los, como tempo e memória \citeonline{sipser2012}. Essa classificação é essencial para compreender limites práticos e teóricos na execução de algoritmos, servindo de base para a análise comparativa do desempenho em diferentes linguagens de programação. Segundo \citeonline{garey1979}, o estudo da complexidade fornece subsídios para distinguir entre problemas tratáveis e intratáveis, estabelecendo limites matemáticos que orientam escolhas de implementação.
 
 \subsubsection{Modelos de Computação}
-O modelo de máquina de Turing constitui a base teórica da complexidade, permitindo a formalização de algoritmos e problemas computacionais. Para um problema de decisão, define-se \(T(n)\) como a função de tempo que representa o número de passos executados para resolver uma entrada de tamanho \(n\). Esse modelo, embora abstrato, é amplamente utilizado para definir limites fundamentais sobre o que pode ou não ser computado \cite{sipser2012}. Outros modelos, como as máquinas RAM (\eng{Random Access Machine}), oferecem maior proximidade com arquiteturas reais, mas mantêm a mesma equivalência de poder computacional \cite{knuth1998}.
+O modelo de máquina de Turing constitui a base teórica da complexidade, permitindo a formalização de algoritmos e problemas computacionais. Para um problema de decisão, define-se \(T(n)\) como a função de tempo que representa o número de passos executados para resolver uma entrada de tamanho \(n\). Esse modelo, embora abstrato, é amplamente utilizado para definir limites fundamentais sobre o que pode ou não ser computado \citeonline{sipser2012}. Outros modelos, como as máquinas RAM (\eng{Random Access Machine}), oferecem maior proximidade com arquiteturas reais, mas mantêm a mesma equivalência de poder computacional \citeonline{knuth1998}.
 
-O modelo de Turing é também essencial para a definição das classes de complexidade polinomial. A classe P corresponde ao conjunto de problemas que podem ser resolvidos em tempo polinomial por uma máquina de Turing determinística, enquanto a classe NP compreende problemas cujas soluções podem ser verificadas em tempo polinomial nesse mesmo modelo \cite{garey1979, sipser2012}. Assim, as noções de tratabilidade e intratabilidade em ciência da computação derivam diretamente dessa formalização, o que justifica sua presença neste estudo, voltado à comparação empírica do desempenho de algoritmos fundamentais em diferentes linguagens de programação.
+O modelo de Turing é também essencial para a definição das classes de complexidade polinomial. A classe P corresponde ao conjunto de problemas que podem ser resolvidos em tempo polinomial por uma máquina de Turing determinística, enquanto a classe NP compreende problemas cujas soluções podem ser verificadas em tempo polinomial nesse mesmo modelo \citeonline{garey1979, sipser2012}. Assim, as noções de tratabilidade e intratabilidade em ciência da computação derivam diretamente dessa formalização, o que justifica sua presença neste estudo, voltado à comparação empírica do desempenho de algoritmos fundamentais em diferentes linguagens de programação.
 
 \subsubsection{Classes de Complexidade Polinomial}
 O presente estudo foca em classes de complexidade polinomial, pois elas fornecem o arcabouço necessário para compreender os resultados obtidos. A Figura~\ref{fig:complexidade} ilustra as principais relações entre essas classes:
@@ -128,36 +127,36 @@ O presente estudo foca em classes de complexidade polinomial, pois elas fornecem
   \centering
   \includegraphics[width=0.5\textwidth]{img/relacaoDeConjuntos.png}
   \label{fig:complexidade}
-  \\ \small Fonte: Adaptado de \citeonline{article}.
+  \\ \small Fonte: Adaptado de \citeonline{daru2005}.
 \end{figure}
 
 \subsection{Algoritmos Fundamentais}
 Para avaliar o impacto das linguagens no desempenho, foram selecionados algoritmos representativos das diferentes classes polinomiais, considerando tanto sua relevância teórica quanto aplicabilidade prática. Conforme \citeonline{pressman2016}, a escolha adequada de algoritmos influencia diretamente tempo de execução, consumo de recursos e escalabilidade das aplicações. A seleção também foi guiada pela teoria da complexidade, de modo que cada classe polinomial esteja associada a um exemplo canônico, amplamente discutido na literatura.
 
 \subsubsection{Ordenação}
-O algoritmo \eng{MergeSort} é representativo da classe P, com complexidade \(O(n \log n)\). Problemas dessa classe podem ser resolvidos em tempo polinomial por uma máquina de Turing determinística \cite{sipser2012}. A escolha do MergeSort se deve ao fato de ser um dos algoritmos de ordenação mais estudados, com análise matemática bem estabelecida \cite{knuth1998}. Além disso, sua popularidade e ampla utilização em sistemas reais tornam-no adequado como \eng{benchmark} para linguagens compiladas e interpretadas, permitindo observar diferenças de desempenho em cenários considerados tratáveis \cite{tanenbaum2015}.
+O algoritmo \eng{MergeSort} é representativo da classe P, com complexidade \(O(n \log n)\). Problemas dessa classe podem ser resolvidos em tempo polinomial por uma máquina de Turing determinística \citeonline{sipser2012}. A escolha do MergeSort se deve ao fato de ser um dos algoritmos de ordenação mais estudados, com análise matemática bem estabelecida \citeonline{knuth1998}. Além disso, sua popularidade e ampla utilização em sistemas reais tornam-no adequado como \eng{benchmark} para linguagens compiladas e interpretadas, permitindo observar diferenças de desempenho em cenários considerados tratáveis \citeonline{tanenbaum2015}.
 
 \subsubsection{Problemas de Otimização e Fatoração}
-O Problema da Mochila (\eng{Knapsack}) foi escolhido por representar a classe NP-completo. Problemas desse tipo podem ser verificados em tempo polinomial por uma máquina de Turing determinística, mas não se conhece algoritmo eficiente de resolução geral \cite{garey1979}. O Knapsack é um caso clássico de busca combinatória, utilizado em contextos de otimização e tomada de decisão, o que o torna relevante para avaliar o impacto das linguagens em cenários de explosão combinatória.
+O Problema da Mochila (\eng{Knapsack}) foi escolhido por representar a classe NP-completo. Problemas desse tipo podem ser verificados em tempo polinomial por uma máquina de Turing determinística, mas não se conhece algoritmo eficiente de resolução geral \citeonline{garey1979}. O Knapsack é um caso clássico de busca combinatória, utilizado em contextos de otimização e tomada de decisão, o que o torna relevante para avaliar o impacto das linguagens em cenários de explosão combinatória.
 
-Já a fatoração de inteiros (\eng{Factoring}), pertencente à classe NP, é amplamente estudada devido à sua importância em criptografia, especialmente na segurança de sistemas como o RSA \cite{rivest1978}. A escolha desse problema permite explorar como diferentes linguagens lidam com operações matemáticas de alta complexidade prática, mas que permanecem verificáveis em tempo polinomial. Isso fornece um contraponto ao Knapsack, situando o estudo em diferentes níveis da classe NP.
+Já a fatoração de inteiros (\eng{Factoring}), pertencente à classe NP, é amplamente estudada devido à sua importância em criptografia, especialmente na segurança de sistemas como o RSA \citeonline{rivest1978}. A escolha desse problema permite explorar como diferentes linguagens lidam com operações matemáticas de alta complexidade prática, mas que permanecem verificáveis em tempo polinomial. Isso fornece um contraponto ao Knapsack, situando o estudo em diferentes níveis da classe NP.
 
 \subsubsection{Problemas Indecidíveis}
-O Problema da Parada (\eng{Halting Problem}), embora indecidível em sua formulação geral, representa a classe NP-difícil em sua vertente teórica. Nesse tipo de problema, não existe algoritmo capaz de resolvê-lo em todos os casos possíveis \cite{sipser2012}. No entanto, é possível considerar instâncias restritas e simuláveis, de forma a observar o comportamento das linguagens em termos de tempo de execução e uso de memória. Sua inclusão reforça a relação entre limites teóricos da computabilidade e observações empíricas, permitindo avaliar até que ponto a escolha da linguagem pode mitigar ou evidenciar a complexidade intrínseca dos problemas.
+O Problema da Parada (\eng{Halting Problem}), embora indecidível em sua formulação geral, representa a classe NP-difícil em sua vertente teórica. Nesse tipo de problema, não existe algoritmo capaz de resolvê-lo em todos os casos possíveis \citeonline{sipser2012}. No entanto, é possível considerar instâncias restritas e simuláveis, de forma a observar o comportamento das linguagens em termos de tempo de execução e uso de memória. Sua inclusão reforça a relação entre limites teóricos da computabilidade e observações empíricas, permitindo avaliar até que ponto a escolha da linguagem pode mitigar ou evidenciar a complexidade intrínseca dos problemas.
 
 \subsection{Linguagens de Programação}
-A linguagem de programação exerce impacto significativo na implementação de algoritmos, afetando diretamente tempo de execução, uso de memória e esforço de desenvolvimento. Estudos empíricos demonstram que linguagens distintas podem produzir resultados divergentes em termos de eficiência computacional, mesmo implementando o mesmo algoritmo \cite{prechelt2000, nanz2015, ray2017}. Essa diversidade justifica a análise comparativa proposta neste trabalho, pois permite observar como características de cada linguagem interagem com diferentes classes de complexidade.
+A linguagem de programação exerce impacto significativo na implementação de algoritmos, afetando diretamente tempo de execução, uso de memória e esforço de desenvolvimento. Estudos empíricos demonstram que linguagens distintas podem produzir resultados divergentes em termos de eficiência computacional, mesmo implementando o mesmo algoritmo \citeonline{prechelt2000, nanz2015, ray2017}. Essa diversidade justifica a análise comparativa proposta neste trabalho, pois permite observar como características de cada linguagem interagem com diferentes classes de complexidade.
 
 \subsubsection{Paradigmas e Modelos de Execução}
 Os paradigmas de programação influenciam a forma como problemas são estruturados e resolvidos, afetando diretamente o tempo de execução, o consumo de recursos e a legibilidade do código \citeonline{sebesta2016}. Entre os aspectos mais relevantes destacam-se:
 
 \begin{itemize}
-  \item \textbf{Modelo de execução}: compilado ou interpretado. Em problemas da classe P, como o \eng{MergeSort}, linguagens compiladas tendem a explorar otimizações de baixo nível, reduzindo o tempo de execução. Já em problemas da classe NP-completo, como o \eng{Knapsack}, a vantagem de compilação pode se diluir frente à explosão combinatória, mas ainda impacta significativamente a escalabilidade das instâncias \cite{aho2007}.
-  \item \textbf{Tipagem}: estática ou dinâmica. Tipagens estáticas, comuns em linguagens compiladas, podem evitar erros e otimizar verificações em tempo de compilação \cite{sebesta2016}. Por outro lado, tipagens dinâmicas, típicas de linguagens interpretadas como Python e JavaScript, oferecem maior flexibilidade, mas podem gerar sobrecarga em execuções repetitivas de algoritmos NP ou NP-completos, impactando desempenho em comparação a linguagens com checagem antecipada de tipos \cite{tanenbaum2015}.
-  \item \textbf{Gerenciamento de memória}: manual ou automático. Em algoritmos intensivos em memória, como aqueles que implementam o \eng{Knapsack} ou simulam instâncias do \eng{Halting Problem}, o controle manual (C, C++) pode reduzir sobrecarga, mas aumenta a complexidade do código. Já o gerenciamento automático (Java, C\#, Go) facilita a implementação, porém pode introduzir pausas de coleta de lixo (\eng{garbage collection}), afetando medições de desempenho \cite{tanenbaum2015}.
+  \item \textbf{Modelo de execução}: compilado ou interpretado. Em problemas da classe P, como o \eng{MergeSort}, linguagens compiladas tendem a explorar otimizações de baixo nível, reduzindo o tempo de execução. Já em problemas da classe NP-completo, como o \eng{Knapsack}, a vantagem de compilação pode se diluir frente à explosão combinatória, mas ainda impacta significativamente a escalabilidade das instâncias \citeonline{aho2007}.
+  \item \textbf{Tipagem}: estática ou dinâmica. Tipagens estáticas, comuns em linguagens compiladas, podem evitar erros e otimizar verificações em tempo de compilação \citeonline{sebesta2016}. Por outro lado, tipagens dinâmicas, típicas de linguagens interpretadas como Python e JavaScript, oferecem maior flexibilidade, mas podem gerar sobrecarga em execuções repetitivas de algoritmos NP ou NP-completos, impactando desempenho em comparação a linguagens com checagem antecipada de tipos \citeonline{tanenbaum2015}.
+  \item \textbf{Gerenciamento de memória}: manual ou automático. Em algoritmos intensivos em memória, como aqueles que implementam o \eng{Knapsack} ou simulam instâncias do \eng{Halting Problem}, o controle manual (C, C++) pode reduzir sobrecarga, mas aumenta a complexidade do código. Já o gerenciamento automático (Java, C\#, Go) facilita a implementação, porém pode introduzir pausas de coleta de lixo (\eng{garbage collection}), afetando medições de desempenho \citeonline{tanenbaum2015}.
 \end{itemize}
 
-Dessa forma, os paradigmas e modelos de execução não apenas influenciam a forma como os algoritmos são implementados, mas também determinam o comportamento observado em termos de desempenho, consumo de recursos e escalabilidade. Estudos comparativos demonstram que linguagens distintas podem apresentar diferenças substanciais de performance mesmo ao executar algoritmos idênticos, reforçando a necessidade de análises empíricas \cite{prechelt2000}. Em particular, \citeonline{nanz2015} evidenciam que, mesmo em tarefas simples e equivalentes, a escolha da linguagem pode resultar em variações significativas no tempo de execução e no consumo de memória. De forma complementar, \citeonline{ray2017} mostram que tais diferenças não se limitam a cenários controlados, mas também impactam a qualidade do software em larga escala, afetando manutenibilidade e propensão a erros.
+Dessa forma, os paradigmas e modelos de execução não apenas influenciam a forma como os algoritmos são implementados, mas também determinam o comportamento observado em termos de desempenho, consumo de recursos e escalabilidade. Estudos comparativos demonstram que linguagens distintas podem apresentar diferenças substanciais de performance mesmo ao executar algoritmos idênticos, reforçando a necessidade de análises empíricas \citeonline{prechelt2000}. Em particular, \citeonline{nanz2015} evidenciam que, mesmo em tarefas simples e equivalentes, a escolha da linguagem pode resultar em variações significativas no tempo de execução e no consumo de memória. De forma complementar, \citeonline{ray2017} mostram que tais diferenças não se limitam a cenários controlados, mas também impactam a qualidade do software em larga escala, afetando manutenibilidade e propensão a erros.
 
 Assim, compreender a interação entre paradigmas, modelos de execução e classes de complexidade é essencial para fundamentar escolhas tecnológicas. A análise empírica proposta neste trabalho busca justamente oferecer evidências que complementem a teoria, mostrando como características das linguagens influenciam a execução de algoritmos em cenários reais.
 
@@ -172,8 +171,8 @@ Esta seção descreve o ambiente de experimentação e os procedimentos utilizad
 As linguagens foram escolhidas com base em três critérios principais:
 \begin{itemize}
   \item \textbf{Popularidade}: índices amplamente reconhecidos como o \eng{TIOBE Index}, o \eng{GitHub Octoverse} e a \eng{Stack Overflow Developer Survey}.
-  \item \textbf{Diversidade de paradigmas}: linguagens compiladas (C, C++, Rust), interpretadas (Python, JavaScript) e híbridas (Java, C\#, Go, Kotlin, TypeScript), conforme \eng{Sebesta} \citeonline{sebesta2016}.
-  \item \textbf{Aplicabilidade acadêmica e industrial}: presença em cursos universitários, bibliotecas científicas e projetos de larga escala \cite{pressman2016}.
+  \item \textbf{Diversidade de paradigmas}: linguagens compiladas (C, C++, Rust), interpretadas (Python, JavaScript) e híbridas (Java, C\#, Go, Kotlin, TypeScript), conforme \citeonline{sebesta2016}.
+  \item \textbf{Aplicabilidade acadêmica e industrial}: presença em cursos universitários, bibliotecas científicas e projetos de larga escala \citeonline{pressman2016}.
 \end{itemize}
 
 \subsection{Ambiente Experimental}
@@ -185,7 +184,8 @@ Os experimentos foram realizados em máquina dedicada com as seguintes especific
   \item \textbf{Sistema Operacional}: \eng{Ubuntu 24.04 LTS}.
 \end{itemize}
 
-Para reduzir interferências externas, os testes foram executados em modo de alto desempenho, sem aplicações concorrentes além dos serviços essenciais do sistema e cada execução foi realizada em console dedicado, garantindo uniformidade no ambiente experimental.
+Para reduzir interferências externas, os testes foram executados em modo de desempenho máximo, com o governor de CPU configurado para performance, garantindo operação em frequência constante e evitando variações automáticas de \textit{clock} (\textit{CPU scaling}). Antes de cada execução, o ambiente foi preparado manualmente: processos e serviços não essenciais foram encerrados, mantendo-se apenas os serviços fundamentais do sistema necessários para a estabilidade do ambiente. Essa verificação foi realizada por meio de ferramentas de monitoramento de processos, assegurando que nenhuma aplicação de usuário, atualização automática ou serviço auxiliar estivesse em execução.
+As execuções ocorreram em terminais dedicados, sem interface gráfica ativa (\textit{headless mode}), e o uso da biblioteca \texttt{psutil} permitiu o monitoramento contínuo do consumo de CPU e memória durante cada execução. Essa abordagem garantiu uniformidade experimental, reprodutibilidade dos resultados e ausência de interferências externas, assegurando que as métricas coletadas refletissem exclusivamente o desempenho intrínseco dos algoritmos avaliados.
 
 \subsection{Métricas}
 Foram avaliados três aspectos principais:
@@ -222,7 +222,7 @@ Os tamanhos adotados para os experimentos foram:
 
 Observação: para problemas cuja execução exata é inviável em níveis maiores (por exemplo, solução exata do \eng{Knapsack} em \eng{large}), aplicou-se uma política experimental (descrita adiante) que evita execuções proibitivamente longas.
 
-\subsection{Procedimentos Experimentais}
+\subsection{Procedimentos Experimentais e coleta de dados}
 O processo experimental foi organizado em três etapas principais: (i) geração de instâncias, (ii) compilação/execução e monitoramento, e (iii) armazenamento e análise dos resultados. Abaixo estão os procedimentos detalhados, refletindo os scripts e knobs utilizados.
 
 \begin{enumerate}
@@ -244,12 +244,7 @@ O processo experimental foi organizado em três etapas principais: (i) geração
   \item \textbf{Registro e formato de saída}: os resultados de cada execução são adicionados a um arquivo \texttt{JSON} acumulativo (\texttt{resultados/metricas.json}) contendo metadados do sistema (distribuição, kernel, arquitetura, número de cores, memória total), parâmetros da execução, medidas agregadas (média e pico) e séries quando aplicável.
 
   \item \textbf{Análise estatística}: a partir do conjunto de execuções foram calculadas medidas descritivas (média e desvio-padrão) por combinação de fatores, permitindo comparar desempenho entre linguagens, problemas e tamanhos de entrada. Valores relativos a variáveis de ambiente e seeds utilizadas estão disponibilizados no repositório para reprodução integral.
-\end{enumerate}
 
-\subsection{Procedimentos Experimentais}
-O processo experimental foi conduzido de forma padronizada para todas as linguagens e algoritmos, conforme as seguintes etapas:
-
-\begin{enumerate}
   \item \textbf{Implementação}: cada problema foi implementado em todas as linguagens avaliadas, utilizando apenas bibliotecas padrão ou recursos nativos, de modo a evitar influências externas no desempenho.
 
   \item \textbf{Compilação e execução}: os programas foram compilados ou interpretados com ferramentas oficiais disponíveis no \eng{Ubuntu 24.04 LTS}, adotando parâmetros padrão de cada linguagem (por exemplo, \texttt{gcc -O2}, \texttt{javac}, \texttt{python3}, \texttt{node}, etc.).
@@ -263,12 +258,15 @@ O processo experimental foi conduzido de forma padronizada para todas as linguag
   \item \textbf{Análise estatística}: a partir dos resultados brutos, foram calculadas medidas descritivas (média e desvio-padrão), permitindo comparação entre linguagens, problemas e tamanhos de entrada.
 \end{enumerate}
 
+
 % ------------------
 % Resultados
 % ------------------
 \section{Resultados}
 
-Nesta seção são apresentados e analisados os resultados obtidos a partir da execução sistemática dos algoritmos implementados. Os experimentos foram conduzidos com diferentes linguagens de programação e classes de complexidade (P, NP, NP-completo e NP-difícil), considerando quatro dimensões principais de avaliação: tempo de execução, utilização de CPU, consumo de memória e qualidade da solução heurística. Adicionalmente, é apresentada uma análise quantitativa em relação ao número de linhas de código fonte (\eng{SLOC - Source Lines of Code}), com o objetivo de avaliar a expressividade sintática e o esforço de implementação requerido por cada linguagem.
+Nesta seção são apresentados e analisados os resultados obtidos a partir da execução sistemática dos algoritmos implementados. Os experimentos foram conduzidos com diferentes linguagens de programação e classes de complexidade (P,NP,NP-complete e NP-difícil), considerando quatro dimensões principais de avaliação: tempo de execução, utilização de \eng{CPU}, consumo de memória e qualidade da solução heurística. 
+
+Também foi realizada uma análise quantitativa em relação ao número de linhas de código-fonte (\eng{SLOC — Source Lines of Code}), com o objetivo de avaliar a expressividade sintática e o esforço de implementação requerido por cada linguagem, bem como a relação entre o tempo médio de execução e o número médio de linhas de código, a fim de identificar possíveis padrões de correlação entre concisão sintática e desempenho computacional.
 
 \subsection{Tempo de Execução}
 
@@ -300,13 +298,15 @@ O tempo de execução médio, acompanhado do respectivo Desvio Padrão, dos algo
   \end{tabular}%
   }
 \label{fig:tempo_execucao}
+\par\vspace{2mm}
 \centering
 \small Fonte: Autor.
 \end{table}
 
-Os resultados demonstram uma correlação significativa entre o paradigma de execução das linguagens e seu desempenho temporal. Linguagens compiladas diretamente para código nativo (C, C++ e Rust) apresentaram os menores tempos de execução, com médias variando entre 0.01 segundos (instâncias pequenas) e 0.21 segundos (instâncias grandes), evidenciando superioridade em eficiência computacional. Rust merece destaque particular por combinar alta performance com garantias de segurança de memória, alcançando tempos comparáveis a C/C++ com valores de Desvio Padrão inferiores, indicando comportamento de execução mais consistente e previsível.
-Linguagens que operam em máquinas virtuais gerenciadas (Java, Kotlin, C#) demonstraram desempenho intermediário, com tempos de execução 2 a 7 vezes superiores às linguagens nativas em instâncias pequenas, porém mantendo boa escalabilidade para problemas de maior complexidade. Java e Kotlin apresentaram valores de Desvio Padrão relativamente baixos (0.01-0.26), sugerindo comportamento temporal estável sob diferentes condições de carga computacional.
-Python exibiu a maior variabilidade temporal (Desvio Padrão até 3.95) e crescimento exponencial em instâncias grandes (2.94 segundos na média), refletindo limitações inerentes a linguagens interpretadas para execução de algoritmos computacionalmente complexos. JavaScript e TypeScript apresentaram comportamento divergente: enquanto JavaScript demonstrou desempenho temporal razoável, TypeScript foi consistentemente mais lento (até 1.18 segundos), possivelmente devido aos overheads adicionais do processo de transpilação e verificação de tipos em tempo de execução.
+Os resultados demonstram uma correlação significativa entre o paradigma de execução das linguagens e seu desempenho temporal. Linguagens compiladas diretamente para código nativo (C, C++ e Rust) apresentaram os menores tempos de execução, com médias variando entre 0,01 segundos (instâncias pequenas) e 0,21 segundos (instâncias grandes), evidenciando superioridade em eficiência computacional. Rust merece destaque particular por combinar alta performance com garantias de segurança de memória, alcançando tempos comparáveis a C/C++, com valores de desvio-padrão inferiores, indicando comportamento de execução mais consistente e previsível.
+Linguagens que operam em máquinas virtuais gerenciadas (Java, Kotlin, C\#) demonstraram desempenho intermediário, com tempos de execução de 2 a 7 vezes superiores às linguagens nativas em instâncias pequenas, porém mantendo boa escalabilidade para problemas de maior complexidade. Java e Kotlin apresentaram valores de desvio-padrão relativamente baixos (0,01–0,26), sugerindo comportamento temporal estável sob diferentes condições de carga computacional.
+Python exibiu a maior variabilidade temporal (desvio-padrão de até 3,95) e crescimento exponencial em instâncias grandes (2,94 segundos na média), refletindo limitações inerentes a linguagens interpretadas para execução de algoritmos computacionalmente complexos. Essa elevada dispersão dos resultados pode ser atribuída à natureza dinâmica da linguagem, à interferência do garbage collector e à dependência do interpretador, que tende a introduzir flutuações na alocação de memória e na otimização em tempo de execução.
+JavaScript e TypeScript apresentaram comportamento divergente: enquanto JavaScript demonstrou desempenho temporal razoável, TypeScript foi consistentemente mais lento (até 1,18 segundos), possivelmente devido aos overheads adicionais do processo de transpilação e verificação de tipos em tempo de execução. Em algumas linguagens, o desvio-padrão elevado também pode estar associado a fatores externos de execução, como variações momentâneas no gerenciamento de threads, no agendamento de processos pelo sistema operacional ou na sobrecarga de inicialização do ambiente de execução, especialmente perceptíveis em amostras pequenas e médias.
 
 \subsection{Uso de CPU}
 A Figura~\ref{fig:cpu} ilustra o consumo máximo de CPU normalizado pelo tamanho da instância processada. Linguagens com ambientes de execução mais complexos (Java, Kotlin) apresentam utilização intensiva de CPU em instâncias médias e grandes, em contraste direto com C e C++, que demonstram comportamento de utilização mais estável e eficiente. O Desvio Padrão calculado evidencia que linguagens interpretadas possuem maior variabilidade na utilização de recursos, indicando ocorrência de picos de processamento durante fases específicas da execução.
@@ -336,15 +336,16 @@ A Figura~\ref{fig:cpu} ilustra o consumo máximo de CPU normalizado pelo tamanho
   \end{tabular}%
   }
 \label{fig:tempo_execucao}
+\par\vspace{2mm}
 \centering
 \small Fonte: Autor.
 \end{table}
 
-A análise do consumo de recursos de processamento revela padrões arquiteturais importantes sobre a eficiência computacional. Linguagens nativas (C, C++, Rust) demonstraram controle excepcional sobre recursos de CPU, com utilização próxima de 0\% em instâncias pequenas e crescimento moderado em instâncias maiores (18\%--19\%). Seus elevados valores de Desvio Padrão (12--15) indicam que, embora extremamente eficientes, essas linguagens podem apresentar picos pontuais de utilização de CPU quando necessário, aproveitando integralmente os recursos computacionais disponíveis mediante demanda.
-
-Linguagens que utilizam coleta automática de lixo (Java, Kotlin, Go) apresentaram padrão diametralmente oposto: alto consumo mesmo em tarefas computacionalmente simples (40\%--66\%), com relativa estabilidade operacional (Desvio Padrão 9--12). Este comportamento reflete diretamente o custo computacional do gerenciamento automático de memória e da execução em ambientes virtualizados. TypeScript manteve consumo consistentemente elevado (48\%--49\%), sugerindo possíveis ineficiências no modelo de evento loop do ambiente Node.js.
-
-Python apresentou consumo moderado (22\%--27\%) com baixa variabilidade (Desvio Padrão 5--7), indicando processamento mais linear e menos agressivo que linguagens compiladas. C\# demonstrou comportamento híbrido, com consumo moderado-baixo (23\%--30\%) e excelente estabilidade operacional, evidenciando a maturidade e otimização de seu runtime gerenciado.
+A análise do consumo de recursos de processamento revela padrões arquiteturais importantes sobre a eficiência computacional das linguagens avaliadas. Linguagens nativas (C, C++ e Rust) demonstraram controle excepcional sobre recursos de CPU, com utilização próxima de 0\% em instâncias pequenas e crescimento moderado em instâncias maiores (18\%–19\%). Os valores de desvio-padrão relativamente elevados (12–15) indicam que, embora essas linguagens mantenham uso médio reduzido, podem apresentar picos pontuais de utilização de CPU durante operações mais intensivas, como alocação de memória dinâmica, acesso a disco ou execução de rotinas de cálculo concentradas em blocos curtos de tempo. Esse comportamento é típico de linguagens compiladas, que exploram ao máximo os ciclos de processamento disponíveis conforme a demanda computacional.
+Linguagens que utilizam coleta automática de lixo (Java, Kotlin e Go) apresentaram padrão diametralmente oposto: alto consumo mesmo em tarefas computacionalmente simples (40\%–66\%), com relativa estabilidade operacional (desvio-padrão entre 9 e 12). Esse comportamento reflete o custo computacional associado ao gerenciamento automático de memória, à inicialização da máquina virtual e à execução de threads auxiliares de monitoramento, que mantêm o uso de CPU elevado mesmo em momentos de baixa carga algorítmica.
+TypeScript manteve consumo consistentemente alto (48\%–49\%), sugerindo ineficiências no modelo de event loop do ambiente Node.js e no processo de transpilação e interpretação dinâmica do código, que gera sobrecarga constante de processamento.
+Python apresentou consumo moderado (22\%–27\%) com baixa variabilidade (desvio-padrão entre 5 e 7), indicando comportamento mais linear e previsível. Isso decorre da natureza interpretada da linguagem, que tende a distribuir o uso de CPU de forma mais contínua ao longo da execução.
+Por fim, C\# demonstrou um perfil híbrido, com consumo moderado-baixo (23\%–30\%) e excelente estabilidade operacional, refletindo a maturidade e otimização de seu runtime gerenciado (.NET CLR), que equilibra a execução JIT e o controle eficiente de threads e coleta de lixo.
 
 \subsection{Uso de Memória}
 
@@ -375,19 +376,23 @@ O consumo de memória principal foi mensurado em megabytes (MB) para todos os al
   \end{tabular}%
   }
 \label{fig:tempo_execucao}
+
+\par\vspace{2mm}
 \centering
 \small Fonte: Autor.
 \end{table}
 
-A análise de consumo de memória revela diferenças arquiteturais significativas entre os paradigmas de linguagem. Linguagens nativas (C, C++, Rust) mantiveram consumo mínimo (0.48--6.58 MB) com excelente estabilidade operacional, demonstrando alocação precisa e controle granular sobre recursos de memória. Rust destacou-se com crescimento mais suave (0.58--2.44 MB) ao longo do aumento da complexidade, mostrando eficiência superior mesmo em operações que demandam gerenciamento complexo de memória.
-
-Linguagens com gerenciamento automático de memória exibiram padrões distintos: Go manteve consumo praticamente constante (48 MB) independente do tamanho da instância, refletindo sua arquitetura de heap pré-alocado e fixo. Java e Kotlin apresentaram crescimento significativo (43--93 MB), com Kotlin demonstrando alta variabilidade (Desvio Padrão 25.56) em instâncias grandes, possivelmente devido a algoritmos de coleta de lixo mais agressivos ou estratégias de alocação menos previsíveis.
-
-TypeScript liderou o consumo geral de memória (76--89 MB), evidenciando claramente o overhead intrínseco do runtime Node.js e do processo de execução JavaScript. Python demonstrou comportamento notavelmente equilibrado (9--24 MB), com consumo 2 a 3 vezes inferior a outras linguagens interpretadas, sugerindo melhor otimização nas estruturas de dados internas e estratégias mais eficientes de alocação dinâmica.
+A análise do consumo de memória revela diferenças arquiteturais significativas entre os paradigmas de linguagem. Linguagens nativas (C, C++ e Rust) mantiveram consumo mínimo (0,48–6,58 MB) com excelente estabilidade operacional, demonstrando alocação precisa e controle granular sobre os recursos de memória. Rust destacou-se com crescimento mais suave (0,58–2,44 MB) conforme o aumento da complexidade, evidenciando eficiência superior mesmo em operações que exigem gerenciamento dinâmico de memória. Os desvios-padrão ligeiramente mais altos observados em C e C++ nas instâncias maiores (até 1,86 MB) indicam flutuações pontuais decorrentes da execução de operações intensivas em alocação ou desalocação, típicas de linguagens que oferecem controle manual sobre a memória.
+Linguagens com gerenciamento automático de memória exibiram padrões distintos. Go manteve consumo praticamente constante (48 MB) independentemente do tamanho da instância, reflexo direto de sua arquitetura de heap pré-alocado e estratégias internas de reserva antecipada de memória, que reduzem variações ao custo de maior uso base. Java e Kotlin apresentaram crescimento expressivo (43–93 MB), com Kotlin demonstrando alta variabilidade (desvio-padrão de até 25,56 MB) em instâncias grandes resultado provável de ciclos mais intensos de coleta de lixo (garbage collection) e da expansão dinâmica do heap durante a execução. Esses picos refletem o funcionamento adaptativo das JVMs modernas, que ajustam a memória de acordo com a carga e as características do algoritmo em execução.
+TypeScript apresentou o maior consumo geral (76–89 MB), evidenciando o overhead intrínseco do ambiente Node.js, no qual o runtime JavaScript mantém múltiplas estruturas internas de cache, event loop e buffers de execução. A presença de um desvio-padrão moderado (até 6,27 MB) sugere um consumo elevado, porém consistente ao longo das execuções.
+Python demonstrou comportamento notavelmente equilibrado (9–24 MB), com consumo 2 a 3 vezes inferior ao de outras linguagens interpretadas, sugerindo maior eficiência na reutilização de objetos e nas estratégias de alocação dinâmica de memória. Ainda que o desvio-padrão tenha aumentado em instâncias grandes (até 8,39 MB), esse efeito decorre de picos ocasionais na alocação de estruturas temporárias durante o processamento de dados, comportamento esperado em linguagens interpretadas com coleta automática de lixo.
 
 \subsection{Qualidade da Solução da Heurística}
 
-Para problemas classificados como NP-completos, comparou-se sistematicamente o tempo de execução de soluções exatas com abordagens heurísticas baseadas em algoritmos gulosos. A estratégia heurística demonstrou redução significativa no tempo de execução, mantendo perda de qualidade de solução dentro de limites aceitáveis na maioria das instâncias testadas. O Desvio Padrão calculado evidencia que a abordagem heurística apresenta maior estabilidade e previsibilidade temporal, enquanto soluções exatas podem exibir variabilidade considerável, tornando-se computacionalmente inviáveis em instâncias de maior dimensionalidade.
+No contexto dos problemas classificados como NP-completos, procedeu-se a uma análise comparativa detalhada entre o tempo de execução de soluções exatas e abordagens heurísticas fundamentadas em algoritmos gulosos. As soluções exatas, embora garantam a obtenção da resposta ótima, demonstraram crescimento exponencial do tempo de processamento à medida que o tamanho das instâncias aumentava, tornando-se inviáveis para dimensões mais elevadas. Em contrapartida, a estratégia heurística apresentou desempenho significativamente superior em termos de tempo, alcançando resultados em frações do período necessário às abordagens exatas.
+Essa diferença se deve à natureza construtiva e localmente otimizada dos algoritmos gulosos, que buscam decisões imediatas de melhor ganho sem percorrer integralmente o espaço de busca. Apesar de não assegurar a otimalidade global, a heurística produziu soluções de alta qualidade, com perda média de desempenho marginal quando comparada à solução exata, dentro de limites de tolerância aceitáveis para a maioria das instâncias analisadas.
+A análise estatística dos resultados, especialmente por meio do Desvio Padrão do tempo de execução, revelou que as abordagens heurísticas exibem maior estabilidade e previsibilidade temporal, apresentando baixa dispersão nos tempos medidos entre execuções sucessivas. Já os métodos exatos evidenciaram elevada variabilidade, refletindo a sensibilidade a variações estruturais do problema e ao crescimento combinatorial do número de possibilidades de busca.
+Esses achados reforçam a relevância prática das heurísticas como alternativas viáveis e eficientes para o tratamento de problemas NP-completos em contextos reais, nos quais a rapidez de resposta e a economia de recursos computacionais assumem papel central. Assim, mesmo que a precisão absoluta seja sacrificada, o ganho em desempenho e escalabilidade justifica a adoção de estratégias aproximadas em aplicações que demandam soluções em tempo hábil.
 
 \begin{figure}[H]
   \caption{Comparação entre abordagem exata versus heurística (NP-completo) em tempo de execução.}
@@ -400,7 +405,7 @@ Para problemas classificados como NP-completos, comparou-se sistematicamente o t
 \begin{table}[H]
   \caption{Comparação de tempo de execução entre solução exata e heurística (NP-completo).(M: Média, DP: Desvio-Padrão)}
   \centering
-  \resizebox{0.8\textwidth}{!}{%
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{c|cc|cc}
     \toprule
     \textbf{Tamanho} & \multicolumn{2}{c|}{\textbf{Exato}} & \multicolumn{2}{c}{\textbf{Heurístico (Guloso)}} \\
@@ -415,16 +420,15 @@ Para problemas classificados como NP-completos, comparou-se sistematicamente o t
   }
 
 \label{fig:qualidade}
+\par\vspace{2mm}
 \centering
 \small Fonte: Autor.
 \end{table}
-
 A comparação sistemática entre métodos exatos e heurísticos revela trade-offs significativos em termos de complexidade computacional. Soluções exatas tornam-se rapidamente inviáveis computacionalmente, exibindo crescimento exponencial no tempo de execução (0.57 segundos para 3.72 segundos em instâncias médias) acompanhado de alta variabilidade temporal (Desvio Padrão 1.27--2.50). Em instâncias classificadas como grandes, as soluções exatas tornaram-se completamente impraticáveis, exigindo tempo computacional proibitivo que inviabilizou sua execução dentro dos parâmetros experimentais estabelecidos.
 
 As heurísticas gulosas demonstraram eficiência computacional notável: redução no tempo de execução na ordem de 3 a 28 vezes, com excelente escalabilidade algorítmica (0.11 segundos para 0.24 segundos) e alta estabilidade operacional (Desvio Padrão 0.21--0.26). A perda de qualidade da solução, mensurada em termos de optimalidade, manteve-se em média abaixo de 15\% nas instâncias testadas, constituindo um trade-off amplamente aceitável considerando o ganho exponencial em performance computacional.
 
 Estes resultados reforçam categoricamente a utilidade de aproximações heurísticas para problemas NP-completos em aplicações práticas do mundo real, onde soluções subótimas de qualidade controlada são preferíveis a buscas exatas computacionalmente inviáveis.
-
 
 \subsection{Linhas de Código}
 
@@ -435,6 +439,7 @@ A análise quantitativa de \eng{SLOC} (\eng{Source Lines of Code}) mensura o esf
 \centering
 \includegraphics[width=\textwidth]{img/linhas_linguagem.png}
 \label{fig:sloc}
+
 \centering
 \small Fonte: Autor.
 \end{figure}
@@ -447,19 +452,61 @@ Rust destacou-se positivamente entre as linguagens de baixo nível, exigindo men
 
 Estas diferenças quantitativas impactam diretamente a produtividade do ciclo de desenvolvimento: linguagens mais expressivas podem reduzir o tempo de implementação em até 60\%, conforme documentado na literatura especializada, embora possam incorrer em trade-offs de performance em cenários computacionalmente intensivos específicos.
 
+\subsection{Análise Quantitativa: Tempo de Execução vs. Linhas de Código}
+
+A Tabela~\ref{tab:sloc_tempo} apresenta a relação direta entre o tempo médio de execução (em segundos) e a métrica de \eng{SLOC} (\eng{Source Lines of Code}) para cada linguagem avaliada. O objetivo desta análise é identificar tendências que possam indicar correlação entre a concisão sintática e a eficiência computacional.
+
+\begin{table}[H]
+\caption{Relação entre tempo de execução e número médio de linhas de código por linguagem.}
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Linguagem} & \textbf{Tempo médio (s)} & \textbf{Linhas de código} \\
+\midrule
+C & 0.0801 & 62.33 \\
+C++ & 0.0839 & 53.00 \\
+Rust & 0.0523 & 45.33 \\
+C\# & 0.0931 & 43.00 \\
+Go & 0.1934 & 50.33 \\
+Java & 0.1451 & 37.67 \\
+Kotlin & 0.1571 & 29.67 \\
+JavaScript & 0.1903 & 28.67 \\
+TypeScript & 0.9918 & 37.00 \\
+Python & 1.1019 & 32.00 \\
+\bottomrule
+\end{tabular}
+\label{tab:sloc_tempo}
+\par\vspace{2mm}
+\centering
+\small Fonte: Autor.
+\end{table}
+
+A análise evidencia uma tendência clara: o número de linhas de código não apresenta correlação direta com o desempenho temporal. Linguagens como C e C++, mesmo apresentando os maiores valores médios de \eng{SLOC}, mantêm tempos de execução extremamente baixos (inferiores a 0.1 s), resultado de sua compilação nativa e otimizações de baixo nível. Rust destacou-se como a linguagem mais eficiente temporalmente, conciliando características de segurança e abstração moderna com execução de alto desempenho.
+
+Por outro lado, linguagens interpretadas, como Python e JavaScript, exibiram tempos de execução até uma ordem de magnitude superiores, apesar de sua concisão sintática. Esse comportamento reflete o custo das camadas de abstração, gerenciamento dinâmico de tipos e sobrecarga dos ambientes de execução (\textit{interpreters} e \textit{runtimes}).
+
+Linguagens híbridas ou de máquina virtual, como Java, Kotlin e C\#, situaram-se em uma faixa intermediária: apresentaram bom equilíbrio entre expressividade e desempenho, beneficiando-se de \textit{just-in-time compilation} e otimizações do ambiente de execução (\textit{JVM} e \textit{CLR}). Go demonstrou desempenho consistente, ainda que levemente inferior às linguagens compiladas, em virtude de seu modelo de concorrência e gerenciamento automático de memória.
+
+De modo geral, observa-se a formação de três agrupamentos (\textit{clusters}) principais:  
+\begin{itemize}
+    \item \textbf{Baixo tempo e alta SLOC}: linguagens compiladas (C, C++, Rust);  
+    \item \textbf{Médio tempo e SLOC intermediário}: linguagens de máquina virtual (Java, C\#, Kotlin, Go);  
+    \item \textbf{Alto tempo e baixa SLOC}: linguagens interpretadas (Python, JavaScript, TypeScript).  
+\end{itemize}
+
+Esse comportamento reforça a inexistência de relação linear entre concisão de código e eficiência de execução. O fator determinante para o desempenho está mais associado ao modelo de execução da linguagem e à sua infraestrutura de compilação do que ao tamanho do código fonte em si.
+
 % ------------------
 % Conclusão
 % ------------------
 \section{Conclusão}
-Este trabalho apresentou uma análise comparativa de algoritmos implementados em diferentes linguagens de programação, com foco em métricas de desempenho (tempo de execução, uso de CPU e memória) e complexidade de implementação (\eng{SLOC}).O objetivo central foi realizar uma análise comparativa do desempenho de algoritmos clássicos pertencentes à classe polinomial, implementados em múltiplas linguagens de programação.
-
+Este trabalho apresentou uma análise comparativa de algoritmos implementados em diferentes linguagens de programação, com foco em métricas de desempenho (tempo de execução, uso de CPU e memória) e complexidade de implementação (\eng{SLOC}). O objetivo central foi realizar uma análise comparativa do desempenho de algoritmos clássicos pertencentes à classe polinomial, implementados em múltiplas linguagens de programação.
 Os resultados evidenciaram que linguagens compiladas de baixo nível, como C, C++ e Rust, mantiveram desempenho superior em termos de tempo e memória, confirmando sua adequação a aplicações que demandam alta eficiência. Em contrapartida, linguagens interpretadas como Python, JavaScript e TypeScript, embora apresentem menor desempenho em grandes volumes de dados, destacaram-se pela simplicidade de implementação e expressividade. Linguagens intermediárias, como Java, Kotlin e Go, mostram-se adequadas para sistemas distribuídos e aplicações de larga escala, em que o equilíbrio entre desempenho e portabilidade é determinante.
-
 A análise da heurística aplicada ao problema NP-completo demonstrou que abordagens aproximadas oferecem soluções próximas ao ótimo em frações do tempo exigido pelo algoritmo exato, viabilizando aplicações práticas em cenários de maior escala. Esse achado reforça o \eng{trade-off} entre precisão e eficiência computacional, fundamental em problemas de alta complexidade.
-
+Do ponto de vista prático, os resultados obtidos podem orientar a escolha de linguagens de programação em contextos reais de desenvolvimento. Projetos que priorizam desempenho e controle sobre recursos de hardware tendem a se beneficiar de linguagens compiladas, enquanto aplicações voltadas à produtividade, manutenção e prototipagem rápida encontram maior vantagem em linguagens interpretadas. Essa análise comparativa, portanto, oferece subsídios para decisões técnicas mais embasadas, tanto em ambientes acadêmicos quanto em projetos industriais. 
 Como limitações, destaca-se a utilização de um único ambiente experimental, o que restringe a generalização dos resultados para diferentes arquiteturas de hardware e sistemas operacionais. Ademais, foram considerados apenas algoritmos representativos das classes P, NP, NP-completo e NP-difícil, não abrangendo a totalidade do espectro de problemas computacionais.
-
 Como perspectivas futuras, propõe-se ampliar os experimentos para incluir diferentes configurações de hardware, explorar métricas adicionais como consumo energético e escalabilidade em ambientes distribuídos, além de avaliar outras linguagens emergentes e paradigmas de programação. Tais investigações podem aprofundar a compreensão dos impactos da linguagem de programação no desempenho e orientar decisões ainda mais embasadas em contextos acadêmicos e industriais.
+
 
 % ------------------
 % Referências
